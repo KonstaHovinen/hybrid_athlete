@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'preferences_cache.dart';
 import 'sync_service.dart';
+import 'device_id.dart';
 
 /// Cloud Sync Service - Alternative to local network sync
 /// Works everywhere including iOS PWA
@@ -176,12 +177,16 @@ class CloudSyncService {
         }
       }
 
+      final deviceName = await DeviceId.getDeviceName();
+      final safeDeviceName = deviceName.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_');
+      final filename = 'hybrid_athlete_data_$safeDeviceName.json';
+
       final contentString = jsonEncode(data);
       final body = {
         "description": "Hybrid Athlete App Data Sync",
         "public": false,
         "files": {
-          "hybrid_athlete_data.json": {
+          filename: {
             "content": contentString
           }
         }
@@ -259,10 +264,18 @@ class CloudSyncService {
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         final files = jsonResponse['files'] as Map<String, dynamic>;
-        if (files.containsKey('hybrid_athlete_data.json')) {
+        
+        final deviceName = await DeviceId.getDeviceName();
+        final safeDeviceName = deviceName.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_');
+        final myFilename = 'hybrid_athlete_data_$safeDeviceName.json';
+
+        // Prefer our own device file, fallback to legacy generic file
+        if (files.containsKey(myFilename)) {
+          final content = files[myFilename]['content'];
+          if (content != null) return jsonDecode(content);
+        } else if (files.containsKey('hybrid_athlete_data.json')) {
           final content = files['hybrid_athlete_data.json']['content'];
-          // The content inside the gist is the cloudData object we uploaded
-          return jsonDecode(content);
+          if (content != null) return jsonDecode(content);
         }
       }
     } catch (e) {
@@ -287,7 +300,7 @@ class CloudSyncService {
         final List<dynamic> gists = jsonDecode(response.body);
         for (var gist in gists) {
           final files = gist['files'] as Map<String, dynamic>;
-          if (files.containsKey('hybrid_athlete_data.json')) {
+          if (files.keys.any((k) => k.startsWith('hybrid_athlete_data'))) {
             return gist['id'];
           }
         }
@@ -298,57 +311,168 @@ class CloudSyncService {
     return null;
   }
 
-  /// Import cloud data into local storage
-  static Future<void> importCloudData(Map<String, dynamic> cloudData) async {
+  /// Get list of available backups from other devices
+  static Future<List<Map<String, String>>> getAvailableBackups() async {
+    try {
+      final prefs = await PreferencesCache.getInstance();
+      final token = prefs.getString('github_token');
+      var gistId = prefs.getString('gist_id');
+      
+      if (token == null) return [];
+      if (gistId == null) {
+        gistId = await _findGistId(token);
+        if (gistId != null) await prefs.setString('gist_id', gistId);
+        else return [];
+      }
+
+      final response = await http.get(
+        Uri.parse('$_githubApiUrl/$gistId'),
+        headers: {
+          'Authorization': 'token $token',
+          'Accept': 'application/vnd.github.v3+json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        final files = jsonResponse['files'] as Map<String, dynamic>;
+        final currentDeviceName = await DeviceId.getDeviceName();
+        final safeCurrentName = currentDeviceName.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_');
+        
+        List<Map<String, String>> backups = [];
+        files.forEach((filename, fileData) {
+          if (filename.startsWith('hybrid_athlete_data_') && filename.endsWith('.json')) {
+             String devName = filename.replaceFirst('hybrid_athlete_data_', '').replaceFirst('.json', '');
+             // Skip current device
+             if (devName == safeCurrentName) return;
+             
+             devName = devName.replaceAll('_', ' ');
+             backups.add({
+               'filename': filename,
+               'deviceName': devName,
+               'rawUrl': fileData['raw_url'] ?? ''
+             });
+          }
+        });
+        return backups;
+      }
+    } catch (e) {
+      debugPrint('Error fetching backups: $e');
+    }
+    return [];
+  }
+
+  /// Download and merge a specific backup file
+  static Future<bool> mergeBackup(String filename) async {
+    try {
+      final prefs = await PreferencesCache.getInstance();
+      final token = prefs.getString('github_token');
+      final gistId = prefs.getString('gist_id');
+      
+      if (token == null || gistId == null) return false;
+
+      final response = await http.get(
+        Uri.parse('$_githubApiUrl/$gistId'),
+        headers: {
+          'Authorization': 'token $token',
+          'Accept': 'application/vnd.github.v3+json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        final files = jsonResponse['files'] as Map<String, dynamic>;
+        if (files.containsKey(filename)) {
+          final content = files[filename]['content'];
+          if (content != null) {
+            final data = jsonDecode(content);
+            await importCloudData(data, merge: true);
+            return true;
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Merge error: $e');
+    }
+    return false;
+  }
+
+  /// Import cloud data into local storage (Merge or Overwrite)
+  static Future<void> importCloudData(Map<String, dynamic> cloudData, {bool merge = false}) async {
     final prefs = await PreferencesCache.getInstance();
     final data = cloudData['data'] as Map<String, dynamic>?;
     
     if (data == null) return;
     
-    // Import all data types (ensuring everything syncs)
+    // 1. Workout History
     if (data['workout_history'] != null) {
-      final history = (data['workout_history'] as List).cast<String>();
-      await prefs.setStringList('workout_history', history);
+      final remoteHistory = (data['workout_history'] as List).cast<String>();
+      if (merge) {
+        final localHistory = prefs.getStringList('workout_history') ?? [];
+        // Use Set to avoid duplicates (assuming exact string match for JSON)
+        final merged = {...localHistory, ...remoteHistory}.toList();
+        await prefs.setStringList('workout_history', merged);
+      } else {
+        await prefs.setStringList('workout_history', remoteHistory);
+      }
     }
     
+    // 2. Logged Workouts (Calendar)
     if (data['logged_workouts'] != null) {
-      await prefs.setString('logged_workouts', data['logged_workouts'] as String);
+      if (merge) {
+        final localRaw = prefs.getString('logged_workouts');
+        final Map<String, dynamic> localMap = localRaw != null ? jsonDecode(localRaw) : {};
+        final Map<String, dynamic> remoteMap = jsonDecode(data['logged_workouts'] as String);
+        
+        // Merge maps
+        remoteMap.forEach((key, value) {
+          if (localMap.containsKey(key)) {
+            // If both have entries for a date, combine lists
+            final localList = (localMap[key] as List).toList();
+            final remoteList = (value as List).toList();
+            localList.addAll(remoteList);
+            localMap[key] = localList;
+          } else {
+            localMap[key] = value;
+          }
+        });
+        await prefs.setString('logged_workouts', jsonEncode(localMap));
+      } else {
+        await prefs.setString('logged_workouts', data['logged_workouts'] as String);
+      }
     }
     
-    if (data['scheduled_workouts'] != null) {
-      await prefs.setString('scheduled_workouts', data['scheduled_workouts'] as String);
-    }
-    
+    // 3. User Templates (Merge)
     if (data['user_templates'] != null) {
-      await prefs.setString('user_templates', data['user_templates'] as String);
+      if (merge) {
+        final localRaw = prefs.getString('user_templates');
+        final List<dynamic> localList = localRaw != null ? jsonDecode(localRaw) : [];
+        final List<dynamic> remoteList = jsonDecode(data['user_templates'] as String);
+        
+        // Add templates that don't exist locally (by name)
+        final localNames = localList.map((e) => e['name']).toSet();
+        for (var t in remoteList) {
+          if (!localNames.contains(t['name'])) {
+            localList.add(t);
+          }
+        }
+        await prefs.setString('user_templates', jsonEncode(localList));
+      } else {
+        await prefs.setString('user_templates', data['user_templates'] as String);
+      }
     }
     
-    if (data['user_exercises'] != null) {
-      await prefs.setString('user_exercises', data['user_exercises'] as String);
-    }
-    
-    if (data['user_profile'] != null) {
-      await prefs.setString('user_profile', data['user_profile'] as String);
-    }
-    
-    if (data['exercise_settings'] != null) {
-      await prefs.setString('exercise_custom_settings', data['exercise_settings'] as String);
-    }
-    
-    if (data['pro_goals'] != null) {
-      await prefs.setString('pro_goals', data['pro_goals'] as String);
-    }
-    
-    if (data['weekly_goal'] != null) {
-      await prefs.setInt('weekly_goal', data['weekly_goal'] as int);
-    }
-    
-    if (data['active_badge_id'] != null) {
-      await prefs.setString('active_badge_id', data['active_badge_id'] as String);
-    }
-    
-    if (data['earned_badges'] != null) {
-      await prefs.setStringList('earned_badges', (data['earned_badges'] as List).cast<String>());
+    // For other settings, we generally prefer local or overwrite. 
+    // In merge mode, we keep local settings to avoid disrupting the current device config.
+    if (!merge) {
+      if (data['scheduled_workouts'] != null) await prefs.setString('scheduled_workouts', data['scheduled_workouts'] as String);
+      if (data['user_exercises'] != null) await prefs.setString('user_exercises', data['user_exercises'] as String);
+      if (data['user_profile'] != null) await prefs.setString('user_profile', data['user_profile'] as String);
+      if (data['exercise_settings'] != null) await prefs.setString('exercise_custom_settings', data['exercise_settings'] as String);
+      if (data['pro_goals'] != null) await prefs.setString('pro_goals', data['pro_goals'] as String);
+      if (data['weekly_goal'] != null) await prefs.setInt('weekly_goal', data['weekly_goal'] as int);
+      if (data['active_badge_id'] != null) await prefs.setString('active_badge_id', data['active_badge_id'] as String);
+      if (data['earned_badges'] != null) await prefs.setStringList('earned_badges', (data['earned_badges'] as List).cast<String>());
     }
     
     // Invalidate all caches to ensure fresh data

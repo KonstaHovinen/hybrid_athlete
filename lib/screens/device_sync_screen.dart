@@ -8,6 +8,7 @@ import '../design_system.dart';
 import '../utils/cloud_sync_service.dart';
 import '../utils/sync_service.dart';
 import '../utils/preferences_cache.dart';
+import '../utils/device_id.dart';
 import 'dart:async';
 
 /// Cloud Sync Screen - Manage cloud synchronization
@@ -24,17 +25,26 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
   bool _isCloudSyncing = false;
   String _maskedToken = "Not Connected";
   String _gistIdStatus = "Checking...";
+  String _currentDeviceName = "Loading...";
+  List<Map<String, String>> _remoteBackups = [];
 
   @override
   void initState() {
     super.initState();
     _startStatusUpdates();
+    _loadDeviceInfo();
   }
 
   @override
   void dispose() {
     _statusTimer?.cancel();
     super.dispose();
+  }
+
+  Future<void> _loadDeviceInfo() async {
+    final name = await DeviceId.getDeviceName();
+    if (mounted) setState(() => _currentDeviceName = name);
+    _refreshBackups();
   }
 
   void _startStatusUpdates() {
@@ -56,11 +66,20 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
     });
   }
 
+  Future<void> _refreshBackups() async {
+    final backups = await CloudSyncService.getAvailableBackups();
+    if (mounted) setState(() => _remoteBackups = backups);
+  }
+
   Future<void> _manualCloudSync() async {
     setState(() => _isCloudSyncing = true);
     
     try {
       final success = await CloudSyncService.manualCloudSync();
+      if (success) {
+        // Refresh backups list after sync
+        await _refreshBackups();
+      }
       
                     if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -78,6 +97,21 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
       );
     } finally {
       setState(() => _isCloudSyncing = false);
+    }
+  }
+
+  Future<void> _mergeBackup(String filename, String deviceName) async {
+    setState(() => _isCloudSyncing = true);
+    try {
+      final success = await CloudSyncService.mergeBackup(filename);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(success ? 'Merged data from $deviceName' : 'Merge failed'),
+        backgroundColor: success ? AppColors.success : AppColors.error,
+      ));
+      if (success) _manualCloudSync(); // Sync back the merged data
+    } finally {
+      if (mounted) setState(() => _isCloudSyncing = false);
     }
   }
 
@@ -402,6 +436,14 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
                             Text(_gistIdStatus, style: const TextStyle(fontFamily: 'monospace', fontSize: 12, color: AppColors.textSecondary)),
                           ],
                         ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(Icons.smartphone, size: 16, color: AppColors.textMuted),
+                        const SizedBox(width: 8),
+                        Text("Device: $_currentDeviceName", style: const TextStyle(fontFamily: 'monospace', fontSize: 12, color: AppColors.primary)),
+                      ],
+                    ),
                       ],
                     ),
                   ),
@@ -432,6 +474,36 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
                         child: const Text("Reset Connection", style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
                       ),
                     ),
+                  ],
+                  
+                  if (_remoteBackups.isNotEmpty) ...[
+                    AppSpacing.gapVerticalLG,
+                    const Text("Available Device Data:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                    AppSpacing.gapVerticalSM,
+                    ..._remoteBackups.map((backup) => Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppColors.surfaceLight),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(backup['deviceName'] ?? 'Unknown', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          ElevatedButton(
+                            onPressed: _isCloudSyncing ? null : () => _mergeBackup(backup['filename']!, backup['deviceName']!),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.secondary,
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              minimumSize: Size.zero,
+                            ),
+                            child: const Text("Merge Data", style: TextStyle(fontSize: 12)),
+                          ),
+                        ],
+                      ),
+                    )),
                   ],
                 ],
               ),
