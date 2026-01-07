@@ -11,6 +11,7 @@ import 'stats_screen.dart';
 import 'quick_log_screen.dart';
 import 'futsal_screen.dart';
 import 'ai_assistant_screen.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -129,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     return Container(
       padding: EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.sm),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.space-between,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,30 +148,39 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ),
             ],
           ),
-          GestureDetector(
-            onTap: () {
-              if (_userProfile != null) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfileScreen(profile: _userProfile!)),
-                ).then((_) => _loadProfile());
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.all(3),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: AppColors.primaryGradient,
-              ),
-              child: CircleAvatar(
-                radius: 24,
-                backgroundColor: AppColors.surface,
-                child: activeBadge != null
-                    ? Icon(activeBadge.icon, color: activeBadge.color, size: 24)
-                    : const Icon(Icons.person, color: AppColors.textMuted, size: 24),
+          Row(children: [
+            IconButton(
+              tooltip: 'Settings',
+              icon: const Icon(Icons.settings, color: AppColors.textMuted),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+              },
+            ),
+            GestureDetector(
+              onTap: () {
+                if (_userProfile != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfileScreen(profile: _userProfile!)),
+                  ).then((_) => _loadProfile());
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.all(3),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: AppColors.primaryGradient,
+                ),
+                child: CircleAvatar(
+                  radius: 24,
+                  backgroundColor: AppColors.surface,
+                  child: activeBadge != null
+                      ? Icon(activeBadge.icon, color: activeBadge.color, size: 24)
+                      : const Icon(Icons.person, color: AppColors.textMuted, size: 24),
+                ),
               ),
             ),
-          ),
+          ]),
         ],
       ),
     );
