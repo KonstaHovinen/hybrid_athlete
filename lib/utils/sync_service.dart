@@ -13,6 +13,10 @@ class SyncService {
 
   /// Get sync file path (works on both mobile and desktop)
   static Future<File> _getSyncFile() async {
+    if (kIsWeb) {
+      throw UnsupportedError('File system not supported on web');
+    }
+
     Directory directory;
     
     if (Platform.isWindows) {
@@ -109,6 +113,8 @@ class SyncService {
   /// Import data from sync file (for desktop)
   static Future<Map<String, dynamic>?> importData() async {
     try {
+      if (kIsWeb) return null;
+
       final syncFile = await _getSyncFile();
       
       if (!await syncFile.exists()) {

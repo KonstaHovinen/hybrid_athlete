@@ -56,7 +56,8 @@ class CloudSyncService {
   /// Upload all data to cloud
   static Future<bool> uploadToCloud() async {
     try {
-      final syncData = await SyncService.importData();
+      final exportData = await SyncService.generateExportData();
+      final syncData = exportData['data'] as Map<String, dynamic>?;
       
       if (syncData == null) return false;
       
