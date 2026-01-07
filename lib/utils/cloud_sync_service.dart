@@ -10,8 +10,9 @@ import 'sync_service.dart';
 /// Cloud Sync Service - Alternative to local network sync
 /// Works everywhere including iOS PWA
 class CloudSyncService {
-  static const String _cloudBaseUrl = 'https://api.hybrid-athlete.com'; // Your future API
-  static const String _fallbackUrl = 'https://jsonbin.org/hybrid-athlete'; // Temporary free service
+  // CHANGE THIS: Setup your own cloud service and update URL
+  static const String _cloudBaseUrl = 'https://api.hybrid-athlete.com'; // Your future API - SETUP NEEDED
+  static const String _fallbackUrl = 'https://jsonbin.org/hybrid-athlete'; // Temporary free service for testing
   static Timer? _syncTimer;
   static String? _lastCloudSyncId;
   static bool _isCloudSyncEnabled = false;
@@ -19,6 +20,15 @@ class CloudSyncService {
   /// Initialize cloud sync
   static Future<void> initialize() async {
     final prefs = await PreferencesCache.getInstance();
+    final isGuestMode = prefs.getBool('guest_mode') ?? false;
+    
+    // Disable cloud sync in guest mode
+    if (isGuestMode) {
+      _isCloudSyncEnabled = false;
+      await prefs.setBool('cloud_sync_enabled', false);
+      return;
+    }
+    
     _isCloudSyncEnabled = prefs.getBool('cloud_sync_enabled') ?? false;
     
     if (_isCloudSyncEnabled) {
@@ -29,6 +39,13 @@ class CloudSyncService {
   /// Enable/disable cloud sync
   static Future<void> setCloudSyncEnabled(bool enabled) async {
     final prefs = await PreferencesCache.getInstance();
+    final isGuestMode = prefs.getBool('guest_mode') ?? false;
+    
+    // Prevent enabling cloud sync in guest mode
+    if (isGuestMode && enabled) {
+      throw Exception('Cloud sync is not available in guest mode');
+    }
+    
     await prefs.setBool('cloud_sync_enabled', enabled);
     _isCloudSyncEnabled = enabled;
     

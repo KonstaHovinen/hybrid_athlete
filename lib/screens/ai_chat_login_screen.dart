@@ -14,8 +14,10 @@ class AIChatLoginScreen extends StatefulWidget {
 
 class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _isGuestMode = false;
   bool _isLoading = false;
+  bool _showPassword = false;
 
   @override
   void dispose() {
@@ -24,9 +26,22 @@ class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
   }
 
   Future<void> _login() async {
-    if (_nameController.text.trim().isEmpty && !_isGuestMode) {
-      _showError('Please enter your name');
-      return;
+    if (_isGuestMode) {
+      // Guest mode - no password required
+    } else {
+      // Account mode - validate name and password
+      if (_nameController.text.trim().isEmpty) {
+        _showError('Please enter your name');
+        return;
+      }
+      if (_passwordController.text.trim().isEmpty) {
+        _showError('Please enter password');
+        return;
+      }
+      if (_passwordController.text != 'AIGYM') {
+        _showError('Incorrect password');
+        return;
+      }
     }
 
     setState(() => _isLoading = true);
@@ -197,6 +212,22 @@ class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
                           ),
                         ),
                       ),
+                      AppSpacing.gapVerticalMD,
+                      TextField(
+                        controller: _passwordController,
+                        obscureText: !_showPassword,
+                        decoration: InputDecoration(
+                          hintText: 'Enter password',
+                          prefixIcon: Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off),
+                            onPressed: () => setState(() => _showPassword = !_showPassword),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: AppBorderRadius.borderRadiusMD,
+                          ),
+                        ),
+                      ),
                     ],
                     
                     if (_isGuestMode) ...[
@@ -287,6 +318,15 @@ class _EnhancedAIAssistantScreenState extends State<EnhancedAIAssistantScreen> {
   String _userName = 'User';
   bool _isGuestMode = false;
   bool _isInitialized = false;
+  
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppColors.error,
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -468,12 +508,9 @@ class _EnhancedAIAssistantScreenState extends State<EnhancedAIAssistantScreen> {
                         child: ElevatedButton.icon(
                           icon: Icon(Icons.chat),
                           label: Text('Start Chat'),
-                          onPressed: () {
-                            // Navigate to actual AI chat
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => AIAssistantScreen()),
-                            );
+onPressed: () {
+                            // Navigate to actual AI chat (will be imported properly)
+                            _showError('AI Chat interface coming soon!');
                           },
                         ),
                       ),
