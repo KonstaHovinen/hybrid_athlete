@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
 import 'dart:convert';
 import '../app_theme.dart';
 import '../design_system.dart';
 import '../utils/cloud_sync_service.dart';
 import '../utils/sync_service.dart';
+import '../utils/preferences_cache.dart';
 import 'dart:async';
 
 /// Cloud Sync Screen - Manage cloud synchronization
@@ -20,6 +22,7 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
   Timer? _statusTimer;
   bool _isCloudSyncEnabled = false;
   bool _isCloudSyncing = false;
+  String _maskedToken = "Not Connected";
 
   @override
   void initState() {
@@ -35,10 +38,16 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
 
   void _startStatusUpdates() {
     _statusTimer = Timer.periodic(const Duration(seconds: 2), (timer) async {
+      final prefs = await PreferencesCache.getInstance();
+      final token = prefs.getString('github_token');
+      
       if (mounted) {
         final cloudStatus = CloudSyncService.getCloudSyncStatus();
         setState(() {
           _isCloudSyncEnabled = cloudStatus['enabled'] ?? false;
+          _maskedToken = (token != null && token.isNotEmpty) 
+              ? "•••• ${token.substring(token.length > 4 ? token.length - 4 : 0)}" 
+              : "Not Connected";
         });
       }
     });
@@ -92,6 +101,56 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
     } finally {
       setState(() => _isCloudSyncing = false);
     }
+  }
+
+  Future<void> _showTokenDialog() async {
+    final prefs = await PreferencesCache.getInstance();
+    final currentToken = prefs.getString('github_token') ?? '';
+    final TextEditingController tokenController = TextEditingController(text: currentToken);
+    bool isObscured = true;
+
+    if (!mounted) return;
+    
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text("GitHub Token"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: tokenController,
+                obscureText: isObscured,
+                decoration: InputDecoration(
+                  labelText: "Token",
+                  border: const OutlineInputBorder(),
+                  suffixIcon: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(isObscured ? Icons.visibility : Icons.visibility_off),
+                        onPressed: () => setState(() => isObscured = !isObscured),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.copy),
+                        onPressed: () {
+                          Clipboard.setData(ClipboardData(text: tokenController.text));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Copied to clipboard")),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text("Close"))],
+        ),
+      ),
+    );
   }
 
   Future<void> _exportData() async {
@@ -184,11 +243,87 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
     }
   }
 
+  Future<void> _importData() async {
+    final TextEditingController controller = TextEditingController();
+    
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Import Data'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Paste your JSON backup data here:', style: TextStyle(fontSize: 12)),
+            const SizedBox(height: 10),
+            TextField(
+              controller: controller,
+              maxLines: 6,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: '{"version": "1.0", ...}',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () async {
+              try {
+                if (controller.text.isEmpty) return;
+                final data = jsonDecode(controller.text);
+                await CloudSyncService.importCloudData(data); // Reuse the import logic
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Data imported successfully! Restart app to see changes.')),
+                  );
+                }
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Invalid JSON: $e'), backgroundColor: AppColors.error),
+                );
+              }
+            },
+            child: const Text('Import'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _runDiagnostics() async {
+    setState(() => _isCloudSyncing = true);
+    await Future.delayed(const Duration(seconds: 1)); // Fake delay for feel
+    
+    final isOnline = await CloudSyncService.isCloudSyncAvailable();
+    final prefs = await PreferencesCache.getInstance();
+    final hasToken = prefs.getString('github_token')?.isNotEmpty ?? false;
+    
+    if (!mounted) return;
+    setState(() => _isCloudSyncing = false);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("System Diagnostics"),
+        content: Text(
+          "System Check:\n\n"
+          "• Token Present: ${hasToken ? 'YES' : 'NO'}\n"
+          "• Cloud Reachable: ${isOnline ? 'YES' : 'NO'}\n"
+          "• App Version: 1.0.2\n"
+          "• Platform: ${kIsWeb ? 'Web' : Platform.operatingSystem}",
+        ),
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text("OK"))],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cloud Sync'),
+        title: const Text('Settings'),
       ),
       body: SingleChildScrollView(
         padding: AppSpacing.paddingXL,
@@ -213,7 +348,7 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            'Cloud Sync',
+                            'Cloud Backup',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -227,17 +362,17 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
                                 height: 12,
                                 decoration: BoxDecoration(
                                   color: _isCloudSyncEnabled
-                                      ? AppColors.primary
+                                      ? AppColors.success
                                       : AppColors.textMuted,
                                   shape: BoxShape.circle,
                                 ),
                               ),
                               AppSpacing.gapHorizontalSM,
                               Text(
-                                _isCloudSyncEnabled ? 'Enabled' : 'Disabled',
+                                _isCloudSyncEnabled ? 'Active' : 'Inactive',
                                 style: TextStyle(
                                   color: _isCloudSyncEnabled
-                                      ? AppColors.primary
+                                      ? AppColors.success
                                       : AppColors.textMuted,
                                 ),
                               ),
@@ -245,45 +380,47 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
                           ),
                         ],
                       ),
-                      ElevatedButton.icon(
-                        icon: Icon(_isCloudSyncEnabled ? Icons.cloud_off : Icons.cloud_upload),
-                        label: Text(_isCloudSyncEnabled ? 'Disable' : 'Enable'),
-                        onPressed: _isCloudSyncing ? null : _toggleCloudSync,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: _isCloudSyncEnabled
-                              ? AppColors.error
-                              : AppColors.primary,
-                        ),
+                      IconButton(
+                        icon: const Icon(Icons.visibility, color: AppColors.textSecondary),
+                        onPressed: _showTokenDialog,
+                        tooltip: "View Token",
                       ),
                     ],
                   ),
                   AppSpacing.gapVerticalMD,
-                  Text(
-                    _isCloudSyncEnabled
-                        ? 'Your data syncs to the cloud automatically. Works on all platforms including iOS PWA.'
-                        : 'Enable cloud sync to backup your data and sync across all devices.',
-                    style: Theme.of(context).textTheme.bodySmall,
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.key, size: 16, color: AppColors.textMuted),
+                        const SizedBox(width: 8),
+                        Text(_maskedToken, style: const TextStyle(fontFamily: 'monospace')),
+                      ],
+                    ),
                   ),
-                  if (_isCloudSyncEnabled) ...[
-                    AppSpacing.gapVerticalMD,
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        icon: _isCloudSyncing
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            : const Icon(Icons.sync),
-                        label: Text(_isCloudSyncing ? 'Syncing...' : 'Sync Now'),
-                        onPressed: _isCloudSyncing ? null : _manualCloudSync,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.accent,
-                        ),
+                  AppSpacing.gapVerticalMD,
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      icon: _isCloudSyncing
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.sync),
+                      label: Text(_isCloudSyncing ? 'Syncing...' : 'Sync Now'),
+                      onPressed: _isCloudSyncing ? null : _manualCloudSync,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.black,
                       ),
                     ),
-                  ],
+                  ),
                 ],
               ),
             ),
@@ -306,7 +443,7 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
                       Icon(Icons.save_alt, color: AppColors.secondary),
                       AppSpacing.gapHorizontalSM,
                       Text(
-                        'Manual Backup',
+                        'Data Management',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -315,18 +452,24 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
                     ],
                   ),
                   AppSpacing.gapVerticalMD,
-                  const Text(
-                    'Export your data to a JSON file. Useful for manual backups or transferring data.',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
-                  ),
-                  AppSpacing.gapVerticalMD,
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      icon: const Icon(Icons.download),
-                      label: const Text('Export Data (JSON)'),
-                      onPressed: _exportData,
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          icon: const Icon(Icons.download, size: 18),
+                          label: const Text('Export'),
+                          onPressed: _exportData,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          icon: const Icon(Icons.upload, size: 18),
+                          label: const Text('Import'),
+                          onPressed: _importData,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -334,11 +477,11 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
 
             AppSpacing.gapVerticalXL,
 
-            // Info Card
+            // System Diagnostics
             Container(
               padding: AppSpacing.paddingLG,
               decoration: BoxDecoration(
-                color: AppColors.surface.withValues(alpha: 0.5),
+                color: AppColors.card,
                 borderRadius: AppBorderRadius.borderRadiusLG,
                 border: Border.all(color: AppColors.surfaceLight),
               ),
@@ -347,62 +490,31 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
                 children: [
                   const Row(
                     children: [
-                      Icon(Icons.info_outline, color: AppColors.primary),
+                      Icon(Icons.bug_report, color: AppColors.warning),
                       AppSpacing.gapHorizontalSM,
                       Text(
-                        'How It Works',
+                        'System Diagnostics',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
                   AppSpacing.gapVerticalMD,
-                  _buildInfoItem('1', 'Data is saved to your private GitHub Gist'),
-                  _buildInfoItem('2', 'Sync works automatically every 5 minutes'),
-                  _buildInfoItem('3', 'Use "Sync Now" to force an immediate update'),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      icon: const Icon(Icons.check_circle_outline),
+                      label: const Text('Run System Check'),
+                      onPressed: _runDiagnostics,
+                    ),
+                  ),
                 ],
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildInfoItem(String number, String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Center(
-              child: Text(
-                number,
-                style: const TextStyle(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-          ),
-          AppSpacing.gapHorizontalMD,
-          Expanded(
-            child: Text(
-              text,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
-        ],
       ),
     );
   }

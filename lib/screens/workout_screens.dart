@@ -2327,7 +2327,7 @@ class RunSummaryScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 await _updateProfile();
-                if (context.mounted) Navigator.pop(context, true);
+                if (context.mounted) Navigator.of(context).popUntil((route) => route.isFirst);
               },
               child: const Text("DONE"),
             ),
@@ -2390,7 +2390,7 @@ class WorkoutSummaryScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 await _updateProfile();
-                if (context.mounted) Navigator.pop(context, true);
+                if (context.mounted) Navigator.of(context).popUntil((route) => route.isFirst);
               },
               child: const Text("DONE"),
             ),

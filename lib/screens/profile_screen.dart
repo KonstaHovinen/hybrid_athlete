@@ -306,6 +306,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: const Text("👤 Profile"),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const DeviceSyncScreen()),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -644,73 +653,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
               const SizedBox(height: 28),
-              
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.card,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.surfaceLight),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.cloud_upload, color: AppColors.accent, size: 32),
-                    const SizedBox(width: 16),
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Cloud Backup',
-                            style: TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            'Sync data to GitHub Gist',
-                            style: TextStyle(
-                              color: AppColors.textMuted,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (_isGitHubConnected)
-                      IconButton(
-                        icon: const Icon(Icons.settings, color: AppColors.accent),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const DeviceSyncScreen()),
-                          );
-                        },
-                      ),
-                    ElevatedButton(
-                      onPressed: _showGitHubTokenDialog,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _isGitHubConnected ? AppColors.primary.withValues(alpha: 0.1) : AppColors.surface,
-                        foregroundColor: _isGitHubConnected ? AppColors.primary : AppColors.accent,
-                        elevation: 0,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (_isGitHubConnected) ...[
-                            const Icon(Icons.check, size: 16),
-                            const SizedBox(width: 4),
-                          ],
-                          Text(_isGitHubConnected ? 'Connected' : 'Setup'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 30),
             ],
           ),
         ),

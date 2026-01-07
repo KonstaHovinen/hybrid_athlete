@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'preferences_cache.dart';
@@ -17,6 +18,9 @@ class HybridAthleteAI {
   /// Initialize AI system with user data and learning capabilities
   static Future<bool> initialize() async {
     try {
+      // Skip local AI check on mobile devices to avoid "Local Network" permission prompt
+      if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) return false;
+
       // Check if Ollama is running
       final response = await http.get(Uri.parse('$_aiBaseUrl/api/tags')).timeout(const Duration(seconds: 3));
       if (response.statusCode != 200) return false;

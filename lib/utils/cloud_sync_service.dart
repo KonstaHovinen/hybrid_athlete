@@ -91,7 +91,7 @@ class CloudSyncService {
       final cloudData = await _downloadFromCloudService();
       
       if (cloudData != null) {
-        await _importCloudData(cloudData);
+        await importCloudData(cloudData);
         debugPrint('Cloud download successful');
         return true;
       }
@@ -291,7 +291,7 @@ class CloudSyncService {
   }
 
   /// Import cloud data into local storage
-  static Future<void> _importCloudData(Map<String, dynamic> cloudData) async {
+  static Future<void> importCloudData(Map<String, dynamic> cloudData) async {
     final prefs = await PreferencesCache.getInstance();
     final data = cloudData['data'] as Map<String, dynamic>?;
     
