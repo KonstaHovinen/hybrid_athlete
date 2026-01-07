@@ -79,13 +79,13 @@ class CloudSyncService {
       
       if (response != null) {
         _lastCloudSyncId = response;
-        print('Cloud upload successful: $response');
+        debugPrint('Cloud upload successful: $response');
         return true;
       }
       
       return false;
     } catch (e) {
-      print('Cloud upload error: $e');
+      debugPrint('Cloud upload error: $e');
       return false;
     }
   }
@@ -98,13 +98,13 @@ class CloudSyncService {
       
       if (cloudData != null) {
         await _importCloudData(cloudData);
-        print('Cloud download successful');
+        debugPrint('Cloud download successful');
         return true;
       }
       
       return false;
     } catch (e) {
-      print('Cloud download error: $e');
+      debugPrint('Cloud download error: $e');
       return false;
     }
   }
@@ -128,7 +128,7 @@ class CloudSyncService {
         'timestamp': DateTime.now().toIso8601String(),
       };
     } catch (e) {
-      print('Bidirectional sync error: $e');
+      debugPrint('Bidirectional sync error: $e');
       return {
         'error': e.toString(),
         'timestamp': DateTime.now().toIso8601String(),
@@ -182,7 +182,7 @@ class CloudSyncService {
         return result['sync_id'];
       }
     } catch (e) {
-      print('Primary cloud service failed: $e');
+      debugPrint('Primary cloud service failed: $e');
     }
     
     try {
@@ -197,7 +197,7 @@ class CloudSyncService {
         return 'fallback_sync_${DateTime.now().millisecondsSinceEpoch}';
       }
     } catch (e) {
-      print('Fallback cloud service failed: $e');
+      debugPrint('Fallback cloud service failed: $e');
     }
     
     return null;
@@ -215,7 +215,7 @@ class CloudSyncService {
         return jsonDecode(response.body);
       }
     } catch (e) {
-      print('Primary download failed: $e');
+      debugPrint('Primary download failed: $e');
     }
     
     try {
@@ -228,7 +228,7 @@ class CloudSyncService {
         return jsonDecode(response.body);
       }
     } catch (e) {
-      print('Fallback download failed: $e');
+      debugPrint('Fallback download failed: $e');
     }
     
     return null;
@@ -314,13 +314,13 @@ class CloudSyncService {
     await prefs.remove('workout_history_cache');
     await prefs.remove('workout_history_cache_timestamp');
     
-    print('All caches invalidated after cloud sync');
+    debugPrint('All caches invalidated after cloud sync');
   }
   
   /// Start periodic automatic sync
   static void _startPeriodicSync() {
     _syncTimer?.cancel();
-    _syncTimer = Timer.periodic(Duration(minutes: 5), (timer) {
+    _syncTimer = Timer.periodic(const Duration(minutes: 5), (timer) {
       if (_isCloudSyncEnabled) {
         bidirectionalSync();
       }

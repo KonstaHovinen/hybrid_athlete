@@ -16,9 +16,6 @@ String _dateToKey(DateTime date) {
 }
 
 // --- HELPER: Log workout to calendar ---
-/// Marks a workout date as logged in the calendar with workout details
-/// Uses normalized date format for consistent calendar sync
-/// [workoutDetails] should include: name, type, energy, mood, and for futsal: totalGoals, totalAssists
 Future<void> logWorkoutForDate(
   DateTime day,
   Map<String, dynamic> workoutDetails,
@@ -36,7 +33,6 @@ Future<void> logWorkoutForDate(
         if (v is List) {
           logged[k] = v;
         } else {
-          // Legacy format conversion
           logged[k] = [
             {'name': 'Workout'},
           ];
@@ -45,16 +41,14 @@ Future<void> logWorkoutForDate(
     } catch (_) {}
   }
 
-  // Add workout details to list for this date
   if (!logged.containsKey(key)) {
     logged[key] = [];
   }
   logged[key]!.add(workoutDetails);
 
-      await prefs.setString('logged_workouts', jsonEncode(logged));
-      await SyncService.exportData(); // Sync to desktop
+  await prefs.setString('logged_workouts', jsonEncode(logged));
+  await SyncService.exportData();
 
-  // Remove scheduled workout for this day (it's now completed)
   final scheduledRaw = prefs.getString('scheduled_workouts');
   if (scheduledRaw != null) {
     try {
@@ -67,7 +61,6 @@ Future<void> logWorkoutForDate(
   }
 }
 
-/// Simple helper for backward compatibility - just pass workout name
 Future<void> logWorkoutForDateSimple(DateTime day, String workoutName) async {
   await logWorkoutForDate(day, {'name': workoutName});
 }
@@ -253,7 +246,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
   }
 
   bool _isUserAddedExercise(String name) {
-    // User-added = in user list but NOT in default list
     return _userExerciseNames.any(
           (n) => n.toLowerCase() == name.toLowerCase(),
         ) &&
@@ -338,8 +330,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   repRange: reps,
                 );
                 await ExerciseLibrary.addUserExercise(ex);
-                await _loadExercises();
-                Navigator.pop(context);
+                if (context.mounted) {
+                    await _loadExercises();
+                    if(context.mounted) Navigator.pop(context);
+                }
               },
               child: const Text('Add'),
             ),
@@ -379,7 +373,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     TextField(
                       controller: nameController,
                       decoration: const InputDecoration(labelText: 'Name'),
-                      enabled: !isDefault, // Can't rename default exercises
+                      enabled: !isDefault,
                     ),
                     const SizedBox(height: 8),
                     TextField(
@@ -445,10 +439,11 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                 if (isDefault)
                   TextButton(
                     onPressed: () async {
-                      // Reset to default by removing override
                       await ExerciseLibrary.removeUserExercise(ex.name);
-                      await _loadExercises();
-                      Navigator.pop(context);
+                      if (context.mounted) {
+                          await _loadExercises();
+                          if(context.mounted) Navigator.pop(context);
+                      }
                     },
                     child: const Text(
                       'Reset to Default',
@@ -482,7 +477,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     );
 
                     if (isDefault) {
-                      // For default exercises, save as user override
                       await ExerciseLibrary.addOrUpdateUserExercise(updated);
                     } else {
                       await ExerciseLibrary.updateUserExercise(
@@ -490,8 +484,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                         updated,
                       );
                     }
-                    await _loadExercises();
-                    Navigator.pop(context);
+                    if (context.mounted) {
+                        await _loadExercises();
+                        if(context.mounted) Navigator.pop(context);
+                    }
                   },
                   child: const Text('Save'),
                 ),
@@ -505,7 +501,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Filter exercises
     List<Exercise> filteredExercises = _allExercises.where((e) {
       final matchesSearch =
           _searchQuery.isEmpty ||
@@ -515,7 +510,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       return matchesSearch && matchesCategory;
     }).toList();
 
-    // Separate user-added exercises
     final userExercises = filteredExercises
         .where((e) => _isUserAddedExercise(e.name))
         .toList();
@@ -523,7 +517,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         .where((e) => !_isUserAddedExercise(e.name))
         .toList();
 
-    // Count exercises per category
     Map<String, int> categoryCounts = {};
     for (var cat in _categories) {
       categoryCounts[cat] = _allExercises
@@ -540,14 +533,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
             tooltip: 'Add Exercise',
             onPressed: () async {
               await _showAddExerciseDialog();
-              await _loadExercises();
+              if(mounted) await _loadExercises();
             },
           ),
         ],
       ),
       body: Column(
         children: [
-          // Search Bar
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
             child: TextField(
@@ -575,7 +567,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
             ),
           ),
 
-          // Category Chips
           SizedBox(
             height: 50,
             child: ListView.builder(
@@ -608,11 +599,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
             ),
           ),
 
-          // Exercise List
           Expanded(
             child: ListView(
               children: [
-                // User Exercises Section
                 if (userExercises.isNotEmpty) ...[
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
@@ -640,7 +629,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   const Divider(height: 24),
                 ],
 
-                // Default Exercises Section
                 if (defaultExercises.isNotEmpty) ...[
                   if (userExercises.isNotEmpty)
                     Padding(
@@ -668,7 +656,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   ),
                 ],
 
-                // Empty state
                 if (filteredExercises.isEmpty)
                   const Padding(
                     padding: EdgeInsets.all(40),
@@ -727,7 +714,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       },
       onDismissed: (direction) async {
         await ExerciseLibrary.removeUserExercise(ex.name);
-        await _loadExercises();
+        if(mounted) await _loadExercises();
       },
       child: Card(
         color: AppColors.card,
@@ -735,8 +722,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
         child: ListTile(
           leading: CircleAvatar(
             backgroundColor: isUserAdded
-                ? AppColors.primary.withOpacity(0.2)
-                : AppColors.secondary.withOpacity(0.2),
+                ? AppColors.primary.withValues(alpha: 0.2)
+                : AppColors.secondary.withValues(alpha: 0.2),
             child: Icon(
               _getTypeIcon(ex.type),
               color: isUserAdded ? AppColors.primary : AppColors.secondary,
@@ -751,7 +738,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Blue: Workout settings
               IconButton(
                 icon: const Icon(
                   Icons.tune,
@@ -766,16 +752,15 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                       builder: (context) => ExerciseEditorScreen(exercise: ex),
                     ),
                   );
-                  await _loadExercises();
+                  if(mounted) await _loadExercises();
                 },
               ),
-              // Orange: Edit details
               IconButton(
                 icon: const Icon(Icons.edit, color: AppColors.accent, size: 22),
                 tooltip: 'Edit Details',
                 onPressed: () async {
                   await _showEditExerciseDialog(ex, isDefault: isDefault);
-                  await _loadExercises();
+                  if(mounted) await _loadExercises();
                 },
               ),
             ],
@@ -827,7 +812,6 @@ class _TemplateSelectionScreenState extends State<TemplateSelectionScreen> {
             .toList();
       });
     } else {
-      // No templates yet - user will create their own
       setState(() {
         _loadedTemplates = [];
       });
@@ -863,7 +847,7 @@ class _TemplateSelectionScreenState extends State<TemplateSelectionScreen> {
       _loadedTemplates.removeWhere((t) => t.name == template.name);
       final encoded = jsonEncode(_loadedTemplates.map((t) => t.toJson()).toList());
       await prefs.setString('user_templates', encoded);
-      await SyncService.exportData(); // Sync to desktop
+      await SyncService.exportData(); 
       setState(() {});
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -988,6 +972,8 @@ class _TemplateSelectionScreenState extends State<TemplateSelectionScreen> {
       else if (exercise.type == "Gym" || exercise.type == "Recovery")
         hasGym = true;
     }
+
+    if (!mounted) return;
 
     if (hasRunning && !hasGym) {
       Navigator.push(
@@ -1255,16 +1241,13 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
   String _currentReps = "";
   late TextEditingController _sprintRepsController;
 
-  // Key to force rebuild of set list when sets change
   int _setListKey = 0;
 
-  // Rest Timer
   bool _isResting = false;
   int _restSeconds = 90;
   int _restSecondsRemaining = 0;
   Timer? _restTimer;
 
-  // Energy & Notes Tracking
   int _energyLevel = 3;
   List<String> _selectedMoods = [];
   final TextEditingController _notesController = TextEditingController();
@@ -1293,7 +1276,7 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
   }
 
   void _startRestTimer() {
-    _restTimer?.cancel(); // Cancel existing timer to prevent leaks
+    _restTimer?.cancel(); 
     setState(() {
       _isResting = true;
       _restSecondsRemaining = _restSeconds;
@@ -1348,7 +1331,6 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
     final int sets = exercise.presetSets;
     final String reps = exercise.repRange;
 
-    // Clean reps value - only keep if it's a number
     String cleanReps = '';
     if (reps.isNotEmpty && int.tryParse(reps) != null) {
       cleanReps = reps;
@@ -1373,7 +1355,7 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
       _currentTime = "";
       _currentReps = cleanReps;
       _sprintRepsController.text = cleanReps;
-      _setListKey++; // Force rebuild of list
+      _setListKey++;
     });
 
     if (forcedWeight.isEmpty) {
@@ -1428,21 +1410,19 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
     List<String>? currentHistory = prefs.getStringList('workout_history');
     if (currentHistory == null || currentHistory.isEmpty) return;
 
-    // Limit search to last 20 workouts for performance
     final searchLimit = currentHistory.length > 20 ? currentHistory.length - 20 : 0;
     
     for (int i = currentHistory.length - 1; i >= searchLimit; i--) {
-      if (!mounted) return; // Check mounted before each iteration
+      if (!mounted) return; 
       try {
         Map<String, dynamic>? workout;
         try {
           workout = jsonDecode(currentHistory[i]) as Map<String, dynamic>?;
         } catch (e) {
-          continue; // Skip corrupted entries
+          continue; 
         }
         if (workout == null) continue;
         
-        // Null-safe access to sets
         final sets = workout['sets'];
         if (sets == null || sets is! List || sets.isEmpty) continue;
 
@@ -1478,7 +1458,6 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
           }
         }
       } catch (e) {
-        // Silently skip corrupted entries
         continue;
       }
     }
@@ -1519,13 +1498,10 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
       };
       history.add(jsonEncode(workoutData));
       await prefs.setStringList('workout_history', history);
-      // Invalidate caches after saving
       WorkoutHistoryCache.invalidateCache();
       StatsCache.invalidateCache();
-      // Sync to desktop
       await SyncService.exportData();
 
-      // Mark this day as logged in the calendar with workout details
       final today = DateTime.now();
       await logWorkoutForDate(DateTime(today.year, today.month, today.day), {
         'name': widget.template.name,
@@ -1533,7 +1509,6 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
         'mood': _selectedMoods,
       });
 
-      // Count running exercises in this workout
       int runCount = 0;
       final allExercises = await ExerciseLibrary.getAllExercisesWithUser();
       for (var exerciseName in widget.template.exercises) {
@@ -1545,7 +1520,6 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
         }
       }
 
-      // Update profile with running count
       if (runCount > 0) {
         UserProfile profile = await ProfileManager.getProfile();
         profile.totalRunExercises += runCount;
@@ -1579,10 +1553,9 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
     bool isRecovery = _isRecoveryExercise(currentExercise);
     bool isGym = !isSprint && !isRecovery;
 
-    // Rest Timer Overlay
     if (_isResting) {
       return Scaffold(
-        backgroundColor: Colors.black.withOpacity(0.95),
+        backgroundColor: Colors.black.withValues(alpha: 0.95),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1740,7 +1713,7 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
                 ),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.secondary.withOpacity(0.15),
+                  color: AppColors.secondary.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
@@ -1777,7 +1750,6 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: _currentSets.length,
                 itemBuilder: (context, index) {
-                  // Apply suggested weight to first set if empty
                   if (index == 0 &&
                       (_currentSets[index]['weight'] ?? '').isEmpty &&
                       _suggestedWeight.isNotEmpty) {
@@ -1798,7 +1770,6 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
             ),
           ],
 
-          // Energy & Notes section (only show on last exercise)
           if (currentExerciseIndex == total - 1) ...[
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -1989,7 +1960,6 @@ class _EnhancedRunScreenState extends State<EnhancedRunScreen> {
   final TextEditingController _notesController = TextEditingController();
   String selectedRunType = "Steady State";
 
-  // Energy & Notes Tracking
   int _energyLevel = 3;
   List<String> _selectedMoods = [];
   final List<String> _moodOptions = [
@@ -2046,6 +2016,7 @@ class _EnhancedRunScreenState extends State<EnhancedRunScreen> {
     Exercise settings = await ExerciseSettingsManager.getExerciseWithSettings(
       dummy,
     );
+    if (!mounted) return;
 
     setState(() {
       String val = settings.repRange.toLowerCase();
@@ -2140,7 +2111,6 @@ class _EnhancedRunScreenState extends State<EnhancedRunScreen> {
 
               const SizedBox(height: 30),
 
-              // Energy & Notes section
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -2252,7 +2222,6 @@ class _EnhancedRunScreenState extends State<EnhancedRunScreen> {
 
     double pace = (distance > 0) ? time / distance : 0;
 
-    // Save to history with energy/mood/notes
     final prefs = await PreferencesCache.getInstance();
     List<String> history = prefs.getStringList('workout_history') ?? [];
     final workoutData = {
@@ -2270,13 +2239,10 @@ class _EnhancedRunScreenState extends State<EnhancedRunScreen> {
     };
     history.add(jsonEncode(workoutData));
     await prefs.setStringList('workout_history', history);
-    // Invalidate caches after saving
     WorkoutHistoryCache.invalidateCache();
     StatsCache.invalidateCache();
-    // Sync to desktop
     await SyncService.exportData();
 
-    // Mark this day as logged in the calendar with details
     final today = DateTime.now();
     await logWorkoutForDate(DateTime(today.year, today.month, today.day), {
       'name': 'Run: $selectedRunType',
@@ -2315,7 +2281,7 @@ class RunSummaryScreen extends StatelessWidget {
   Future<void> _updateProfile() async {
     UserProfile profile = await ProfileManager.getProfile();
     profile.totalExercises++;
-    profile.totalRunExercises++; // Track running sessions
+    profile.totalRunExercises++; 
     if (distance > profile.longestRunDistance)
       profile.longestRunDistance = distance;
     if (time > profile.longestRunTime) profile.longestRunTime = time;

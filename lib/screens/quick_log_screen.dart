@@ -189,7 +189,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 16),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.secondary.withOpacity(0.1),
+                color: AppColors.secondary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: AppColors.secondary),
               ),
@@ -204,7 +204,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: AppColors.secondary.withOpacity(0.2),
+                              color: AppColors.secondary.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Icon(Icons.fitness_center, color: AppColors.secondary, size: 20),
@@ -321,8 +321,8 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
                     padding: const EdgeInsets.only(right: 8),
                     child: ActionChip(
                       label: Text(name, style: const TextStyle(fontSize: 12)),
-                      backgroundColor: AppColors.accent.withOpacity(0.15),
-                      side: BorderSide(color: AppColors.accent.withOpacity(0.3)),
+                      backgroundColor: AppColors.accent.withValues(alpha: 0.15),
+                      side: BorderSide(color: AppColors.accent.withValues(alpha: 0.3)),
                       onPressed: () {
                         final ex = _allExercises.firstWhere(
                           (e) => e.name.toLowerCase() == name.toLowerCase(),
@@ -350,7 +350,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
                 return Container(
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
-                    color: isSelected ? AppColors.secondary.withOpacity(0.15) : AppColors.card,
+                    color: isSelected ? AppColors.secondary.withValues(alpha: 0.15) : AppColors.card,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: isSelected ? AppColors.secondary : AppColors.surfaceLight),
                   ),
@@ -360,7 +360,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
                       decoration: BoxDecoration(
                         color: (exercise.type == "Running" ? AppColors.primary 
                           : exercise.type == "Recovery" ? AppColors.accent 
-                          : AppColors.secondary).withOpacity(0.15),
+                          : AppColors.secondary).withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(

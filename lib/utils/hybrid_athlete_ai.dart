@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'preferences_cache.dart';
 import 'device_id.dart';
@@ -17,7 +18,7 @@ class HybridAthleteAI {
   static Future<bool> initialize() async {
     try {
       // Check if Ollama is running
-      final response = await http.get(Uri.parse('$_aiBaseUrl/api/tags')).timeout(Duration(seconds: 3));
+      final response = await http.get(Uri.parse('$_aiBaseUrl/api/tags')).timeout(const Duration(seconds: 3));
       if (response.statusCode != 200) return false;
       
       // Load AI memory and interaction history
@@ -27,10 +28,10 @@ class HybridAthleteAI {
       // Start continuous learning process
       _startContinuousLearning();
       
-      print('Hybrid Athlete AI initialized successfully');
+      debugPrint('Hybrid Athlete AI initialized successfully');
       return true;
     } catch (e) {
-      print('AI initialization failed: $e');
+      debugPrint('AI initialization failed: $e');
       return false;
     }
   }
@@ -47,7 +48,7 @@ class HybridAthleteAI {
         return response;
       }
     } catch (e) {
-      print('Workout analysis error: $e');
+      debugPrint('Workout analysis error: $e');
     }
     return null;
   }
@@ -63,7 +64,7 @@ class HybridAthleteAI {
         return response;
       }
     } catch (e) {
-      print('Workout planning error: $e');
+      debugPrint('Workout planning error: $e');
     }
     return null;
   }
@@ -79,7 +80,7 @@ class HybridAthleteAI {
         return response;
       }
     } catch (e) {
-      print('Command processing error: $e');
+      debugPrint('Command processing error: $e');
     }
     return null;
   }
@@ -96,7 +97,7 @@ class HybridAthleteAI {
         return response;
       }
     } catch (e) {
-      print('Insights generation error: $e');
+      debugPrint('Insights generation error: $e');
     }
     return null;
   }
@@ -117,9 +118,9 @@ class HybridAthleteAI {
       // Save updated AI memory
       await _saveAIMemory();
       
-      print('AI learning cycle completed');
+      debugPrint('AI learning cycle completed');
     } catch (e) {
-      print('Continuous learning error: $e');
+      debugPrint('Continuous learning error: $e');
     }
   }
   
@@ -139,14 +140,14 @@ class HybridAthleteAI {
             'max_tokens': 1000,
           }
         }),
-      ).timeout(Duration(seconds: 30));
+      ).timeout(const Duration(seconds: 30));
       
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
         return data['response'] as String?;
       }
     } catch (e) {
-      print('AI API call error: $e');
+      debugPrint('AI API call error: $e');
     }
     return null;
   }
@@ -258,7 +259,7 @@ Be data-driven and personalized.
         };
       }
     } catch (e) {
-      print('Error loading AI memory: $e');
+      debugPrint('Error loading AI memory: $e');
     }
   }
   
@@ -268,7 +269,7 @@ Be data-driven and personalized.
       final prefs = await PreferencesCache.getInstance();
       await prefs.setString('ai_memory', jsonEncode(_aiMemory));
     } catch (e) {
-      print('Error saving AI memory: $e');
+      debugPrint('Error saving AI memory: $e');
     }
   }
   
@@ -283,7 +284,7 @@ Be data-driven and personalized.
             .toList();
       }
     } catch (e) {
-      print('Error loading interaction history: $e');
+      debugPrint('Error loading interaction history: $e');
     }
   }
   
@@ -377,7 +378,7 @@ Be data-driven and personalized.
   /// Start continuous learning timer
   static void _startContinuousLearning() {
     _learningTimer?.cancel();
-    _learningTimer = Timer.periodic(Duration(hours: 1), (timer) {
+    _learningTimer = Timer.periodic(const Duration(hours: 1), (timer) {
       _continuousLearning();
     });
   }
@@ -386,7 +387,7 @@ Be data-driven and personalized.
   static Future<void> shutdown() async {
     _learningTimer?.cancel();
     await _saveAIMemory();
-    print('Hybrid Athlete AI shutdown complete');
+    debugPrint('Hybrid Athlete AI shutdown complete');
   }
   
   /// Get AI status and capabilities

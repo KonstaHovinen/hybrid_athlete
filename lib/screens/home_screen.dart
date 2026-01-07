@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         screen = SimpleInputScreen(type: activity);
     }
     await Navigator.push(context, MaterialPageRoute(builder: (context) => screen!));
-    _loadProfile();
+    if (mounted) _loadProfile();
   }
 
   @override
@@ -97,26 +97,18 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // Custom App Bar
             SliverToBoxAdapter(
               child: _buildHeader(dateDisplay, greeting, activeBadge),
             ),
-            
-            // Active Badge Display
             SliverToBoxAdapter(
               child: _buildBadgeSection(activeBadge),
             ),
-            
-            // Quick Actions
             SliverToBoxAdapter(
               child: _buildQuickActions(),
             ),
-            
-            // Main Menu Grid
             SliverToBoxAdapter(
               child: _buildMainMenu(),
             ),
-            
             const SliverToBoxAdapter(child: SizedBox(height: 100)),
           ],
         ),
@@ -130,7 +122,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     return Container(
       padding: EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.sm),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.space-between,
+        // FIXED: Syntax error corrected here
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,7 +155,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => ProfileScreen(profile: _userProfile!)),
-                  ).then((_) => _loadProfile());
+                  ).then((_) {
+                     if (mounted) _loadProfile();
+                  });
                 }
               },
               child: Container(
@@ -195,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           colors: [
             AppColors.surface,
             activeBadge != null
-                ? activeBadge.color.withOpacity(0.1)
+                ? activeBadge.color.withValues(alpha: 0.1)
                 : AppColors.surfaceLight,
           ],
           begin: Alignment.topLeft,
@@ -203,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         ),
         borderRadius: AppBorderRadius.borderRadiusXXL,
         border: Border.all(
-          color: activeBadge?.color.withOpacity(0.3) ?? AppColors.surfaceLight,
+          color: activeBadge?.color.withValues(alpha: 0.3) ?? AppColors.surfaceLight,
           width: 1,
         ),
       ),
@@ -215,11 +210,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: activeBadge.color.withOpacity(0.15),
+                      color: activeBadge.color.withValues(alpha: 0.15),
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: activeBadge.color.withOpacity(0.3),
+                          color: activeBadge.color.withValues(alpha: 0.3),
                           blurRadius: 20,
                           spreadRadius: 2,
                         ),
@@ -382,7 +377,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         gradient: AppColors.primaryGradient,
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.4),
+            color: AppColors.primary.withValues(alpha: 0.4),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -391,7 +386,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       child: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => const QuickLogScreen()))
-              .then((_) => _loadProfile());
+              .then((_) {
+                 if(mounted) _loadProfile();
+              });
         },
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -435,9 +432,9 @@ class _QuickActionChip extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 14),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.15),
+            color: color.withValues(alpha: 0.15),
             borderRadius: AppBorderRadius.borderRadiusLG,
-            border: Border.all(color: color.withOpacity(0.3)),
+            border: Border.all(color: color.withValues(alpha: 0.3)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -496,7 +493,7 @@ class _MenuCard extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.15),
+                  color: color.withValues(alpha: 0.15),
                   borderRadius: AppBorderRadius.borderRadiusMD,
                 ),
                 child: Icon(icon, color: color, size: 24),

@@ -66,7 +66,7 @@ class _EditSetRowWidgetState extends State<_EditSetRowWidget> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: AppColors.secondary.withOpacity(0.15),
+              color: AppColors.secondary.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
@@ -494,7 +494,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
-                                color: _getImpactColor(game['impact']).withOpacity(0.2),
+                                color: _getImpactColor(game['impact']).withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
@@ -562,7 +562,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -701,8 +701,8 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: isFutsal
-                            ? AppColors.accent.withOpacity(0.15)
-                            : AppColors.secondary.withOpacity(0.15),
+                            ? AppColors.accent.withValues(alpha: 0.15)
+                            : AppColors.secondary.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
@@ -742,7 +742,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                                     decoration: BoxDecoration(
                                       color: _getEnergyColor(
                                         workout['energy'],
-                                      ).withOpacity(0.15),
+                                      ).withValues(alpha: 0.15),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Row(
@@ -886,7 +886,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                                   border: Border.all(
                                     color: _getImpactColor(
                                       game['impact'],
-                                    ).withOpacity(0.3),
+                                    ).withValues(alpha: 0.3),
                                   ),
                                 ),
                                 child: Row(
@@ -896,7 +896,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                                       decoration: BoxDecoration(
                                         color: _getImpactColor(
                                           game['impact'],
-                                        ).withOpacity(0.2),
+                                        ).withValues(alpha: 0.2),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
@@ -946,7 +946,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                                       decoration: BoxDecoration(
                                         color: _getImpactColor(
                                           game['impact'],
-                                        ).withOpacity(0.15),
+                                        ).withValues(alpha: 0.15),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
@@ -1191,7 +1191,7 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
           Container(
             margin: const EdgeInsets.only(right: 8),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.2),
+              color: AppColors.primary.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(10),
             ),
             child: TextButton(

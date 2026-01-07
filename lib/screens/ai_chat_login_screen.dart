@@ -101,7 +101,7 @@ class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.3),
+                      color: AppColors.primary.withValues(alpha: 0.3),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
@@ -154,7 +154,7 @@ class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
                             child: Container(
                               padding: EdgeInsets.symmetric(vertical: 12),
                               decoration: BoxDecoration(
-                                color: !_isGuestMode ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
+                                color: !_isGuestMode ? AppColors.primary.withValues(alpha: 0.1) : Colors.transparent,
                                 borderRadius: AppBorderRadius.borderRadiusMD,
                                 border: Border.all(
                                   color: !_isGuestMode ? AppColors.primary : AppColors.surfaceLight,
@@ -179,7 +179,7 @@ class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
                             child: Container(
                               padding: EdgeInsets.symmetric(vertical: 12),
                               decoration: BoxDecoration(
-                                color: _isGuestMode ? AppColors.accent.withOpacity(0.1) : Colors.transparent,
+                                color: _isGuestMode ? AppColors.accent.withValues(alpha: 0.1) : Colors.transparent,
                                 borderRadius: AppBorderRadius.borderRadiusMD,
                                 border: Border.all(
                                   color: _isGuestMode ? AppColors.accent : AppColors.surfaceLight,
@@ -383,7 +383,7 @@ class _EnhancedAIAssistantScreenState extends State<EnhancedAIAssistantScreen> {
                 margin: EdgeInsets.only(left: 8),
                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withOpacity(0.2),
+                  color: AppColors.accent.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -433,7 +433,7 @@ class _EnhancedAIAssistantScreenState extends State<EnhancedAIAssistantScreen> {
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: Colors.white.withOpacity(0.2),
+                  backgroundColor: Colors.white.withValues(alpha: 0.2),
                   child: Icon(
                     _isGuestMode ? Icons.person_outline : Icons.person,
                     color: Colors.white,

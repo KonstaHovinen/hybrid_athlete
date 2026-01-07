@@ -38,7 +38,7 @@ class NetworkSync {
       
       return true; // Other platforms typically don't need special permission checks
     } catch (e) {
-      print('Network permission check failed: $e');
+      debugPrint('Network permission check failed: $e');
       // For web/PWA, allow attempts anyway
       return kIsWeb ? true : false;
     }
@@ -54,7 +54,7 @@ class NetworkSync {
       // Check network permissions first (especially for iOS)
       final hasPermissions = await checkNetworkPermissions();
       if (!hasPermissions) {
-        print('Network permissions not granted');
+        debugPrint('Network permissions not granted');
         return false;
       }
       
@@ -69,9 +69,9 @@ class NetworkSync {
       
       return true;
     } catch (e) {
-      print('Failed to start sync server: $e');
+      debugPrint('Failed to start sync server: $e');
       if (Platform.isIOS && e.toString().contains('Permission')) {
-        print('iOS network permission error - check Info.plist configuration');
+        debugPrint('iOS network permission error - check Info.plist configuration');
       }
       return false;
     }
@@ -231,7 +231,7 @@ class NetworkSync {
     // Check network permissions first (especially for iOS)
     final hasPermissions = await checkNetworkPermissions();
     if (!hasPermissions) {
-      print('Network permissions not granted for device discovery');
+      debugPrint('Network permissions not granted for device discovery');
       return [];
     }
     
@@ -241,7 +241,7 @@ class NetworkSync {
     // Get local IP address
     final localIp = await _getLocalIpAddress();
     if (localIp == null) {
-      print('Could not get local IP address');
+      debugPrint('Could not get local IP address');
       return discovered;
     }
     
@@ -279,7 +279,7 @@ class NetworkSync {
       }
     } on SocketException catch (e) {
       if (Platform.isIOS && e.osError?.message?.contains('Permission') == true) {
-        print('iOS network permission denied during device discovery');
+        debugPrint('iOS network permission denied during device discovery');
       }
       // Device not found or not responding - ignore
     } catch (e) {
@@ -299,7 +299,7 @@ class NetworkSync {
         }
       }
     } catch (e) {
-      print('Error getting local IP: $e');
+      debugPrint('Error getting local IP: $e');
     }
     return null;
   }
@@ -331,7 +331,7 @@ class NetworkSync {
         return true;
       }
     } catch (e) {
-      print('Sync connection error: $e');
+      debugPrint('Sync connection error: $e');
     }
     return false;
   }

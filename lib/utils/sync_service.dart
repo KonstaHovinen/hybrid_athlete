@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'preferences_cache.dart';
 import 'device_id.dart';
@@ -88,7 +89,7 @@ class SyncService {
       
       return true;
     } catch (e) {
-      print('Sync export error: $e');
+      debugPrint('Sync export error: $e');
       return false;
     }
   }
@@ -107,7 +108,7 @@ class SyncService {
       
       return syncData;
     } catch (e) {
-      print('Sync import error: $e');
+      debugPrint('Sync import error: $e');
       return null;
     }
   }

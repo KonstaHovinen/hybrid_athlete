@@ -100,7 +100,7 @@ class _WeeklyStatsScreenState extends State<WeeklyStatsScreen> {
           Container(
             margin: const EdgeInsets.only(right: 8),
             decoration: BoxDecoration(
-              color: AppColors.accent.withOpacity(0.2),
+              color: AppColors.accent.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(10),
             ),
             child: IconButton(icon: const Icon(Icons.flag, color: AppColors.accent), onPressed: _setWeeklyGoal, tooltip: "Set weekly goal"),
@@ -120,7 +120,7 @@ class _WeeklyStatsScreenState extends State<WeeklyStatsScreen> {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -135,7 +135,7 @@ class _WeeklyStatsScreenState extends State<WeeklyStatsScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
@@ -151,7 +151,7 @@ class _WeeklyStatsScreenState extends State<WeeklyStatsScreen> {
                     child: LinearProgressIndicator(
                       value: progress.clamp(0.0, 1.0),
                       minHeight: 14,
-                      backgroundColor: Colors.white.withOpacity(0.2),
+                      backgroundColor: Colors.white.withValues(alpha: 0.2),
                       valueColor: AlwaysStoppedAnimation(
                         progress >= 1.0 ? AppColors.warning : Colors.white,
                       ),
@@ -170,7 +170,7 @@ class _WeeklyStatsScreenState extends State<WeeklyStatsScreen> {
                             height: 36,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: done ? AppColors.warning : Colors.white.withOpacity(0.15),
+                              color: done ? AppColors.warning : Colors.white.withValues(alpha: 0.15),
                               border: done ? null : Border.all(color: Colors.white24),
                             ),
                             child: Icon(
@@ -180,7 +180,7 @@ class _WeeklyStatsScreenState extends State<WeeklyStatsScreen> {
                             ),
                           ),
                           const SizedBox(height: 6),
-                          Text(e.value, style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12, fontWeight: FontWeight.w500)),
+                          Text(e.value, style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 12, fontWeight: FontWeight.w500)),
                         ],
                       );
                     }).toList(),
@@ -267,7 +267,7 @@ class _WeeklyStatsScreenState extends State<WeeklyStatsScreen> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: AppColors.warning.withOpacity(0.15),
+                            color: AppColors.warning.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(Icons.emoji_events, color: AppColors.warning, size: 18),
@@ -279,7 +279,7 @@ class _WeeklyStatsScreenState extends State<WeeklyStatsScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.15),
+                        color: AppColors.primary.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text("${e.value.toStringAsFixed(1)} kg", style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
@@ -329,7 +329,7 @@ class _StatCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: iconColor.withOpacity(0.15),
+                  color: iconColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(icon, color: iconColor, size: 18),

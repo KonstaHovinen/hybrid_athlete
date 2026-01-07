@@ -1,0 +1,3275 @@
+import os
+import re
+
+# --- 1. FIXED CONTENT FOR CRITICAL FILES ---
+
+FIXED_HOME_SCREEN = r'''import 'package:flutter/material.dart' hide Badge;
+import 'package:intl/intl.dart';
+import '../data_models.dart';
+import '../app_theme.dart';
+import '../design_system.dart';
+import 'profile_screen.dart';
+import 'workout_screens.dart';
+import 'history_screen.dart';
+import 'workout_calendar_screen.dart';
+import 'stats_screen.dart';
+import 'quick_log_screen.dart';
+import 'futsal_screen.dart';
+import 'ai_assistant_screen.dart';
+import 'settings_screen.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+  UserProfile? _userProfile;
+  late AnimationController _badgeAnimController;
+  late Animation<double> _badgePulse;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+    _badgeAnimController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+    _badgePulse = Tween<double>(begin: 1.0, end: 1.08).animate(
+      CurvedAnimation(parent: _badgeAnimController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _badgeAnimController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadProfile() async {
+    UserProfile profile = await ProfileManager.getProfile();
+    if (!mounted) return;
+    setState(() => _userProfile = profile);
+  }
+
+  void _handleButtonPress(String activity) async {
+    Widget? screen;
+    switch (activity) {
+      case "WORKOUT":
+        screen = const TemplateSelectionScreen();
+        break;
+      case "HISTORY":
+        screen = const WorkoutHistoryScreen();
+        break;
+      case "GOALS":
+        screen = const EditGoalsScreen();
+        break;
+      case "CALENDAR":
+        screen = const WorkoutCalendarScreen();
+        break;
+      case "STATS":
+        screen = const WeeklyStatsScreen();
+        break;
+      case "FUTSAL":
+        screen = const FutsalLoggerScreen();
+        break;
+      case "AI":
+        screen = const AIAssistantScreen();
+        break;
+      default:
+        screen = SimpleInputScreen(type: activity);
+    }
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => screen!));
+    if (mounted) _loadProfile();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String dateDisplay = DateFormat('EEEE, MMM d').format(DateTime.now());
+    String greeting = _getGreeting();
+
+    Badge? activeBadge;
+    if (_userProfile?.activeBadgeId != null) {
+      try {
+        activeBadge = ProfileManager.getAllAvailableBadges()
+            .firstWhere((b) => b.id == _userProfile!.activeBadgeId);
+      } catch (e) {}
+    }
+
+    return Scaffold(
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: _buildHeader(dateDisplay, greeting, activeBadge),
+            ),
+            SliverToBoxAdapter(
+              child: _buildBadgeSection(activeBadge),
+            ),
+            SliverToBoxAdapter(
+              child: _buildQuickActions(),
+            ),
+            SliverToBoxAdapter(
+              child: _buildMainMenu(),
+            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 100)),
+          ],
+        ),
+      ),
+      floatingActionButton: _buildFAB(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+
+  Widget _buildHeader(String date, String greeting, Badge? activeBadge) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.sm),
+      child: Row(
+        // FIXED: Syntax error corrected here
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                date.toUpperCase(),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  letterSpacing: 1.5,
+                ),
+              ),
+              AppSpacing.gapVerticalXS,
+              Text(
+                "$greeting, ${_userProfile?.name ?? 'Athlete'}",
+                style: Theme.of(context).textTheme.displaySmall,
+              ),
+            ],
+          ),
+          Row(children: [
+            IconButton(
+              tooltip: 'Settings',
+              icon: const Icon(Icons.settings, color: AppColors.textMuted),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+              },
+            ),
+            GestureDetector(
+              onTap: () {
+                if (_userProfile != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfileScreen(profile: _userProfile!)),
+                  ).then((_) {
+                     if (mounted) _loadProfile();
+                  });
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.all(3),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: AppColors.primaryGradient,
+                ),
+                child: CircleAvatar(
+                  radius: 24,
+                  backgroundColor: AppColors.surface,
+                  child: activeBadge != null
+                      ? Icon(activeBadge.icon, color: activeBadge.color, size: 24)
+                      : const Icon(Icons.person, color: AppColors.textMuted, size: 24),
+                ),
+              ),
+            ),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBadgeSection(Badge? activeBadge) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.lg),
+      padding: AppSpacing.paddingXXL,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.surface,
+            activeBadge != null
+                ? activeBadge.color.withValues(alpha: 0.1)
+                : AppColors.surfaceLight,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: AppBorderRadius.borderRadiusXXL,
+        border: Border.all(
+          color: activeBadge?.color.withValues(alpha: 0.3) ?? AppColors.surfaceLight,
+          width: 1,
+        ),
+      ),
+      child: activeBadge != null
+          ? Row(
+              children: [
+                ScaleTransition(
+                  scale: _badgePulse,
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: activeBadge.color.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: activeBadge.color.withValues(alpha: 0.3),
+                          blurRadius: 20,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Icon(activeBadge.icon, size: 40, color: activeBadge.color),
+                  ),
+                ),
+                AppSpacing.gapHorizontalXL,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "ACTIVE BADGE",
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          letterSpacing: 1.5,
+                        ),
+                      ),
+                      AppSpacing.gapVerticalXS,
+                      Text(
+                        activeBadge.name,
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      AppSpacing.gapVerticalXS,
+                      Text(
+                        activeBadge.description,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          : Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: const BoxDecoration(
+                    color: AppColors.surfaceLight,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.emoji_events_outlined, size: 40, color: AppColors.textMuted),
+                ),
+                AppSpacing.gapHorizontalXL,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "NO BADGE SELECTED",
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          letterSpacing: 1.5,
+                        ),
+                      ),
+                      AppSpacing.gapVerticalXS,
+                      Text(
+                        "Earn badges by working out!",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+
+  Widget _buildQuickActions() {
+    return Padding(
+      padding: AppSpacing.screenPaddingHorizontal,
+      child: Row(
+        children: [
+          Expanded(
+            child: _QuickActionChip(
+              icon: Icons.play_arrow_rounded,
+              label: "Start Workout",
+              color: AppColors.primary,
+              onTap: () => _handleButtonPress("WORKOUT"),
+            ),
+          ),
+          AppSpacing.gapHorizontalMD,
+          Expanded(
+            child: _QuickActionChip(
+              icon: Icons.sports_soccer,
+              label: "Log Futsal",
+              color: AppColors.accent,
+              onTap: () => _handleButtonPress("FUTSAL"),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMainMenu() {
+    return Padding(
+      padding: AppSpacing.paddingXL,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionHeader(title: "Dashboard", icon: Icons.dashboard_rounded),
+          AppSpacing.gapVerticalMD,
+          GridView.count(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisCount: 2,
+            mainAxisSpacing: AppSpacing.md,
+            crossAxisSpacing: AppSpacing.md,
+            childAspectRatio: 1.3,
+            children: [
+              _MenuCard(
+                icon: Icons.calendar_month_rounded,
+                label: "Calendar",
+                sublabel: "Track your days",
+                color: AppColors.secondary,
+                onTap: () => _handleButtonPress("CALENDAR"),
+              ),
+              _MenuCard(
+                icon: Icons.bar_chart_rounded,
+                label: "Statistics",
+                sublabel: "View progress",
+                color: AppColors.primary,
+                onTap: () => _handleButtonPress("STATS"),
+              ),
+              _MenuCard(
+                icon: Icons.history_rounded,
+                label: "History",
+                sublabel: "Past workouts",
+                color: AppColors.accent,
+                onTap: () => _handleButtonPress("HISTORY"),
+              ),
+              _MenuCard(
+                icon: Icons.emoji_events_rounded,
+                label: "Goals",
+                sublabel: "Pro targets",
+                color: AppColors.warning,
+                onTap: () => _handleButtonPress("GOALS"),
+              ),
+              _MenuCard(
+                icon: Icons.psychology_rounded,
+                label: "AI Coach",
+                sublabel: "Smart insights",
+                color: AppColors.primary,
+                onTap: () => _handleButtonPress("AI"),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFAB() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        gradient: AppColors.primaryGradient,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.4),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const QuickLogScreen()))
+              .then((_) {
+                 if(mounted) _loadProfile();
+              });
+        },
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        icon: const Icon(Icons.add_rounded, color: Colors.black),
+        label: const Text(
+          "Quick Log",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  }
+}
+
+class _QuickActionChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _QuickActionChip({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: AppBorderRadius.borderRadiusLG,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 14),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.15),
+            borderRadius: AppBorderRadius.borderRadiusLG,
+            border: Border.all(color: color.withValues(alpha: 0.3)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: color, size: 22),
+              AppSpacing.gapHorizontalSM,
+              Text(
+                label,
+                style: TextStyle(
+                  color: color,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MenuCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String sublabel;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _MenuCard({
+    required this.icon,
+    required this.label,
+    required this.sublabel,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: AppBorderRadius.borderRadiusXL,
+        child: Container(
+          padding: AppSpacing.paddingLG,
+          decoration: BoxDecoration(
+            color: AppColors.card,
+            borderRadius: AppBorderRadius.borderRadiusXL,
+            border: Border.all(color: AppColors.surfaceLight),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.15),
+                  borderRadius: AppBorderRadius.borderRadiusMD,
+                ),
+                child: Icon(icon, color: color, size: 24),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  Text(
+                    sublabel,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}'''
+
+FIXED_SETTINGS_SCREEN = r'''import 'dart:convert';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:http/http.dart' as http;
+import '../app_theme.dart';
+import '../design_system.dart';
+import '../utils/github_gist_sync.dart';
+import '../utils/preferences_cache.dart';
+import '../utils/hybrid_athlete_ai.dart';
+import 'github_setup_screen.dart';
+
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  String _version = '';
+  bool _checkingUpdate = false;
+  String _updateStatus = '';
+  bool _syncing = false;
+  String _syncStatus = '';
+  Map<String, dynamic> _aiStatus = {};
+  String? _gistId;
+  String? _lastSync;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadVersion();
+    _loadSyncMeta();
+    _aiStatus = HybridAthleteAI.getStatus();
+  }
+
+  Future<void> _loadVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    if (mounted) {
+      setState(() {
+        _version = '${info.version}+${info.buildNumber}';
+      });
+    }
+  }
+
+  Future<void> _loadSyncMeta() async {
+    final prefs = await PreferencesCache.getInstance();
+    if (mounted) {
+      setState(() {
+        _gistId = prefs.getString('sync_gist_id');
+        _lastSync = prefs.getString('last_sync_time');
+      });
+    }
+  }
+
+  Future<void> _checkUpdates() async {
+    setState(() { _checkingUpdate = true; _updateStatus = 'Checking...'; });
+    try {
+      final uri = Uri.parse('https://api.github.com/repos/KonstaHovinen/hybrid_athlete/releases/latest');
+      final resp = await http.get(uri);
+      final body = resp.body;
+      
+      if (!mounted) return;
+
+      if (resp.statusCode == 200) {
+        final json = jsonDecode(body) as Map<String, dynamic>;
+        final tag = (json['tag_name'] ?? '').toString();
+        setState(() { _updateStatus = tag.isEmpty ? 'Up-to-date' : 'Latest release: $tag'; });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Update check complete: ${_updateStatus}')),
+        );
+      } else {
+        setState(() { _updateStatus = 'Error ${resp.statusCode}'; });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Update check failed: HTTP ${resp.statusCode}')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() { _updateStatus = 'Error'; });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Update check error: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() { _checkingUpdate = false; });
+    }
+  }
+
+  Future<void> _syncNow() async {
+    setState(() { _syncing = true; _syncStatus = 'Syncing...'; });
+    try {
+      final results = await GitHubGistSync.bidirectionalSync();
+      final prefs = await PreferencesCache.getInstance();
+      await prefs.setString('last_sync_time', DateTime.now().toIso8601String());
+      await _loadSyncMeta();
+      
+      if (!mounted) return;
+
+      setState(() { _syncStatus = 'Upload: ${results['upload_success']}, Download: ${results['download_success']}'; });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Sync done. Upload: ${results['upload_success']}  Download: ${results['download_success']}  Gist: ${results['gist_id'] ?? 'n/a'}')),
+      );
+    } catch (e) {
+      if (mounted) {
+        setState(() { _syncStatus = 'Error'; });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Sync error: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() { _syncing = false; });
+    }
+  }
+
+  Future<void> _testAI() async {
+    try {
+      final res = await HybridAthleteAI.processCommand('ping');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(res == null ? 'AI test failed' : 'AI responded.')),
+      );
+      setState(() { _aiStatus = HybridAthleteAI.getStatus(); });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('AI test error: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _exportData() async {
+    try {
+      final prefs = await PreferencesCache.getInstance();
+      final data = <String, dynamic>{
+        'workout_history': prefs.getStringList('workout_history') ?? [],
+        'logged_workouts': prefs.getString('logged_workouts'),
+        'scheduled_workouts': prefs.getString('scheduled_workouts'),
+        'user_templates': prefs.getString('user_templates'),
+        'user_exercises': prefs.getString('user_exercises'),
+        'user_profile': prefs.getString('user_profile'),
+        'exercise_settings': prefs.getString('exercise_settings'),
+        'pro_goals': prefs.getString('pro_goals'),
+        'weekly_goal': prefs.getInt('weekly_goal'),
+        'earned_badges': prefs.getStringList('earned_badges') ?? [],
+        'ai_memory': prefs.getString('ai_memory'),
+        'ai_interaction_history': prefs.getStringList('ai_interaction_history') ?? [],
+      };
+      final jsonStr = const JsonEncoder.withIndent('  ').convert(data);
+      
+      if (!mounted) return;
+
+      await showDialog(context: context, builder: (c) => AlertDialog(
+        backgroundColor: AppColors.card,
+        title: const Text('Export Data'),
+        content: SingleChildScrollView(child: SelectableText(jsonStr)),
+        actions: [TextButton(onPressed: () => Navigator.pop(c), child: const Text('Close'))],
+      ));
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Export error: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _importData() async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Manual import via UI is not available yet. Use GitHub Sync or manually merge JSON.')),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Settings & Updates'),
+        backgroundColor: AppColors.surface,
+      ),
+      body: SingleChildScrollView(
+        padding: AppSpacing.paddingXL,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _sectionHeader('Updates'),
+            _card([
+              _kv('Current version', _version.isEmpty ? '...' : _version),
+              AppSpacing.gapVerticalSM,
+              Row(children: [
+                ElevatedButton(
+                  onPressed: _checkingUpdate ? null : _checkUpdates,
+                  child: Text(_checkingUpdate ? 'Checking...' : 'Check for updates now'),
+                ),
+                AppSpacing.gapHorizontalMD,
+                Expanded(child: Text(_updateStatus, style: const TextStyle(fontSize: 12))),
+              ]),
+            ]),
+
+            AppSpacing.gapVerticalXL,
+            _sectionHeader('Sync (GitHub Gist)'),
+            _card([
+              _kv('Token configured', GitHubGistSync.getSyncStatus()['has_token'] == true ? 'Yes' : 'No'),
+              _kv('Gist ID', _gistId ?? '—'),
+              _kv('Last sync', _lastSync ?? '—'),
+              AppSpacing.gapVerticalSM,
+              Row(children: [
+                ElevatedButton(
+                  onPressed: _syncing ? null : _syncNow,
+                  child: Text(_syncing ? 'Syncing...' : 'Sync now'),
+                ),
+                AppSpacing.gapHorizontalMD,
+                ElevatedButton(
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const GitHubSetupScreen())).then((_) => _loadSyncMeta()),
+                  child: const Text('Manage token'),
+                ),
+              ]),
+              if (_syncStatus.isNotEmpty) ...[
+                AppSpacing.gapVerticalXS,
+                Text(_syncStatus, style: const TextStyle(fontSize: 12)),
+              ],
+            ]),
+
+            AppSpacing.gapVerticalXL,
+            _sectionHeader('AI diagnostics'),
+            _card([
+              _kv('Initialized', (_aiStatus['initialized'] == true).toString()),
+              _kv('Learning active', (_aiStatus['learning_active'] == true).toString()),
+              _kv('Interactions', (_aiStatus['interaction_count'] ?? 0).toString()),
+              _kv('Memory size', (_aiStatus['memory_size'] ?? 0).toString()),
+              _kv('Last learning', (_aiStatus['last_learning'] ?? '—').toString()),
+              AppSpacing.gapVerticalSM,
+              ElevatedButton(onPressed: _testAI, child: const Text('Test AI')),
+            ]),
+
+            AppSpacing.gapVerticalXL,
+            _sectionHeader('Import / Export'),
+            _card([
+              Row(children: [
+                ElevatedButton(onPressed: _exportData, child: const Text('Export data')),
+                AppSpacing.gapHorizontalMD,
+                ElevatedButton(onPressed: _importData, child: const Text('Import data')),
+              ]),
+              if (!kIsWeb) const SizedBox(height: 8),
+              if (!kIsWeb) const Text('Import expects a file named import_hybrid_athlete.json in the app directory.', style: TextStyle(fontSize: 12)),
+            ]),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _sectionHeader(String title) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+  );
+
+  Widget _kv(String k, String v) => Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [Text(k), Flexible(child: Align(alignment: Alignment.centerRight, child: Text(v, overflow: TextOverflow.ellipsis)))],
+  );
+
+  Widget _card(List<Widget> children) => Container(
+    width: double.infinity,
+    padding: AppSpacing.paddingLG,
+    decoration: BoxDecoration(
+      color: AppColors.card,
+      borderRadius: AppBorderRadius.borderRadiusLG,
+      border: Border.all(color: AppColors.surfaceLight),
+    ),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: children),
+  );
+}'''
+
+FIXED_WORKOUT_SCREENS = r'''import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
+import 'package:flutter/material.dart';
+import '../data_models.dart';
+import '../app_theme.dart';
+import '../utils/preferences_cache.dart';
+import '../utils/workout_history_cache.dart';
+import '../utils/stats_cache.dart';
+import '../utils/sync_service.dart';
+import 'profile_screen.dart';
+
+/// Converts a date to storage key format (YYYY-MM-DD) - consistent with calendar
+String _dateToKey(DateTime date) {
+  return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+}
+
+// --- HELPER: Log workout to calendar ---
+Future<void> logWorkoutForDate(
+  DateTime day,
+  Map<String, dynamic> workoutDetails,
+) async {
+  final prefs = await PreferencesCache.getInstance();
+  final normalizedDay = DateTime(day.year, day.month, day.day);
+  final key = _dateToKey(normalizedDay);
+
+  Map<String, List<dynamic>> logged = {};
+  final loggedRaw = prefs.getString('logged_workouts');
+  if (loggedRaw != null) {
+    try {
+      final decoded = jsonDecode(loggedRaw) as Map<String, dynamic>;
+      decoded.forEach((k, v) {
+        if (v is List) {
+          logged[k] = v;
+        } else {
+          logged[k] = [
+            {'name': 'Workout'},
+          ];
+        }
+      });
+    } catch (_) {}
+  }
+
+  if (!logged.containsKey(key)) {
+    logged[key] = [];
+  }
+  logged[key]!.add(workoutDetails);
+
+  await prefs.setString('logged_workouts', jsonEncode(logged));
+  await SyncService.exportData();
+
+  final scheduledRaw = prefs.getString('scheduled_workouts');
+  if (scheduledRaw != null) {
+    try {
+      final scheduled = jsonDecode(scheduledRaw) as Map<String, dynamic>;
+      if (scheduled.containsKey(key)) {
+        scheduled.remove(key);
+        await prefs.setString('scheduled_workouts', jsonEncode(scheduled));
+      }
+    } catch (_) {}
+  }
+}
+
+Future<void> logWorkoutForDateSimple(DateTime day, String workoutName) async {
+  await logWorkoutForDate(day, {'name': workoutName});
+}
+
+// --- EXERCISE EDITOR SCREEN ---
+class ExerciseEditorScreen extends StatefulWidget {
+  final Exercise exercise;
+  const ExerciseEditorScreen({super.key, required this.exercise});
+
+  @override
+  State<ExerciseEditorScreen> createState() => _ExerciseEditorScreenState();
+}
+
+class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
+  TextEditingController? _setsController;
+  TextEditingController? _repsController;
+  TextEditingController? _weightController;
+  bool _isLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentSettings();
+  }
+
+  @override
+  void dispose() {
+    _setsController?.dispose();
+    _repsController?.dispose();
+    _weightController?.dispose();
+    super.dispose();
+  }
+
+  void _loadCurrentSettings() async {
+    Exercise settings = await ExerciseSettingsManager.getExerciseWithSettings(
+      widget.exercise,
+    );
+    if (!mounted) return;
+    setState(() {
+      _setsController = TextEditingController(
+        text: settings.presetSets.toString(),
+      );
+      _repsController = TextEditingController(text: settings.repRange);
+      _weightController = TextEditingController(
+        text: settings.startingWeight?.toString() ?? "",
+      );
+      _isLoaded = true;
+    });
+  }
+
+  void _saveSettings() async {
+    int sets = int.tryParse(_setsController?.text ?? '') ?? 3;
+    String reps = _repsController?.text ?? '';
+    double? weight = double.tryParse(_weightController?.text ?? '');
+
+    await ExerciseSettingsManager.saveSettings(
+      widget.exercise.name,
+      sets,
+      reps,
+      weight,
+    );
+    if (mounted) Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    bool isRunning = widget.exercise.type == "Running";
+    if (!_isLoaded)
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+
+    return Scaffold(
+      appBar: AppBar(title: Text("Edit ${widget.exercise.name}")),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            const Text(
+              "Customize Defaults",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              "Settings will auto-fill next time you start this exercise.",
+              style: TextStyle(color: AppColors.textMuted),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 30),
+
+            TextField(
+              controller: _setsController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: isRunning ? "Default Sets / Rounds" : "Default Sets",
+                border: const OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            TextField(
+              controller: _repsController,
+              decoration: InputDecoration(
+                labelText: isRunning
+                    ? "Default Duration/Distance (e.g. '30 min')"
+                    : "Default Reps",
+                border: const OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            if (!isRunning)
+              TextField(
+                controller: _weightController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: "Starting Weight (kg)",
+                  border: OutlineInputBorder(),
+                  helperText: "Leave empty to use Smart Auto-Progression.",
+                ),
+              ),
+
+            const Spacer(),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _saveSettings,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.all(15),
+                ),
+                child: const Text("SAVE SETTINGS"),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// --- EXERCISE LIBRARY SCREEN ---
+class ExerciseLibraryScreen extends StatefulWidget {
+  const ExerciseLibraryScreen({super.key});
+  @override
+  State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
+}
+
+class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
+  String? selectedCategory;
+  List<Exercise> _allExercises = [];
+  List<String> _categories = [];
+  List<String> _userExerciseNames = [];
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadExercises();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadExercises() async {
+    final list = await ExerciseLibrary.getAllExercisesWithUser();
+    final userNames = await ExerciseLibrary.getUserOverrideNames();
+    if (!mounted) return;
+    setState(() {
+      _allExercises = list;
+      _categories = list.map((e) => e.category).toSet().toList()..sort();
+      _userExerciseNames = userNames;
+    });
+  }
+
+  bool _isDefaultExercise(String name) {
+    return ExerciseLibrary.allExercises.any(
+      (e) => e.name.toLowerCase() == name.toLowerCase(),
+    );
+  }
+
+  bool _isUserAddedExercise(String name) {
+    return _userExerciseNames.any(
+          (n) => n.toLowerCase() == name.toLowerCase(),
+        ) &&
+        !ExerciseLibrary.allExercises.any(
+          (e) => e.name.toLowerCase() == name.toLowerCase(),
+        );
+  }
+
+  Future<void> _showAddExerciseDialog() async {
+    final nameController = TextEditingController();
+    final categoryController = TextEditingController();
+    final repController = TextEditingController(text: '8-10');
+    final setsController = TextEditingController(text: '3');
+    String type = 'Gym';
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add Exercise'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(labelText: 'Name'),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: categoryController,
+                  decoration: const InputDecoration(labelText: 'Category'),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: repController,
+                  decoration: const InputDecoration(
+                    labelText: 'Default Reps/Range',
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: setsController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Default Sets'),
+                ),
+                const SizedBox(height: 8),
+                DropdownButtonFormField<String>(
+                  value: type,
+                  items: ['Gym', 'Running', 'Recovery']
+                      .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                      .toList(),
+                  onChanged: (v) => type = v ?? 'Gym',
+                  decoration: const InputDecoration(labelText: 'Type'),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final name = nameController.text.trim();
+                if (name.isEmpty) return;
+                final category = categoryController.text.trim().isEmpty
+                    ? 'General'
+                    : categoryController.text.trim();
+                final sets = int.tryParse(setsController.text) ?? 3;
+                final reps = repController.text.trim().isEmpty
+                    ? '8-10'
+                    : repController.text.trim();
+                final ex = Exercise(
+                  name: name,
+                  category: category,
+                  description: '',
+                  difficulty: 'Medium',
+                  type: type,
+                  presetSets: sets,
+                  repRange: reps,
+                );
+                await ExerciseLibrary.addUserExercise(ex);
+                if (context.mounted) {
+                    await _loadExercises();
+                    if(context.mounted) Navigator.pop(context);
+                }
+              },
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showEditExerciseDialog(
+    Exercise ex, {
+    bool isDefault = false,
+  }) async {
+    final nameController = TextEditingController(text: ex.name);
+    final categoryController = TextEditingController(text: ex.category);
+    final descController = TextEditingController(text: ex.description);
+    final repController = TextEditingController(text: ex.repRange);
+    final setsController = TextEditingController(
+      text: ex.presetSets.toString(),
+    );
+    String type = ex.type;
+    String difficulty = ex.difficulty;
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: Text(
+                isDefault ? 'Edit Exercise (Override)' : 'Edit Exercise',
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: nameController,
+                      decoration: const InputDecoration(labelText: 'Name'),
+                      enabled: !isDefault,
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: categoryController,
+                      decoration: const InputDecoration(labelText: 'Category'),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: descController,
+                      decoration: const InputDecoration(
+                        labelText: 'Description',
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: repController,
+                      decoration: const InputDecoration(
+                        labelText: 'Default Reps/Range',
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: setsController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Default Sets',
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    DropdownButtonFormField<String>(
+                      value: type,
+                      items: ['Gym', 'Running', 'Recovery']
+                          .map(
+                            (t) => DropdownMenuItem(value: t, child: Text(t)),
+                          )
+                          .toList(),
+                      onChanged: (v) =>
+                          setDialogState(() => type = v ?? ex.type),
+                      decoration: const InputDecoration(labelText: 'Type'),
+                    ),
+                    const SizedBox(height: 8),
+                    DropdownButtonFormField<String>(
+                      value: difficulty,
+                      items: ['Low', 'Medium', 'High']
+                          .map(
+                            (d) => DropdownMenuItem(value: d, child: Text(d)),
+                          )
+                          .toList(),
+                      onChanged: (v) =>
+                          setDialogState(() => difficulty = v ?? ex.difficulty),
+                      decoration: const InputDecoration(
+                        labelText: 'Difficulty',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                if (isDefault)
+                  TextButton(
+                    onPressed: () async {
+                      await ExerciseLibrary.removeUserExercise(ex.name);
+                      if (context.mounted) {
+                          await _loadExercises();
+                          if(context.mounted) Navigator.pop(context);
+                      }
+                    },
+                    child: const Text(
+                      'Reset to Default',
+                      style: TextStyle(color: AppColors.error),
+                    ),
+                  ),
+                TextButton(
+                  onPressed: () async {
+                    final newName = isDefault
+                        ? ex.name
+                        : nameController.text.trim();
+                    if (newName.isEmpty) return;
+                    final newCategory = categoryController.text.trim().isEmpty
+                        ? 'General'
+                        : categoryController.text.trim();
+                    final newDesc = descController.text.trim();
+                    final newSets =
+                        int.tryParse(setsController.text) ?? ex.presetSets;
+                    final newReps = repController.text.trim().isEmpty
+                        ? ex.repRange
+                        : repController.text.trim();
+                    final updated = Exercise(
+                      name: newName,
+                      category: newCategory,
+                      description: newDesc,
+                      difficulty: difficulty,
+                      type: type,
+                      presetSets: newSets,
+                      repRange: newReps,
+                      startingWeight: ex.startingWeight,
+                    );
+
+                    if (isDefault) {
+                      await ExerciseLibrary.addOrUpdateUserExercise(updated);
+                    } else {
+                      await ExerciseLibrary.updateUserExercise(
+                        ex.name,
+                        updated,
+                      );
+                    }
+                    if (context.mounted) {
+                        await _loadExercises();
+                        if(context.mounted) Navigator.pop(context);
+                    }
+                  },
+                  child: const Text('Save'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<Exercise> filteredExercises = _allExercises.where((e) {
+      final matchesSearch =
+          _searchQuery.isEmpty ||
+          e.name.toLowerCase().contains(_searchQuery.toLowerCase());
+      final matchesCategory =
+          selectedCategory == null || e.category == selectedCategory;
+      return matchesSearch && matchesCategory;
+    }).toList();
+
+    final userExercises = filteredExercises
+        .where((e) => _isUserAddedExercise(e.name))
+        .toList();
+    final defaultExercises = filteredExercises
+        .where((e) => !_isUserAddedExercise(e.name))
+        .toList();
+
+    Map<String, int> categoryCounts = {};
+    for (var cat in _categories) {
+      categoryCounts[cat] = _allExercises
+          .where((e) => e.category == cat)
+          .length;
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Exercise Library"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            tooltip: 'Add Exercise',
+            onPressed: () async {
+              await _showAddExerciseDialog();
+              if(mounted) await _loadExercises();
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search exercises...',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() => _searchQuery = '');
+                        },
+                      )
+                    : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                filled: true,
+                fillColor: AppColors.surface,
+                contentPadding: const EdgeInsets.symmetric(vertical: 0),
+              ),
+              onChanged: (value) => setState(() => _searchQuery = value),
+            ),
+          ),
+
+          SizedBox(
+            height: 50,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              itemCount: _categories.length + 1,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: FilterChip(
+                      label: Text("All (${_allExercises.length})"),
+                      selected: selectedCategory == null,
+                      onSelected: (b) =>
+                          setState(() => selectedCategory = null),
+                    ),
+                  );
+                }
+                final cat = _categories[index - 1];
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: FilterChip(
+                    label: Text("$cat (${categoryCounts[cat] ?? 0})"),
+                    selected: selectedCategory == cat,
+                    onSelected: (b) =>
+                        setState(() => selectedCategory = b ? cat : null),
+                  ),
+                );
+              },
+            ),
+          ),
+
+          Expanded(
+            child: ListView(
+              children: [
+                if (userExercises.isNotEmpty) ...[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.person,
+                          size: 18,
+                          color: AppColors.primary,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          "Your Exercises (${userExercises.length})",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ...userExercises.map(
+                    (ex) => _buildExerciseCard(ex, isUserAdded: true),
+                  ),
+                  const Divider(height: 24),
+                ],
+
+                if (defaultExercises.isNotEmpty) ...[
+                  if (userExercises.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.fitness_center,
+                            size: 18,
+                            color: AppColors.secondary,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            "Default Exercises (${defaultExercises.length})",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.secondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ...defaultExercises.map(
+                    (ex) => _buildExerciseCard(ex, isUserAdded: false),
+                  ),
+                ],
+
+                if (filteredExercises.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.all(40),
+                    child: Center(
+                      child: Text(
+                        "No exercises found",
+                        style: TextStyle(color: AppColors.textMuted),
+                      ),
+                    ),
+                  ),
+
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExerciseCard(Exercise ex, {required bool isUserAdded}) {
+    final isDefault = _isDefaultExercise(ex.name);
+
+    return Dismissible(
+      key: Key(ex.name),
+      direction: isUserAdded
+          ? DismissDirection.endToStart
+          : DismissDirection.none,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        color: AppColors.error,
+        child: const Icon(Icons.delete, color: AppColors.textPrimary),
+      ),
+      confirmDismiss: (direction) async {
+        return await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Delete Exercise?'),
+            content: Text('Remove "${ex.name}" from your exercises?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text(
+                  'Delete',
+                  style: TextStyle(color: AppColors.error),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      onDismissed: (direction) async {
+        await ExerciseLibrary.removeUserExercise(ex.name);
+        if(mounted) await _loadExercises();
+      },
+      child: Card(
+        color: AppColors.card,
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: isUserAdded
+                ? AppColors.primary.withValues(alpha: 0.2)
+                : AppColors.secondary.withValues(alpha: 0.2),
+            child: Icon(
+              _getTypeIcon(ex.type),
+              color: isUserAdded ? AppColors.primary : AppColors.secondary,
+              size: 20,
+            ),
+          ),
+          title: Text(
+            ex.name,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text("${ex.presetSets} sets × ${ex.repRange}"),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.tune,
+                  color: AppColors.secondary,
+                  size: 22,
+                ),
+                tooltip: 'Workout Settings',
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ExerciseEditorScreen(exercise: ex),
+                    ),
+                  );
+                  if(mounted) await _loadExercises();
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit, color: AppColors.accent, size: 22),
+                tooltip: 'Edit Details',
+                onPressed: () async {
+                  await _showEditExerciseDialog(ex, isDefault: isDefault);
+                  if(mounted) await _loadExercises();
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  IconData _getTypeIcon(String type) {
+    switch (type) {
+      case 'Running':
+        return Icons.directions_run;
+      case 'Recovery':
+        return Icons.self_improvement;
+      default:
+        return Icons.fitness_center;
+    }
+  }
+}
+
+// --- TEMPLATE SELECTION SCREEN ---
+class TemplateSelectionScreen extends StatefulWidget {
+  const TemplateSelectionScreen({super.key});
+  @override
+  State<TemplateSelectionScreen> createState() =>
+      _TemplateSelectionScreenState();
+}
+
+class _TemplateSelectionScreenState extends State<TemplateSelectionScreen> {
+  List<WorkoutTemplate> _loadedTemplates = [];
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadTemplates();
+  }
+
+  Future<void> _loadTemplates() async {
+    final prefs = await PreferencesCache.getInstance();
+    final String? templatesJson = prefs.getString('user_templates');
+    if (!mounted) return;
+    
+    if (templatesJson != null) {
+      List<dynamic> decoded = jsonDecode(templatesJson);
+      setState(() {
+        _loadedTemplates = decoded
+            .map((e) => WorkoutTemplate.fromJson(e))
+            .toList();
+      });
+    } else {
+      setState(() {
+        _loadedTemplates = [];
+      });
+    }
+  }
+
+  Future<void> _deleteTemplate(WorkoutTemplate template) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.card,
+        title: const Text('Delete Template', style: TextStyle(color: AppColors.textPrimary)),
+        content: Text(
+          'Are you sure you want to delete "${template.name}"?',
+          style: const TextStyle(color: AppColors.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      final prefs = await PreferencesCache.getInstance();
+      _loadedTemplates.removeWhere((t) => t.name == template.name);
+      final encoded = jsonEncode(_loadedTemplates.map((t) => t.toJson()).toList());
+      await prefs.setString('user_templates', encoded);
+      await SyncService.exportData(); 
+      setState(() {});
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Template "${template.name}" deleted')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Choose Workout"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.library_books),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ExerciseLibraryScreen(),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: _loadedTemplates.length,
+              itemBuilder: (context, index) {
+                final template = _loadedTemplates[index];
+                return Card(
+                  color: AppColors.card,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      template.name,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    subtitle: Text(
+                      template.exercises.length > 3
+                          ? "${template.exercises.sublist(0, 3).join(", ")}..."
+                          : template.exercises.join(", "),
+                      style: const TextStyle(
+                        color: AppColors.textMuted,
+                        fontSize: 12,
+                      ),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline, color: Colors.red),
+                          onPressed: () => _deleteTemplate(template),
+                        ),
+                        const Icon(
+                          Icons.play_arrow,
+                          color: AppColors.secondary,
+                        ),
+                      ],
+                    ),
+                    onTap: () => _startWorkout(template),
+                  ),
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.add),
+                label: const Text("CREATE NEW TEMPLATE"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.surface,
+                  padding: const EdgeInsets.all(15),
+                ),
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CreateTemplateScreen(),
+                    ),
+                  );
+                  if (result == true) _loadTemplates();
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _startWorkout(WorkoutTemplate template) async {
+    bool hasRunning = false;
+    bool hasGym = false;
+    final all = await ExerciseLibrary.getAllExercisesWithUser();
+    for (String exName in template.exercises) {
+      final exercise = all.firstWhere(
+        (e) => e.name.toLowerCase() == exName.toLowerCase(),
+        orElse: () => const Exercise(
+          name: "Unknown",
+          category: "Running",
+          description: "",
+          difficulty: "Medium",
+          type: "Gym",
+        ),
+      );
+      if (exercise.type == "Running")
+        hasRunning = true;
+      else if (exercise.type == "Gym" || exercise.type == "Recovery")
+        hasGym = true;
+    }
+
+    if (!mounted) return;
+
+    if (hasRunning && !hasGym) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EnhancedRunScreen(template: template),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => WorkoutRunnerScreen(template: template),
+        ),
+      );
+    }
+  }
+}
+
+// --- CREATE TEMPLATE SCREEN ---
+class CreateTemplateScreen extends StatefulWidget {
+  const CreateTemplateScreen({super.key});
+  @override
+  State<CreateTemplateScreen> createState() => _CreateTemplateScreenState();
+}
+
+class _CreateTemplateScreenState extends State<CreateTemplateScreen> {
+  final TextEditingController _nameController = TextEditingController();
+  final List<String?> _selectedExercises = [null];
+  List<Exercise> _availableExercises = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAvailableExercises();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadAvailableExercises() async {
+    final list = await ExerciseLibrary.getAllExercisesWithUser();
+    if (!mounted) return;
+    setState(() => _availableExercises = list);
+  }
+
+  void _addExerciseField() {
+    setState(() {
+      _selectedExercises.add(null);
+    });
+  }
+
+  Future<void> _saveTemplate() async {
+    if (_nameController.text.isEmpty) return;
+    List<String> raw = _selectedExercises
+        .map((s) => s?.trim() ?? '')
+        .where((text) => text.isNotEmpty)
+        .toList();
+    final seen = <String>{};
+    List<String> newExercises = [];
+    for (var name in raw) {
+      final low = name.toLowerCase();
+      if (!seen.contains(low)) {
+        seen.add(low);
+        newExercises.add(name);
+      }
+    }
+    if (newExercises.isEmpty) return;
+
+    final prefs = await PreferencesCache.getInstance();
+    final String? templatesJson = prefs.getString('user_templates');
+    List<WorkoutTemplate> currentList = [];
+    if (templatesJson != null) {
+      List<dynamic> decoded = jsonDecode(templatesJson);
+      currentList = decoded.map((e) => WorkoutTemplate.fromJson(e)).toList();
+    }
+
+    currentList.add(
+      WorkoutTemplate(name: _nameController.text, exercises: newExercises),
+    );
+    final String encoded = jsonEncode(
+      currentList.map((e) => e.toJson()).toList(),
+    );
+    await prefs.setString('user_templates', encoded);
+    await SyncService.exportData(); // Sync to desktop
+    if (mounted) Navigator.pop(context, true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("New Workout")),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: "Workout Name",
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.black12,
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _selectedExercises.length,
+              itemBuilder: (context, index) => Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0,
+                ),
+                child: DropdownButtonFormField<String>(
+                  value: _selectedExercises[index],
+                  decoration: const InputDecoration(
+                    labelText: "Exercise",
+                    filled: true,
+                    fillColor: Colors.black12,
+                  ),
+                  items: _availableExercises
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e.name,
+                          child: Text(e.name),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (v) =>
+                      setState(() => _selectedExercises[index] = v),
+                ),
+              ),
+            ),
+          ),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  onPressed: _addExerciseField,
+                  child: const Text("+ Exercise"),
+                ),
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  onPressed: _saveTemplate,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.black,
+                  ),
+                  child: const Text("Save"),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --- SET ROW WIDGET (Isolated state for text fields) ---
+class _SetRowWidget extends StatefulWidget {
+  final int index;
+  final String initialWeight;
+  final String initialReps;
+  final Function(String) onWeightChanged;
+  final Function(String) onRepsChanged;
+
+  const _SetRowWidget({
+    super.key,
+    required this.index,
+    required this.initialWeight,
+    required this.initialReps,
+    required this.onWeightChanged,
+    required this.onRepsChanged,
+  });
+
+  @override
+  State<_SetRowWidget> createState() => _SetRowWidgetState();
+}
+
+class _SetRowWidgetState extends State<_SetRowWidget> {
+  late TextEditingController _weightController;
+  late TextEditingController _repsController;
+
+  @override
+  void initState() {
+    super.initState();
+    _weightController = TextEditingController(text: widget.initialWeight);
+    _repsController = TextEditingController(text: widget.initialReps);
+  }
+
+  @override
+  void dispose() {
+    _weightController.dispose();
+    _repsController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: AppColors.surface,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Text(
+              "${widget.index + 1}",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: TextField(
+                controller: _weightController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: "kg",
+                  isDense: true,
+                ),
+                onChanged: widget.onWeightChanged,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: TextField(
+                controller: _repsController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: "Reps",
+                  isDense: true,
+                ),
+                onChanged: widget.onRepsChanged,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// --- WORKOUT RUNNER ---
+class WorkoutRunnerScreen extends StatefulWidget {
+  final WorkoutTemplate template;
+  const WorkoutRunnerScreen({super.key, required this.template});
+  @override
+  State<WorkoutRunnerScreen> createState() => _WorkoutRunnerScreenState();
+}
+
+class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
+  int currentExerciseIndex = 0;
+  final List<Map<String, dynamic>> _allWorkoutSets = [];
+  List<Map<String, String>> _currentSets = [];
+  String _suggestedWeight = "";
+  String _lastWeight = "";
+  String _currentTime = "";
+  String _currentReps = "";
+  late TextEditingController _sprintRepsController;
+
+  int _setListKey = 0;
+
+  bool _isResting = false;
+  int _restSeconds = 90;
+  int _restSecondsRemaining = 0;
+  Timer? _restTimer;
+
+  int _energyLevel = 3;
+  List<String> _selectedMoods = [];
+  final TextEditingController _notesController = TextEditingController();
+  final List<String> _moodOptions = [
+    '💪 Strong',
+    '🔥 Pumped',
+    '😴 Tired',
+    '😤 Struggled',
+    '🎯 Focused',
+    '😌 Easy',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _sprintRepsController = TextEditingController();
+    _setupCurrentExercise();
+  }
+
+  @override
+  void dispose() {
+    _sprintRepsController.dispose();
+    _notesController.dispose();
+    _restTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startRestTimer() {
+    _restTimer?.cancel(); 
+    setState(() {
+      _isResting = true;
+      _restSecondsRemaining = _restSeconds;
+    });
+    _restTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      if (_restSecondsRemaining <= 1) {
+        timer.cancel();
+        setState(() => _isResting = false);
+      } else {
+        setState(() => _restSecondsRemaining--);
+      }
+    });
+  }
+
+  void _skipRest() {
+    _restTimer?.cancel();
+    if (!mounted) return;
+    setState(() => _isResting = false);
+  }
+
+  String _formatTime(int seconds) {
+    int mins = seconds ~/ 60;
+    int secs = seconds % 60;
+    return '${mins.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
+  }
+
+  void _setupCurrentExercise() async {
+    if (currentExerciseIndex >= widget.template.exercises.length) return;
+    String currentExerciseName =
+        widget.template.exercises[currentExerciseIndex];
+
+    final all = await ExerciseLibrary.getAllExercisesWithUser();
+    Exercise exerciseDef = all.firstWhere(
+      (e) => e.name.toLowerCase() == currentExerciseName.toLowerCase(),
+      orElse: () => const Exercise(
+        name: "Unknown",
+        category: "Unknown",
+        description: "",
+        difficulty: "Unknown",
+        type: "Gym",
+      ),
+    );
+    Exercise exercise = await ExerciseSettingsManager.getExerciseWithSettings(
+      exerciseDef,
+    );
+    if (!mounted) return;
+
+    final int sets = exercise.presetSets;
+    final String reps = exercise.repRange;
+
+    String cleanReps = '';
+    if (reps.isNotEmpty && int.tryParse(reps) != null) {
+      cleanReps = reps;
+    }
+
+    List<Map<String, String>> newSets = [];
+    if (exercise.type == "Gym" && !_isRecoveryExercise(exercise.name)) {
+      for (int i = 0; i < sets; i++) {
+        newSets.add({"weight": "", "reps": cleanReps});
+      }
+    }
+    if (newSets.isEmpty) newSets.add({"weight": "", "reps": ""});
+
+    String forcedWeight = exercise.startingWeight != null
+        ? exercise.startingWeight.toString()
+        : "";
+
+    setState(() {
+      _currentSets = newSets;
+      _suggestedWeight = forcedWeight;
+      _lastWeight = "";
+      _currentTime = "";
+      _currentReps = cleanReps;
+      _sprintRepsController.text = cleanReps;
+      _setListKey++;
+    });
+
+    if (forcedWeight.isEmpty) {
+      _analyzeLastSession(currentExerciseName);
+    }
+  }
+
+  bool _isSprintExercise(String exerciseName) {
+    final sprintExercises = [
+      "10m Sprint Test",
+      "10m Sprints",
+      "Flying 30s",
+      "Short Sprints",
+      "Suicides (Shuttles)",
+    ];
+    return sprintExercises.any(
+      (e) => e.toLowerCase() == exerciseName.toLowerCase(),
+    );
+  }
+
+  bool _isRecoveryExercise(String exerciseName) {
+    final recoveryExercises = [
+      "Sleep",
+      "Recovery",
+      "Stretching",
+      "Foam Roll",
+      "Dynamic Warmup",
+      "Visualization",
+    ];
+    return recoveryExercises.any(
+      (e) => e.toLowerCase() == exerciseName.toLowerCase(),
+    );
+  }
+
+  double _getIncrement(String exerciseName) {
+    String name = exerciseName.toLowerCase();
+    if (name.contains("squat") ||
+        name.contains("deadlift") ||
+        name.contains("trap bar"))
+      return 5.0;
+    if (name.contains("bench") ||
+        name.contains("pull") ||
+        name.contains("row") ||
+        name.contains("press"))
+      return 2.5;
+    return 1.25;
+  }
+
+  Future<void> _analyzeLastSession(String currentExercise) async {
+    final prefs = await PreferencesCache.getInstance();
+    if (!mounted) return;
+    List<String>? currentHistory = prefs.getStringList('workout_history');
+    if (currentHistory == null || currentHistory.isEmpty) return;
+
+    final searchLimit = currentHistory.length > 20 ? currentHistory.length - 20 : 0;
+    
+    for (int i = currentHistory.length - 1; i >= searchLimit; i--) {
+      if (!mounted) return; 
+      try {
+        Map<String, dynamic>? workout;
+        try {
+          workout = jsonDecode(currentHistory[i]) as Map<String, dynamic>?;
+        } catch (e) {
+          continue; 
+        }
+        if (workout == null) continue;
+        
+        final sets = workout['sets'];
+        if (sets == null || sets is! List || sets.isEmpty) continue;
+
+        for (var s in sets) {
+          if (s is! Map<String, dynamic>) continue;
+          
+          String exName = s['exercise']?.toString() ?? "";
+          if (exName.toLowerCase() == currentExercise.toLowerCase()) {
+            final setsList = s['sets'];
+            if (setsList != null && setsList is List && setsList.isNotEmpty) {
+              String lastWeight = "0";
+              for (int j = setsList.length - 1; j >= 0; j--) {
+                final setData = setsList[j];
+                if (setData is! Map) continue;
+                
+                String w = setData['weight']?.toString() ?? "";
+                if (w.isNotEmpty && w != "0" && w != "null") {
+                  lastWeight = w;
+                  break;
+                }
+              }
+
+              double lastWeightNum = double.tryParse(lastWeight) ?? 0;
+              if (lastWeightNum > 0 && mounted) {
+                double increment = _getIncrement(currentExercise);
+                setState(() {
+                  _lastWeight = lastWeightNum.toString();
+                  _suggestedWeight = (lastWeightNum + increment).toString();
+                });
+                return;
+              }
+            }
+          }
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+  }
+
+  void _nextExercise() async {
+    String exerciseName = widget.template.exercises[currentExerciseIndex];
+    _allWorkoutSets.add({
+      "exercise": exerciseName,
+      "sets": List.from(_currentSets),
+    });
+
+    if (currentExerciseIndex < widget.template.exercises.length - 1) {
+      currentExerciseIndex++;
+      _setupCurrentExercise();
+    } else {
+      double maxWeight = 0;
+      String bestExercise = "";
+      for (var ex in _allWorkoutSets) {
+        for (var s in ex['sets']) {
+          double w = double.tryParse(s['weight'] ?? "0") ?? 0;
+          if (w > maxWeight) {
+            maxWeight = w;
+            bestExercise = ex['exercise'];
+          }
+        }
+      }
+
+      final prefs = await PreferencesCache.getInstance();
+      List<String> history = prefs.getStringList('workout_history') ?? [];
+      final workoutData = {
+        'date': DateTime.now().toString().split(' ')[0],
+        'template_name': widget.template.name,
+        'sets': _allWorkoutSets,
+        'energy': _energyLevel,
+        'mood': _selectedMoods,
+        'notes': _notesController.text,
+      };
+      history.add(jsonEncode(workoutData));
+      await prefs.setStringList('workout_history', history);
+      WorkoutHistoryCache.invalidateCache();
+      StatsCache.invalidateCache();
+      await SyncService.exportData();
+
+      final today = DateTime.now();
+      await logWorkoutForDate(DateTime(today.year, today.month, today.day), {
+        'name': widget.template.name,
+        'energy': _energyLevel,
+        'mood': _selectedMoods,
+      });
+
+      int runCount = 0;
+      final allExercises = await ExerciseLibrary.getAllExercisesWithUser();
+      for (var exerciseName in widget.template.exercises) {
+        final match = allExercises.where(
+          (e) => e.name.toLowerCase() == exerciseName.toLowerCase(),
+        );
+        if (match.isNotEmpty && match.first.type == "Running") {
+          runCount++;
+        }
+      }
+
+      if (runCount > 0) {
+        UserProfile profile = await ProfileManager.getProfile();
+        profile.totalRunExercises += runCount;
+        await ProfileManager.saveProfile(profile);
+      }
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WorkoutSummaryScreen(
+              type: "Gym",
+              scoreName: bestExercise.isEmpty ? "Workout" : bestExercise,
+              scoreValue: maxWeight,
+              unit: "kg",
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (currentExerciseIndex >= widget.template.exercises.length)
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+
+    String currentExercise = widget.template.exercises[currentExerciseIndex];
+    int total = widget.template.exercises.length;
+    bool isSprint = _isSprintExercise(currentExercise);
+    bool isRecovery = _isRecoveryExercise(currentExercise);
+    bool isGym = !isSprint && !isRecovery;
+
+    if (_isResting) {
+      return Scaffold(
+        backgroundColor: Colors.black.withValues(alpha: 0.95),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "REST",
+                style: TextStyle(
+                  fontSize: 24,
+                  color: AppColors.textMuted,
+                  letterSpacing: 8,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                _formatTime(_restSecondsRemaining),
+                style: const TextStyle(
+                  fontSize: 80,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.secondary,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "Next: $currentExercise",
+                style: const TextStyle(color: AppColors.textMuted),
+              ),
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.remove_circle_outline, size: 32),
+                    color: AppColors.textMuted,
+                    onPressed: () => setState(
+                      () => _restSeconds = (_restSeconds - 15).clamp(15, 300),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    "${_restSeconds}s default",
+                    style: const TextStyle(color: AppColors.textMuted),
+                  ),
+                  const SizedBox(width: 10),
+                  IconButton(
+                    icon: const Icon(Icons.add_circle_outline, size: 32),
+                    color: AppColors.textMuted,
+                    onPressed: () => setState(
+                      () => _restSeconds = (_restSeconds + 15).clamp(15, 300),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: _skipRest,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 15,
+                  ),
+                ),
+                child: const Text(
+                  "SKIP REST",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: const Text("Workout in Progress")),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                LinearProgressIndicator(
+                  value: (currentExerciseIndex + 1) / total,
+                  minHeight: 8,
+                  color: AppColors.secondary,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Exercise ${currentExerciseIndex + 1} of $total",
+                  style: const TextStyle(color: AppColors.textMuted),
+                ),
+              ],
+            ),
+          ),
+          Text(
+            currentExercise,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10),
+
+          if (isRecovery) ...[
+            const Expanded(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    "Mark as completed when done.",
+                    style: TextStyle(color: AppColors.primary, fontSize: 16),
+                  ),
+                ),
+              ),
+            ),
+          ] else if (isSprint) ...[
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextField(
+                      controller: _sprintRepsController,
+                      decoration: const InputDecoration(
+                        labelText: "Reps",
+                        border: OutlineInputBorder(),
+                        filled: true,
+                      ),
+                      onChanged: (val) => _currentReps = val,
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: "Best Time (s)",
+                        border: OutlineInputBorder(),
+                        filled: true,
+                      ),
+                      onChanged: (val) => _currentTime = val,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ] else if (isGym) ...[
+            if (_suggestedWeight.isNotEmpty)
+              Container(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.secondary.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (_lastWeight.isNotEmpty)
+                      Text(
+                        "Last: ${_lastWeight}kg",
+                        style: const TextStyle(color: AppColors.textMuted),
+                      ),
+                    if (_lastWeight.isNotEmpty) const SizedBox(width: 15),
+                    if (_lastWeight.isNotEmpty)
+                      const Icon(
+                        Icons.arrow_forward,
+                        size: 16,
+                        color: AppColors.primary,
+                      ),
+                    if (_lastWeight.isNotEmpty) const SizedBox(width: 15),
+                    Text(
+                      "Suggested: ${_suggestedWeight}kg",
+                      style: const TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+            Expanded(
+              child: ListView.builder(
+                key: ValueKey('setlist_$_setListKey'),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: _currentSets.length,
+                itemBuilder: (context, index) {
+                  if (index == 0 &&
+                      (_currentSets[index]['weight'] ?? '').isEmpty &&
+                      _suggestedWeight.isNotEmpty) {
+                    _currentSets[index]['weight'] = _suggestedWeight;
+                  }
+
+                  return _SetRowWidget(
+                    key: ValueKey('setrow_${_setListKey}_$index'),
+                    index: index,
+                    initialWeight: _currentSets[index]['weight'] ?? '',
+                    initialReps: _currentSets[index]['reps'] ?? '',
+                    onWeightChanged: (val) =>
+                        _currentSets[index]['weight'] = val,
+                    onRepsChanged: (val) => _currentSets[index]['reps'] = val,
+                  );
+                },
+              ),
+            ),
+          ],
+
+          if (currentExerciseIndex == total - 1) ...[
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.card,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "How did it feel?",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      const Text("Energy:"),
+                      const SizedBox(width: 10),
+                      ...List.generate(
+                        5,
+                        (i) => GestureDetector(
+                          onTap: () => setState(() => _energyLevel = i + 1),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: Icon(
+                              i < _energyLevel
+                                  ? Icons.bolt
+                                  : Icons.bolt_outlined,
+                              color: i < _energyLevel
+                                  ? AppColors.warning
+                                  : AppColors.textMuted,
+                              size: 28,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: _moodOptions
+                        .map(
+                          (mood) => FilterChip(
+                            label: Text(
+                              mood,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                            selected: _selectedMoods.contains(mood),
+                            onSelected: (selected) => setState(() {
+                              if (selected)
+                                _selectedMoods.add(mood);
+                              else
+                                _selectedMoods.remove(mood);
+                            }),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _notesController,
+                    decoration: const InputDecoration(
+                      hintText: "Notes (optional)...",
+                      border: OutlineInputBorder(),
+                      isDense: true,
+                    ),
+                    maxLines: 2,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
+
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                if (isGym)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              _currentSets.add({"weight": "", "reps": ""});
+                              _setListKey++;
+                            });
+                          },
+                          child: const Text("ADD SET"),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: _currentSets.isEmpty
+                              ? null
+                              : () {
+                                  setState(() {
+                                    _currentSets.removeLast();
+                                    _setListKey++;
+                                  });
+                                },
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(
+                              color: _currentSets.isEmpty
+                                  ? AppColors.textMuted
+                                  : AppColors.error,
+                            ),
+                          ),
+                          child: Text(
+                            "DELETE SET",
+                            style: TextStyle(
+                              color: _currentSets.isEmpty
+                                  ? AppColors.textMuted
+                                  : AppColors.error,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                if (isGym) const SizedBox(height: 10),
+                if (isGym)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          icon: const Icon(Icons.timer, size: 18),
+                          label: Text("REST ${_restSeconds}s"),
+                          onPressed: _startRestTimer,
+                        ),
+                      ),
+                    ],
+                  ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (isSprint) {
+                        _currentSets = [
+                          {"reps": _currentReps, "time": _currentTime},
+                        ];
+                      }
+                      _nextExercise();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.all(15),
+                    ),
+                    child: Text(
+                      currentExerciseIndex == total - 1
+                          ? "FINISH WORKOUT"
+                          : "NEXT EXERCISE",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --- RUN SCREEN ---
+class EnhancedRunScreen extends StatefulWidget {
+  final WorkoutTemplate? template;
+  const EnhancedRunScreen({super.key, this.template});
+  @override
+  State<EnhancedRunScreen> createState() => _EnhancedRunScreenState();
+}
+
+class _EnhancedRunScreenState extends State<EnhancedRunScreen> {
+  final TextEditingController _distanceController = TextEditingController();
+  final TextEditingController _timeController = TextEditingController();
+  final TextEditingController _repsController = TextEditingController();
+  final TextEditingController _sprintDistanceController =
+      TextEditingController();
+  final TextEditingController _notesController = TextEditingController();
+  String selectedRunType = "Steady State";
+
+  int _energyLevel = 3;
+  List<String> _selectedMoods = [];
+  final List<String> _moodOptions = [
+    '💪 Strong',
+    '🔥 Pumped',
+    '😴 Tired',
+    '😤 Struggled',
+    '🎯 Focused',
+    '😌 Easy',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _setupRunDefaults();
+  }
+
+  void _setupRunDefaults() async {
+    String runName = "Run";
+
+    if (widget.template != null && widget.template!.exercises.isNotEmpty) {
+      for (var name in widget.template!.exercises) {
+        if ([
+          "10m",
+          "sprint",
+          "run",
+          "walk",
+          "shuttle",
+          "suicide",
+        ].any((k) => name.toLowerCase().contains(k))) {
+          runName = name;
+          break;
+        }
+      }
+    }
+
+    String lower = runName.toLowerCase();
+    if (lower.contains("interval") || lower.contains("15/15")) {
+      selectedRunType = "Intervals (15/15)";
+    } else if (lower.contains("suicide") || lower.contains("shuttle")) {
+      selectedRunType = "Suicides";
+    } else if (lower.contains("sprint") || lower.contains("flying")) {
+      selectedRunType = "Sprints";
+    } else {
+      selectedRunType = "Steady State";
+    }
+
+    Exercise dummy = Exercise(
+      name: runName,
+      category: "Running",
+      description: "",
+      difficulty: "Medium",
+    );
+    Exercise settings = await ExerciseSettingsManager.getExerciseWithSettings(
+      dummy,
+    );
+    if (!mounted) return;
+
+    setState(() {
+      String val = settings.repRange.toLowerCase();
+      if (val.contains("min")) {
+        _timeController.text = val.replaceAll(RegExp(r'[^0-9]'), '');
+      } else if (val.contains("km") || val.contains("m")) {
+        _distanceController.text = val.replaceAll(RegExp(r'[^0-9]'), '');
+      } else if (val.contains("rep")) {
+        _repsController.text = val.replaceAll(RegExp(r'[^0-9]'), '');
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Log Run")),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              const Text(
+                "Run Type",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 8,
+                children: [
+                  for (var type in [
+                    "Steady State",
+                    "Intervals (15/15)",
+                    "Sprints",
+                    "Suicides",
+                  ])
+                    FilterChip(
+                      label: Text(type),
+                      selected: selectedRunType == type,
+                      onSelected: (b) => setState(() => selectedRunType = type),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 30),
+
+              if (selectedRunType.contains("Sprint") ||
+                  selectedRunType.contains("Suicides")) ...[
+                TextField(
+                  controller: _repsController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: "Reps",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+
+              if (selectedRunType == "Sprints") ...[
+                TextField(
+                  controller: _sprintDistanceController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: "Distance per Sprint (m)",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+
+              if (!selectedRunType.contains("Suicides") &&
+                  selectedRunType != "Sprints") ...[
+                TextField(
+                  controller: _distanceController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: "Distance (km or m)",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+
+              TextField(
+                controller: _timeController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: "Total Time (min)",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.card,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "How did it feel?",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        const Text("Energy:"),
+                        const SizedBox(width: 10),
+                        ...List.generate(
+                          5,
+                          (i) => GestureDetector(
+                            onTap: () => setState(() => _energyLevel = i + 1),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                              ),
+                              child: Icon(
+                                i < _energyLevel
+                                    ? Icons.bolt
+                                    : Icons.bolt_outlined,
+                                color: i < _energyLevel
+                                    ? AppColors.warning
+                                    : AppColors.textMuted,
+                                size: 28,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: _moodOptions
+                          .map(
+                            (mood) => FilterChip(
+                              label: Text(
+                                mood,
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                              selected: _selectedMoods.contains(mood),
+                              onSelected: (selected) => setState(() {
+                                if (selected)
+                                  _selectedMoods.add(mood);
+                                else
+                                  _selectedMoods.remove(mood);
+                              }),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: _notesController,
+                      decoration: const InputDecoration(
+                        hintText: "Notes (optional)...",
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                      maxLines: 2,
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _logRun,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.all(15),
+                  ),
+                  child: const Text("LOG RUN"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _logRun() async {
+    double distance = double.tryParse(_distanceController.text) ?? 0;
+    double time = double.tryParse(_timeController.text) ?? 0;
+
+    if (selectedRunType == "Suicides") {
+      int reps = int.tryParse(_repsController.text) ?? 0;
+      distance = (reps * 60) / 1000;
+    } else if (selectedRunType == "Sprints") {
+      int reps = int.tryParse(_repsController.text) ?? 0;
+      int distPerSprint = int.tryParse(_sprintDistanceController.text) ?? 0;
+      distance = (reps * distPerSprint) / 1000;
+    }
+
+    double pace = (distance > 0) ? time / distance : 0;
+
+    final prefs = await PreferencesCache.getInstance();
+    List<String> history = prefs.getStringList('workout_history') ?? [];
+    final workoutData = {
+      'date': DateTime.now().toString().split(' ')[0],
+      'template_name': widget.template?.name ?? 'Run',
+      'type': 'running',
+      'runType': selectedRunType,
+      'distance': distance,
+      'time': time,
+      'pace': pace,
+      'energy': _energyLevel,
+      'mood': _selectedMoods,
+      'notes': _notesController.text,
+      'sets': [],
+    };
+    history.add(jsonEncode(workoutData));
+    await prefs.setStringList('workout_history', history);
+    WorkoutHistoryCache.invalidateCache();
+    StatsCache.invalidateCache();
+    await SyncService.exportData();
+
+    final today = DateTime.now();
+    await logWorkoutForDate(DateTime(today.year, today.month, today.day), {
+      'name': 'Run: $selectedRunType',
+      'type': 'running',
+      'energy': _energyLevel,
+      'mood': _selectedMoods,
+    });
+
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RunSummaryScreen(
+          distance: distance,
+          time: time,
+          pace: pace,
+          runType: selectedRunType,
+        ),
+      ),
+    );
+  }
+}
+
+// --- SUMMARIES ---
+class RunSummaryScreen extends StatelessWidget {
+  final double distance, time, pace;
+  final String runType;
+  const RunSummaryScreen({
+    super.key,
+    required this.distance,
+    required this.time,
+    required this.pace,
+    this.runType = "Run",
+  });
+
+  Future<void> _updateProfile() async {
+    UserProfile profile = await ProfileManager.getProfile();
+    profile.totalExercises++;
+    profile.totalRunExercises++; 
+    if (distance > profile.longestRunDistance)
+      profile.longestRunDistance = distance;
+    if (time > profile.longestRunTime) profile.longestRunTime = time;
+    await ProfileManager.saveProfile(profile);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Run Complete"),
+        automaticallyImplyLeading: false,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              runType,
+              style: const TextStyle(fontSize: 22, color: AppColors.secondary),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              "${distance.toStringAsFixed(2)} km",
+              style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "${time.toStringAsFixed(0)} min",
+              style: const TextStyle(fontSize: 20, color: AppColors.textMuted),
+            ),
+            Text(
+              "${pace.toStringAsFixed(2)} min/km",
+              style: const TextStyle(fontSize: 20, color: AppColors.primary),
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () async {
+                await _updateProfile();
+                if (context.mounted) Navigator.pop(context, true);
+              },
+              child: const Text("DONE"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class WorkoutSummaryScreen extends StatelessWidget {
+  final String type, scoreName, unit;
+  final double scoreValue;
+  const WorkoutSummaryScreen({
+    super.key,
+    required this.type,
+    required this.scoreName,
+    required this.scoreValue,
+    required this.unit,
+  });
+
+  Future<void> _updateProfile() async {
+    UserProfile profile = await ProfileManager.getProfile();
+    profile.totalExercises++;
+    if (type == "Gym") {
+      double current = profile.personalRecords[scoreName] ?? 0;
+      profile.personalRecords[scoreName] = max(current, scoreValue);
+      if (scoreValue > profile.maxLifted) profile.maxLifted = scoreValue;
+    }
+    await ProfileManager.saveProfile(profile);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Workout Complete"),
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const EditGoalsScreen()),
+            ),
+          ),
+        ],
+      ),
+      body: FutureBuilder<Map<String, double>>(
+        future: ProStats.getGoals(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          double goal = 0;
+          if (snapshot.hasData) goal = snapshot.data![scoreName] ?? 0;
+
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  scoreName,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: AppColors.textMuted,
+                  ),
+                ),
+                Text(
+                  "${scoreValue.toStringAsFixed(1)} $unit",
+                  style: const TextStyle(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                if (goal > 0) ...[
+                  const SizedBox(height: 20),
+                  Text(
+                    "Pro Goal: $goal $unit",
+                    style: const TextStyle(color: AppColors.secondary),
+                  ),
+                ],
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  onPressed: () async {
+                    await _updateProfile();
+                    if (context.mounted) Navigator.pop(context, true);
+                  },
+                  child: const Text("DONE"),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}'''
+
+# --- 2. GLOBAL REGEX FIXES ---
+def patch_file(filepath, content):
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write(content)
+    print(f"✅ Replaced critical file: {filepath}")
+
+def apply_global_regex(filepath):
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        original = content
+        # Fix deprecated withOpacity -> withValues
+        content = re.sub(r'\.withOpacity\s*\(([^)]+)\)', r'.withValues(alpha: \1)', content)
+        
+        if content != original:
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(content)
+            print(f"🛠️ Patched deprecations in: {filepath}")
+            return True
+    except Exception as e:
+        print(f"❌ Error patching {filepath}: {e}")
+    return False
+
+def run_repairs():
+    print("🚑 Hybrid Athlete Repair Crew Starting...")
+    
+    # 1. Overwrite critical files with corrected content
+    patch_file('lib/screens/home_screen.dart', FIXED_HOME_SCREEN)
+    patch_file('lib/screens/settings_screen.dart', FIXED_SETTINGS_SCREEN)
+    patch_file('lib/screens/workout_screens.dart', FIXED_WORKOUT_SCREENS)
+    
+    # 2. Run global scan for other files
+    count = 0
+    for root, dirs, files in os.walk("lib"):
+        for file in files:
+            if file.endswith(".dart"):
+                # Skip the ones we just overwrote
+                if file in ['home_screen.dart', 'settings_screen.dart', 'workout_screens.dart']:
+                    continue
+                
+                filepath = os.path.join(root, file)
+                if apply_global_regex(filepath):
+                    count += 1
+
+    print(f"🏁 Repair complete. Patched deprecations in {count} other files.")
+
+if __name__ == "__main__":
+    run_repairs()

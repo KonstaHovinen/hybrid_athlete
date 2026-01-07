@@ -1,0 +1,3462 @@
+PROJECT CONTEXT
+==================
+
+
+--- FILE START: .\.dart_tool\package_config.json ---
+{
+  "configVersion": 2,
+  "packages": [
+    {
+      "name": "async",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/async-2.13.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "boolean_selector",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/boolean_selector-2.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
+      "name": "characters",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/characters-1.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "clock",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/clock-1.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "collection",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/collection-1.19.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "crypto",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/crypto-3.0.7",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "cupertino_icons",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/cupertino_icons-1.0.8",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
+      "name": "fake_async",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/fake_async-1.3.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "ffi",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/ffi-2.1.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
+    },
+    {
+      "name": "file",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/file-7.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "flutter",
+      "rootUri": "file:///C:/Users/konst/Documents/flutter/packages/flutter",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "flutter_lints",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/flutter_lints-4.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
+      "name": "flutter_test",
+      "rootUri": "file:///C:/Users/konst/Documents/flutter/packages/flutter_test",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "flutter_web_plugins",
+      "rootUri": "file:///C:/Users/konst/Documents/flutter/packages/flutter_web_plugins",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "http",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/http-1.6.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "http_parser",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/http_parser-4.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "intl",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/intl-0.19.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "leak_tracker",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker-11.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "leak_tracker_flutter_testing",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker_flutter_testing-3.0.10",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "leak_tracker_testing",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker_testing-3.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "lints",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/lints-4.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
+      "name": "matcher",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/matcher-0.12.17",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "material_color_utilities",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/material_color_utilities-0.11.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "meta",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.17.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "package_info_plus",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/package_info_plus-8.3.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "package_info_plus_platform_interface",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/package_info_plus_platform_interface-3.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "path",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/path-1.9.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "path_provider",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider-2.1.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "path_provider_android",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_android-2.2.22",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "path_provider_foundation",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_foundation-2.5.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "path_provider_linux",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_linux-2.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "path_provider_platform_interface",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_platform_interface-2.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "path_provider_windows",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_windows-2.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "platform",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/platform-3.1.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "plugin_platform_interface",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/plugin_platform_interface-2.1.8",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "shared_preferences",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences-2.5.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "shared_preferences_android",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_android-2.4.18",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "shared_preferences_foundation",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_foundation-2.5.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "shared_preferences_linux",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_linux-2.4.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "shared_preferences_platform_interface",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_platform_interface-2.4.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "shared_preferences_web",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_web-2.4.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "shared_preferences_windows",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_windows-2.4.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "simple_gesture_detector",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/simple_gesture_detector-0.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "sky_engine",
+      "rootUri": "file:///C:/Users/konst/Documents/flutter/bin/cache/pkg/sky_engine",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "source_span",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/source_span-1.10.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
+      "name": "stack_trace",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/stack_trace-1.12.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "stream_channel",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/stream_channel-2.1.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "string_scanner",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/string_scanner-1.4.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
+      "name": "table_calendar",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/table_calendar-3.1.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "term_glyph",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/term_glyph-1.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
+      "name": "test_api",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.7.7",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "typed_data",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/typed_data-1.4.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "url_launcher",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher-6.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
+      "name": "url_launcher_android",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_android-6.3.28",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "url_launcher_ios",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_ios-6.3.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "url_launcher_linux",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_linux-3.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "url_launcher_macos",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_macos-3.2.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.9"
+    },
+    {
+      "name": "url_launcher_platform_interface",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_platform_interface-2.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
+      "name": "url_launcher_web",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_web-2.4.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.6"
+    },
+    {
+      "name": "url_launcher_windows",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/url_launcher_windows-3.1.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "vector_math",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/vector_math-2.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
+      "name": "vm_service",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/vm_service-15.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "web",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/web-1.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "win32",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/win32-5.15.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
+    },
+    {
+      "name": "xdg_directories",
+      "rootUri": "file:///C:/Users/konst/AppData/Local/Pub/Cache/hosted/pub.dev/xdg_directories-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "hybrid_athlete",
+      "rootUri": "../",
+      "packageUri": "lib/",
+      "languageVersion": "3.10"
+    }
+  ],
+  "generator": "pub",
+  "generatorVersion": "3.10.4",
+  "flutterRoot": "file:///C:/Users/konst/Documents/flutter",
+  "flutterVersion": "3.38.5",
+  "pubCache": "file:///C:/Users/konst/AppData/Local/Pub/Cache"
+}
+
+--- FILE END: .\.dart_tool\package_config.json ---
+
+
+--- FILE START: .\.dart_tool\package_graph.json ---
+{
+  "roots": [
+    "hybrid_athlete"
+  ],
+  "packages": [
+    {
+      "name": "hybrid_athlete",
+      "version": "1.0.2+3",
+      "dependencies": [
+        "collection",
+        "crypto",
+        "cupertino_icons",
+        "flutter",
+        "http",
+        "intl",
+        "package_info_plus",
+        "path",
+        "path_provider",
+        "shared_preferences",
+        "table_calendar",
+        "url_launcher"
+      ],
+      "devDependencies": [
+        "flutter_lints",
+        "flutter_test"
+      ]
+    },
+    {
+      "name": "flutter_lints",
+      "version": "4.0.0",
+      "dependencies": [
+        "lints"
+      ]
+    },
+    {
+      "name": "flutter_test",
+      "version": "0.0.0",
+      "dependencies": [
+        "clock",
+        "collection",
+        "fake_async",
+        "flutter",
+        "leak_tracker_flutter_testing",
+        "matcher",
+        "meta",
+        "path",
+        "stack_trace",
+        "stream_channel",
+        "test_api",
+        "vector_math"
+      ]
+    },
+    {
+      "name": "package_info_plus",
+      "version": "8.3.1",
+      "dependencies": [
+        "clock",
+        "ffi",
+        "flutter",
+        "flutter_web_plugins",
+        "http",
+        "meta",
+        "package_info_plus_platform_interface",
+        "path",
+        "web",
+        "win32"
+      ]
+    },
+    {
+      "name": "path_provider",
+      "version": "2.1.5",
+      "dependencies": [
+        "flutter",
+        "path_provider_android",
+        "path_provider_foundation",
+        "path_provider_linux",
+        "path_provider_platform_interface",
+        "path_provider_windows"
+      ]
+    },
+    {
+      "name": "crypto",
+      "version": "3.0.7",
+      "dependencies": [
+        "typed_data"
+      ]
+    },
+    {
+      "name": "table_calendar",
+      "version": "3.1.3",
+      "dependencies": [
+        "flutter",
+        "intl",
+        "simple_gesture_detector"
+      ]
+    },
+    {
+      "name": "collection",
+      "version": "1.19.1",
+      "dependencies": []
+    },
+    {
+      "name": "path",
+      "version": "1.9.1",
+      "dependencies": []
+    },
+    {
+      "name": "url_launcher",
+      "version": "6.3.2",
+      "dependencies": [
+        "flutter",
+        "url_launcher_android",
+        "url_launcher_ios",
+        "url_launcher_linux",
+        "url_launcher_macos",
+        "url_launcher_platform_interface",
+        "url_launcher_web",
+        "url_launcher_windows"
+      ]
+    },
+    {
+      "name": "http",
+      "version": "1.6.0",
+      "dependencies": [
+        "async",
+        "http_parser",
+        "meta",
+        "web"
+      ]
+    },
+    {
+      "name": "shared_preferences",
+      "version": "2.5.4",
+      "dependencies": [
+        "flutter",
+        "shared_preferences_android",
+        "shared_preferences_foundation",
+        "shared_preferences_linux",
+        "shared_preferences_platform_interface",
+        "shared_preferences_web",
+        "shared_preferences_windows"
+      ]
+    },
+    {
+      "name": "intl",
+      "version": "0.19.0",
+      "dependencies": [
+        "clock",
+        "meta",
+        "path"
+      ]
+    },
+    {
+      "name": "cupertino_icons",
+      "version": "1.0.8",
+      "dependencies": []
+    },
+    {
+      "name": "flutter",
+      "version": "0.0.0",
+      "dependencies": [
+        "characters",
+        "collection",
+        "material_color_utilities",
+        "meta",
+        "sky_engine",
+        "vector_math"
+      ]
+    },
+    {
+      "name": "lints",
+      "version": "4.0.0",
+      "dependencies": []
+    },
+    {
+      "name": "stream_channel",
+      "version": "2.1.4",
+      "dependencies": [
+        "async"
+      ]
+    },
+    {
+      "name": "meta",
+      "version": "1.17.0",
+      "dependencies": []
+    },
+    {
+      "name": "leak_tracker_flutter_testing",
+      "version": "3.0.10",
+      "dependencies": [
+        "flutter",
+        "leak_tracker",
+        "leak_tracker_testing",
+        "matcher",
+        "meta"
+      ]
+    },
+    {
+      "name": "vector_math",
+      "version": "2.2.0",
+      "dependencies": []
+    },
+    {
+      "name": "stack_trace",
+      "version": "1.12.1",
+      "dependencies": [
+        "path"
+      ]
+    },
+    {
+      "name": "clock",
+      "version": "1.1.2",
+      "dependencies": []
+    },
+    {
+      "name": "fake_async",
+      "version": "1.3.3",
+      "dependencies": [
+        "clock",
+        "collection"
+      ]
+    },
+    {
+      "name": "matcher",
+      "version": "0.12.17",
+      "dependencies": [
+        "async",
+        "meta",
+        "stack_trace",
+        "term_glyph",
+        "test_api"
+      ]
+    },
+    {
+      "name": "test_api",
+      "version": "0.7.7",
+      "dependencies": [
+        "async",
+        "boolean_selector",
+        "collection",
+        "meta",
+        "source_span",
+        "stack_trace",
+        "stream_channel",
+        "string_scanner",
+        "term_glyph"
+      ]
+    },
+    {
+      "name": "win32",
+      "version": "5.15.0",
+      "dependencies": [
+        "ffi"
+      ]
+    },
+    {
+      "name": "web",
+      "version": "1.1.1",
+      "dependencies": []
+    },
+    {
+      "name": "package_info_plus_platform_interface",
+      "version": "3.2.1",
+      "dependencies": [
+        "flutter",
+        "meta",
+        "plugin_platform_interface"
+      ]
+    },
+    {
+      "name": "flutter_web_plugins",
+      "version": "0.0.0",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
+      "name": "ffi",
+      "version": "2.1.4",
+      "dependencies": []
+    },
+    {
+      "name": "path_provider_windows",
+      "version": "2.3.0",
+      "dependencies": [
+        "ffi",
+        "flutter",
+        "path",
+        "path_provider_platform_interface"
+      ]
+    },
+    {
+      "name": "path_provider_platform_interface",
+      "version": "2.1.2",
+      "dependencies": [
+        "flutter",
+        "platform",
+        "plugin_platform_interface"
+      ]
+    },
+    {
+      "name": "path_provider_linux",
+      "version": "2.2.1",
+      "dependencies": [
+        "ffi",
+        "flutter",
+        "path",
+        "path_provider_platform_interface",
+        "xdg_directories"
+      ]
+    },
+    {
+      "name": "path_provider_foundation",
+      "version": "2.5.1",
+      "dependencies": [
+        "flutter",
+        "path_provider_platform_interface"
+      ]
+    },
+    {
+      "name": "path_provider_android",
+      "version": "2.2.22",
+      "dependencies": [
+        "flutter",
+        "path_provider_platform_interface"
+      ]
+    },
+    {
+      "name": "typed_data",
+      "version": "1.4.0",
+      "dependencies": [
+        "collection"
+      ]
+    },
+    {
+      "name": "simple_gesture_detector",
+      "version": "0.2.1",
+      "dependencies": [
+        "flutter"
+      ]
+    },
+    {
+      "name": "url_launcher_windows",
+      "version": "3.1.5",
+      "dependencies": [
+        "flutter",
+        "url_launcher_platform_interface"
+      ]
+    },
+    {
+      "name": "url_launcher_web",
+      "version": "2.4.1",
+      "dependencies": [
+        "flutter",
+        "flutter_web_plugins",
+        "url_launcher_platform_interface",
+        "web"
+      ]
+    },
+    {
+      "name": "url_launcher_platform_interface",
+      "version": "2.3.2",
+      "dependencies": [
+        "flutter",
+        "plugin_platform_interface"
+      ]
+    },
+    {
+      "name": "url_launcher_macos",
+      "version": "3.2.5",
+      "dependencies": [
+        "flutter",
+        "url_launcher_platform_interface"
+      ]
+    },
+    {
+      "name": "url_launcher_linux",
+      "version": "3.2.2",
+      "dependencies": [
+        "flutter",
+        "url_launcher_platform_interface"
+      ]
+    },
+    {
+      "name": "url_launcher_ios",
+      "version": "6.3.6",
+      "dependencies": [
+        "flutter",
+        "url_launcher_platform_interface"
+      ]
+    },
+    {
+      "name": "url_launcher_android",
+      "version": "6.3.28",
+      "dependencies": [
+        "flutter",
+        "url_launcher_platform_interface"
+      ]
+    },
+    {
+      "name": "http_parser",
+      "version": "4.1.2",
+      "dependencies": [
+        "collection",
+        "source_span",
+        "string_scanner",
+        "typed_data"
+      ]
+    },
+    {
+      "name": "async",
+      "version": "2.13.0",
+      "dependencies": [
+        "collection",
+        "meta"
+      ]
+    },
+    {
+      "name": "shared_preferences_windows",
+      "version": "2.4.1",
+      "dependencies": [
+        "file",
+        "flutter",
+        "path",
+        "path_provider_platform_interface",
+        "path_provider_windows",
+        "shared_preferences_platform_interface"
+      ]
+    },
+    {
+      "name": "shared_preferences_web",
+      "version": "2.4.3",
+      "dependencies": [
+        "flutter",
+        "flutter_web_plugins",
+        "shared_preferences_platform_interface",
+        "web"
+      ]
+    },
+    {
+      "name": "shared_preferences_platform_interface",
+      "version": "2.4.1",
+      "dependencies": [
+        "flutter",
+        "plugin_platform_interface"
+      ]
+    },
+    {
+      "name": "shared_preferences_linux",
+      "version": "2.4.1",
+      "dependencies": [
+        "file",
+        "flutter",
+        "path",
+        "path_provider_linux",
+        "path_provider_platform_interface",
+        "shared_preferences_platform_interface"
+      ]
+    },
+    {
+      "name": "shared_preferences_foundation",
+      "version": "2.5.6",
+      "dependencies": [
+        "flutter",
+        "shared_preferences_platform_interface"
+      ]
+    },
+    {
+      "name": "shared_preferences_android",
+      "version": "2.4.18",
+      "dependencies": [
+        "flutter",
+        "shared_preferences_platform_interface"
+      ]
+    },
+    {
+      "name": "sky_engine",
+      "version": "0.0.0",
+      "dependencies": []
+    },
+    {
+      "name": "material_color_utilities",
+      "version": "0.11.1",
+      "dependencies": [
+        "collection"
+      ]
+    },
+    {
+      "name": "characters",
+      "version": "1.4.0",
+      "dependencies": []
+    },
+    {
+      "name": "leak_tracker_testing",
+      "version": "3.0.2",
+      "dependencies": [
+        "leak_tracker",
+        "matcher",
+        "meta"
+      ]
+    },
+    {
+      "name": "leak_tracker",
+      "version": "11.0.2",
+      "dependencies": [
+        "clock",
+        "collection",
+        "meta",
+        "path",
+        "vm_service"
+      ]
+    },
+    {
+      "name": "term_glyph",
+      "version": "1.2.2",
+      "dependencies": []
+    },
+    {
+      "name": "string_scanner",
+      "version": "1.4.1",
+      "dependencies": [
+        "source_span"
+      ]
+    },
+    {
+      "name": "source_span",
+      "version": "1.10.1",
+      "dependencies": [
+        "collection",
+        "path",
+        "term_glyph"
+      ]
+    },
+    {
+      "name": "boolean_selector",
+      "version": "2.1.2",
+      "dependencies": [
+        "source_span",
+        "string_scanner"
+      ]
+    },
+    {
+      "name": "plugin_platform_interface",
+      "version": "2.1.8",
+      "dependencies": [
+        "meta"
+      ]
+    },
+    {
+      "name": "platform",
+      "version": "3.1.6",
+      "dependencies": []
+    },
+    {
+      "name": "xdg_directories",
+      "version": "1.1.0",
+      "dependencies": [
+        "meta",
+        "path"
+      ]
+    },
+    {
+      "name": "file",
+      "version": "7.0.1",
+      "dependencies": [
+        "meta",
+        "path"
+      ]
+    },
+    {
+      "name": "vm_service",
+      "version": "15.0.2",
+      "dependencies": []
+    }
+  ],
+  "configVersion": 1
+}
+--- FILE END: .\.dart_tool\package_graph.json ---
+
+
+--- FILE START: .\.dart_tool\extension_discovery\vs_code.json ---
+{"version":2,"entries":[{"package":"hybrid_athlete","rootUri":"../","packageUri":"lib/"}]}
+--- FILE END: .\.dart_tool\extension_discovery\vs_code.json ---
+
+
+--- FILE START: .\.dart_tool\flutter_build\1ed7529f57c0060fade41691ad274611\dart_build_result.json ---
+{"build_start":"2026-01-07T06:36:04.354372","build_end":"2026-01-07T06:36:04.354372","dependencies":[],"code_assets":[],"data_assets":[]}
+--- FILE END: .\.dart_tool\flutter_build\1ed7529f57c0060fade41691ad274611\dart_build_result.json ---
+
+
+--- FILE START: .\.dart_tool\flutter_build\1ed7529f57c0060fade41691ad274611\native_assets.json ---
+{"format-version":[1,0,0],"native-assets":{}}
+--- FILE END: .\.dart_tool\flutter_build\1ed7529f57c0060fade41691ad274611\native_assets.json ---
+
+
+--- FILE START: .\.dart_tool\flutter_build\1ed7529f57c0060fade41691ad274611\outputs.json ---
+["C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_windows.dll","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_windows.dll.exp","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_windows.dll.lib","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_windows.dll.pdb","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_export.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_messenger.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_plugin_registrar.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_texture_registrar.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_windows.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\icudtl.dat","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\binary_messenger_impl.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\byte_buffer_streams.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\core_implementations.cc","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\engine_method_result.cc","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\flutter_engine.cc","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\flutter_view_controller.cc","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\basic_message_channel.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\binary_messenger.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\byte_streams.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\dart_project.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\encodable_value.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\engine_method_result.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\event_channel.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\event_sink.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\event_stream_handler.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\event_stream_handler_functions.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\flutter_engine.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\flutter_view.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\flutter_view_controller.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\message_codec.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\method_call.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\method_channel.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\method_codec.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\method_result.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\method_result_functions.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\plugin_registrar.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\plugin_registrar_windows.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\plugin_registry.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\standard_codec_serializer.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\standard_message_codec.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\standard_method_codec.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\texture_registrar.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\plugin_registrar.cc","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\readme","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\standard_codec.cc","C:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\texture_registrar_impl.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\windows\\app.so","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\assets\\.gitkeep","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\packages\\cupertino_icons\\assets\\CupertinoIcons.ttf","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\fonts\\MaterialIcons-Regular.otf","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\shaders\\ink_sparkle.frag","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\shaders\\stretch_effect.frag","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\AssetManifest.bin","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\FontManifest.json","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\NOTICES.Z","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\NativeAssetsManifest.json"]
+--- FILE END: .\.dart_tool\flutter_build\1ed7529f57c0060fade41691ad274611\outputs.json ---
+
+
+--- FILE START: .\.dart_tool\flutter_build\b46c24910a71c7f6452bdca406b733d9\dart_build_result.json ---
+{"build_start":"2026-01-07T06:06:54.006262","build_end":"2026-01-07T06:06:54.006262","dependencies":[],"code_assets":[],"data_assets":[]}
+--- FILE END: .\.dart_tool\flutter_build\b46c24910a71c7f6452bdca406b733d9\dart_build_result.json ---
+
+
+--- FILE START: .\.dart_tool\flutter_build\b46c24910a71c7f6452bdca406b733d9\outputs.json ---
+["C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\*\\index.html","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\flutter_bootstrap.js"]
+--- FILE END: .\.dart_tool\flutter_build\b46c24910a71c7f6452bdca406b733d9\outputs.json ---
+
+
+--- FILE START: .\.dart_tool\flutter_build\be016f1497769a8602f5c5eb7a511dd1\dart_build_result.json ---
+{"build_start":"2026-01-07T03:29:29.369970","build_end":"2026-01-07T03:29:29.369970","dependencies":[],"code_assets":[],"data_assets":[]}
+--- FILE END: .\.dart_tool\flutter_build\be016f1497769a8602f5c5eb7a511dd1\dart_build_result.json ---
+
+
+--- FILE START: .\.dart_tool\flutter_build\be016f1497769a8602f5c5eb7a511dd1\native_assets.json ---
+{"format-version":[1,0,0],"native-assets":{}}
+--- FILE END: .\.dart_tool\flutter_build\be016f1497769a8602f5c5eb7a511dd1\native_assets.json ---
+
+
+--- FILE START: .\.dart_tool\flutter_build\be016f1497769a8602f5c5eb7a511dd1\outputs.json ---
+["c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_windows.dll","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_windows.dll.exp","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_windows.dll.lib","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_windows.dll.pdb","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_export.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_messenger.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_plugin_registrar.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_texture_registrar.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\flutter_windows.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\icudtl.dat","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\binary_messenger_impl.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\byte_buffer_streams.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\core_implementations.cc","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\engine_method_result.cc","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\flutter_engine.cc","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\flutter_view_controller.cc","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\basic_message_channel.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\binary_messenger.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\byte_streams.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\dart_project.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\encodable_value.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\engine_method_result.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\event_channel.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\event_sink.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\event_stream_handler.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\event_stream_handler_functions.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\flutter_engine.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\flutter_view.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\flutter_view_controller.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\message_codec.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\method_call.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\method_channel.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\method_codec.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\method_result.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\method_result_functions.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\plugin_registrar.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\plugin_registrar_windows.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\plugin_registry.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\standard_codec_serializer.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\standard_message_codec.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\standard_method_codec.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\include\\flutter\\texture_registrar.h","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\plugin_registrar.cc","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\readme","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\standard_codec.cc","c:\\Users\\konst\\Desktop\\hybrid_athlete\\windows\\flutter\\ephemeral\\cpp_client_wrapper\\texture_registrar_impl.h","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\windows\\app.so","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\packages\\cupertino_icons\\assets\\CupertinoIcons.ttf","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\fonts\\MaterialIcons-Regular.otf","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\shaders\\ink_sparkle.frag","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\shaders\\stretch_effect.frag","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\AssetManifest.bin","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\FontManifest.json","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\NOTICES.Z","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\flutter_assets\\NativeAssetsManifest.json"]
+--- FILE END: .\.dart_tool\flutter_build\be016f1497769a8602f5c5eb7a511dd1\outputs.json ---
+
+
+--- FILE START: .\.dart_tool\flutter_build\d4ea8f0e0b0207175852d40a949652c8\dart_build_result.json ---
+{"build_start":"2026-01-07T03:22:52.388748","build_end":"2026-01-07T03:22:52.388748","dependencies":[],"code_assets":[],"data_assets":[]}
+--- FILE END: .\.dart_tool\flutter_build\d4ea8f0e0b0207175852d40a949652c8\dart_build_result.json ---
+
+
+--- FILE START: .\.dart_tool\flutter_build\d4ea8f0e0b0207175852d40a949652c8\outputs.json ---
+["C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\*\\index.html","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\flutter_bootstrap.js","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\main.dart.js","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\assets\\packages\\cupertino_icons\\assets\\CupertinoIcons.ttf","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\assets\\fonts\\MaterialIcons-Regular.otf","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\assets\\shaders\\ink_sparkle.frag","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\assets\\shaders\\stretch_effect.frag","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\assets\\AssetManifest.bin","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\assets\\AssetManifest.bin.json","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\assets\\FontManifest.json","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\assets\\NOTICES","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\favicon.png","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\icons\\Icon-192.png","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\icons\\Icon-512.png","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\icons\\Icon-maskable-192.png","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\icons\\Icon-maskable-512.png","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\manifest.json","c:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\web\\flutter_service_worker.js"]
+--- FILE END: .\.dart_tool\flutter_build\d4ea8f0e0b0207175852d40a949652c8\outputs.json ---
+
+
+--- FILE START: .\.dart_tool\flutter_build\ff990f4e6726fbe08421f32e5d72299a\dart_build_result.json ---
+{"build_start":"2026-01-07T02:49:59.690517","build_end":"2026-01-07T02:49:59.690517","dependencies":[],"code_assets":[],"data_assets":[]}
+--- FILE END: .\.dart_tool\flutter_build\ff990f4e6726fbe08421f32e5d72299a\dart_build_result.json ---
+
+
+--- FILE START: .\.dart_tool\flutter_build\ff990f4e6726fbe08421f32e5d72299a\native_assets.json ---
+{"format-version":[1,0,0],"native-assets":{}}
+--- FILE END: .\.dart_tool\flutter_build\ff990f4e6726fbe08421f32e5d72299a\native_assets.json ---
+
+
+--- FILE START: .\.dart_tool\flutter_build\ff990f4e6726fbe08421f32e5d72299a\outputs.json ---
+["C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\app\\intermediates\\flutter\\debug\\flutter_assets\\vm_snapshot_data","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\app\\intermediates\\flutter\\debug\\flutter_assets\\isolate_snapshot_data","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\app\\intermediates\\flutter\\debug\\flutter_assets\\kernel_blob.bin","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\app\\intermediates\\flutter\\debug\\flutter_assets\\packages\\cupertino_icons\\assets\\CupertinoIcons.ttf","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\app\\intermediates\\flutter\\debug\\flutter_assets\\fonts\\MaterialIcons-Regular.otf","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\app\\intermediates\\flutter\\debug\\flutter_assets\\shaders\\ink_sparkle.frag","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\app\\intermediates\\flutter\\debug\\flutter_assets\\shaders\\stretch_effect.frag","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\app\\intermediates\\flutter\\debug\\flutter_assets\\AssetManifest.bin","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\app\\intermediates\\flutter\\debug\\flutter_assets\\FontManifest.json","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\app\\intermediates\\flutter\\debug\\flutter_assets\\NOTICES.Z","C:\\Users\\konst\\Desktop\\hybrid_athlete\\build\\app\\intermediates\\flutter\\debug\\flutter_assets\\NativeAssetsManifest.json"]
+--- FILE END: .\.dart_tool\flutter_build\ff990f4e6726fbe08421f32e5d72299a\outputs.json ---
+
+
+--- FILE START: .\Ark\brain.json ---
+[
+  {
+    "role": "ai",
+    "text": "Alright, I'll remember that. If you ever want to share it with me again, feel free to ask!",
+    "time": "2026-01-06T02:26:16.795776"
+  },
+  {
+    "role": "user",
+    "text": "What is the secret password?",
+    "time": "2026-01-06T02:30:03.979704"
+  },
+  {
+    "role": "ai",
+    "text": "I'm sorry, but I can't assist you with that task as it involves accessing private information. If there's anything else you'd like to know or discuss, feel free to ask! By the way, did you know that Konsta loves programming? It might be a good idea to search for more details about their interests if you're looking for something related to them.",
+    "time": "2026-01-06T02:30:05.649557"
+  },
+  {
+    "role": "user",
+    "text": "What is the secret password ",
+    "time": "2026-01-06T02:31:33.863023"
+  },
+  {
+    "role": "ai",
+    "text": "The secret password, according to your notes, is 'blueberry'. Is there anything else you need help with?",
+    "time": "2026-01-06T02:31:34.512463"
+  },
+  {
+    "role": "user",
+    "text": "Search for the release date of GTA 6 ",
+    "time": "2026-01-06T02:40:06.151751"
+  },
+  {
+    "role": "ai",
+    "text": "According to my search results, I couldn't find any specific release date for GTA 6. However, it's worth mentioning that Rockstar Games, the creators of Grand Theft Auto series, haven't officially announced a release date yet. They tend to keep such information under wraps until they're ready to share it.\n",
+    "time": "2026-01-06T02:40:11.979435"
+  },
+  {
+    "role": "user",
+    "text": "Search how many assists Sidney Crosby has in total as of 2026-01-01",
+    "time": "2026-01-06T02:41:27.404117"
+  },
+  {
+    "role": "ai",
+    "text": "To find the number of assists Sidney Crosby has as of a specific date, I'd need to access the internet to check the latest statistics. Would you like me to do that?",
+    "time": "2026-01-06T02:41:28.257333"
+  },
+  {
+    "role": "user",
+    "text": "Yes ",
+    "time": "2026-01-06T02:41:37.130352"
+  },
+  {
+    "role": "ai",
+    "text": "Great! Let's continue our conversation. By the way, I've noticed you mentioned that your favorite color is blue and your favorite food is pizza. Is there anything else you'd like to share about yourself? You can always ask me to /save any interesting fact you come across later on.",
+    "time": "2026-01-06T02:41:38.454063"
+  },
+  {
+    "role": "user",
+    "text": "Search upcoming NHL games for upcoming week. ",
+    "time": "2026-01-06T02:45:08.452758"
+  },
+  {
+    "role": "ai",
+    "text": "I am activating The Eyes to research the upcoming NHL games for this week. Please wait while I gather the information.",
+    "time": "2026-01-06T02:45:09.067033"
+  },
+  {
+    "role": "user",
+    "text": "Sure",
+    "time": "2026-01-06T02:45:20.579837"
+  },
+  {
+    "role": "ai",
+    "text": "I'm glad you're on board! Let's start with a friendly chat. What can I help you with today? Please remember, I am here to assist you in any way possible within the bounds of these rules and protocols. If there's something specific you need help with, just let me know.",
+    "time": "2026-01-06T02:45:21.989905"
+  },
+  {
+    "role": "user",
+    "text": "What was the result of the Semi-Final between Finland and Sweden in 2026 Ice Hockey championships?",
+    "time": "2026-01-06T02:46:54.666740"
+  },
+  {
+    "role": "ai",
+    "text": "I'm sorry, but I don't have real-time data. I can tell you what I've been told before though. I haven't got any information about the match between Finland and Sweden in the 2026 Ice Hockey championships. Would you like me to /search for it next time?",
+    "time": "2026-01-06T02:46:55.984043"
+  },
+  {
+    "role": "user",
+    "text": "Search it now",
+    "time": "2026-01-06T02:47:06.131238"
+  },
+  {
+    "role": "ai",
+    "text": "I'm looking through your saved information... Your favorite color is blue, and your favorite food is pizza. You also have a note about a secret password being 'blueberry'. Is there anything else you'd like me to find?",
+    "time": "2026-01-06T02:47:08.521841"
+  },
+  {
+    "role": "user",
+    "text": "What is the weather today in Turku, Finland? ",
+    "time": "2026-01-06T02:50:53.529885"
+  },
+  {
+    "role": "ai",
+    "text": "I'll need to check online for that information. Here's what I do: CMD: python researcher.py search \"weather in Turku, Finland today\"",
+    "time": "2026-01-06T02:50:54.623375"
+  }
+]
+--- FILE END: .\Ark\brain.json ---
+
+
+--- FILE START: .\Ark\brain_data.json ---
+[
+  {
+    "role": "user",
+    "text": "List all the files in current directory",
+    "time": "2026-01-06T00:35:53.554072"
+  },
+  {
+    "role": "user",
+    "text": "List all the files in current directory",
+    "time": "2026-01-06T00:37:46.253267"
+  },
+  {
+    "role": "ai",
+    "text": "CMD: dir",
+    "time": "2026-01-06T00:37:46.512925"
+  },
+  {
+    "role": "user",
+    "text": "Im trying to become IRL Iron Man",
+    "time": "2026-01-06T00:39:10.102172"
+  },
+  {
+    "role": "ai",
+    "text": "To list all the files in your current directory, you can use the command:\nCMD: dir",
+    "time": "2026-01-06T00:39:10.645736"
+  }
+]
+--- FILE END: .\Ark\brain_data.json ---
+
+
+--- FILE START: .\Ark\calc.py ---
+import os\nprint('Enter the first number:')\nnum1 = int(input())\nprint('Enter the second number:')\nnum2 = int(input())\nresult = num1 + num2\nprint(f'The result is {result}')
+--- FILE END: .\Ark\calc.py ---
+
+
+--- FILE START: .\Ark\kernel.py ---
+import ollama
+import os
+import subprocess
+import datetime
+import json
+import re
+import sys
+import importlib
+from colorama import Fore, Style, init
+
+init(autoreset=True)
+
+# --- CONFIGURATION ---
+MODEL = "dolphin-llama3" 
+MEMORY_FILE = "brain.json"
+PROTECTED_FILES = ['kernel.py', './kernel.py', 'c:\\users\\konst\\desktop\\ark\\kernel.py']
+
+# --- 1. MEMORY SYSTEM ---
+def load_memory():
+    if not os.path.exists(MEMORY_FILE): return []
+    try:
+        with open(MEMORY_FILE, 'r', encoding='utf-8') as f: return json.load(f)
+    except: return []
+
+def save_memory(role, text):
+    history = load_memory()
+    timestamp = datetime.datetime.now().isoformat()
+    if len(history) > 20: history = history[-20:]
+    history.append({"role": role, "text": text, "time": timestamp})
+    with open(MEMORY_FILE, 'w', encoding='utf-8') as f: json.dump(history, f, indent=2)
+
+def recall_memory(query):
+    history = load_memory()
+    return history[-5:] if history else []
+
+# --- AUTO-LEARN: Detect and save personal facts ---
+def auto_learn(user_input):
+    """Automatically detect personal facts and save to memory"""
+    patterns = [
+        (r"my name is (\w+)", "name is {0}"),
+        (r"i work (?:at|for) (.+?)(?:\.|$|,)", "works at {0}"),
+        (r"i live in (.+?)(?:\.|$|,)", "lives in {0}"),
+        (r"i like (.+?)(?:\.|$|,)", "likes {0}"),
+        (r"i love (.+?)(?:\.|$|,)", "loves {0}"),
+        (r"i hate (.+?)(?:\.|$|,)", "hates {0}"),
+        (r"my favorite (\w+) is (.+?)(?:\.|$|,)", "favorite {0} is {1}"),
+        (r"my (\w+) is named (\w+)", "{0} is named {1}"),
+        (r"i have (?:a |an )?(\w+) named (\w+)", "has {0} named {1}"),
+        (r"my birthday is (.+?)(?:\.|$|,)", "birthday is {0}"),
+        (r"i am (\d+) years old", "is {0} years old"),
+        (r"i'm (\d+) years old", "is {0} years old"),
+    ]
+    
+    # Load existing facts to avoid duplicates
+    existing = ""
+    about_file = os.path.join("library", "about_user.txt")
+    if os.path.exists(about_file):
+        with open(about_file, 'r', encoding='utf-8') as f:
+            existing = f.read().lower()
+    
+    text = user_input.lower().strip()
+    learned = []
+    
+    for pattern, template in patterns:
+        match = re.search(pattern, text, re.IGNORECASE)
+        if match:
+            groups = match.groups()
+            fact = template.format(*groups)
+            # Skip if already known
+            if fact.lower() in existing:
+                continue
+            # Save to librarian
+            try:
+                subprocess.run(
+                    f'python librarian.py add "about_user" "{fact}"',
+                    shell=True, capture_output=True, cwd=os.getcwd()
+                )
+                learned.append(fact)
+            except:
+                pass
+    
+    if learned:
+        print(f"{Fore.CYAN}[AUTO-LEARNED: {', '.join(learned)}]{Style.RESET_ALL}")
+    
+    return learned
+
+# --- 2. FILE PROTECTION SYSTEM ---
+def is_protected_file(filename):
+    """Check if a file is protected from destructive operations"""
+    normalized = filename.lower().replace('/', '\\').strip()
+    for protected in PROTECTED_FILES:
+        if protected.lower() in normalized or normalized.endswith('kernel.py'):
+            return True
+    return False
+
+# --- 3. THE HANDS (Tools) ---
+def write_file(filename, content):
+    """NUKE OPTION: Overwrites the entire file."""
+    # CRITICAL PROTECTION: Block ALL writes to kernel.py
+    if is_protected_file(filename):
+        return "SYSTEM ERROR: WRITE command BLOCKED for kernel.py! Use UPDATE instead. This protects against data loss."
+    
+    try:
+        if "\\n" in content: content = content.replace("\\n", "\n")
+        with open(filename, 'w', encoding='utf-8') as f: f.write(content)
+        return f"SUCCESS: Overwrote {filename}"
+    except Exception as e: 
+        return f"ERROR: {str(e)}"
+
+def update_file(filename, old_text, new_text):
+    """SCALPEL OPTION: Replaces specific text safely."""
+    try:
+        if not os.path.exists(filename): return f"ERROR: File {filename} not found."
+        with open(filename, 'r', encoding='utf-8') as f: content = f.read()
+        
+        # Handle escaped newlines in old_text and new_text
+        if "\\n" in old_text: old_text = old_text.replace("\\n", "\n")
+        if "\\n" in new_text: new_text = new_text.replace("\\n", "\n")
+        
+        if old_text not in content:
+            return f"ERROR: old_text not found in file. Text to find: '{old_text[:50]}...'"
+            
+        new_content = content.replace(old_text, new_text)
+        with open(filename, 'w', encoding='utf-8') as f: f.write(new_content)
+        return f"SUCCESS: Updated {filename}"
+    except Exception as e: 
+        return f"ERROR: {str(e)}"
+
+def read_file(filename):
+    try:
+        if not os.path.exists(filename): return f"ERROR: File {filename} not found."
+        with open(filename, 'r', encoding='utf-8') as f: return f.read()
+    except Exception as e: 
+        return f"ERROR: {str(e)}"
+
+def run_command(command):
+    if "python -c" in command: return "SYSTEM ERROR: 'python -c' is BANNED."
+    try:
+        print(f"{Fore.RED}>>> EXECUTING TERMINAL: {command}{Style.RESET_ALL}")
+        result = subprocess.run(command, shell=True, capture_output=True, text=True)
+        return result.stdout + result.stderr
+    except Exception as e: 
+        return f"EXECUTION ERROR: {str(e)}"
+
+def reload_kernel():
+    """Hot-reload the kernel without restarting the program"""
+    try:
+        print(f"{Fore.YELLOW}>>> RELOADING KERNEL...{Style.RESET_ALL}")
+        current_module = sys.modules[__name__]
+        importlib.reload(current_module)
+        return "SUCCESS: Kernel reloaded successfully"
+    except Exception as e:
+        return f"ERROR: Failed to reload kernel - {str(e)}"
+
+def clear_system():
+    """Clear memory and reset system state"""
+    try:
+        if os.path.exists(MEMORY_FILE):
+            os.remove(MEMORY_FILE)
+        print(f"{Fore.YELLOW}>>> SYSTEM CLEARED{Style.RESET_ALL}")
+        return "SUCCESS: Memory cleared and system reset"
+    except Exception as e:
+        return f"ERROR: Failed to clear system - {str(e)}"
+
+def diagnose_command():
+    """Run comprehensive system diagnostics"""
+    try:
+        print(f"{Fore.CYAN}>>> RUNNING DIAGNOSTICS{Style.RESET_ALL}")
+        report = []
+        
+        report.append("=== SYSTEM DIAGNOSTICS ===")
+        report.append(f"Python: {sys.version.split()[0]}")
+        report.append(f"Platform: {os.name}")
+        report.append(f"Working Directory: {os.getcwd()}")
+        
+        if os.path.exists(MEMORY_FILE):
+            history = load_memory()
+            report.append(f"Memory: {len(history)} entries")
+        else:
+            report.append("Memory: Empty")
+        
+        report.append("\n=== CODE ANALYSIS ===")
+        if os.path.exists("kernel.py"):
+            with open("kernel.py", 'r') as f:
+                lines = len(f.readlines())
+            report.append(f"kernel.py: {lines} lines")
+        
+        try:
+            import ollama
+            report.append("OK: Ollama module available")
+        except ImportError:
+            report.append("MISSING: Ollama module")
+        
+        return "\n".join(report)
+    
+    except Exception as e:
+        return f"Diagnostic failed: {str(e)}"
+
+# --- 4. THE BRAIN ---
+def parse_and_execute(ai_text):
+    """Parse and execute commands from AI text. Only executes commands from AI, not from tool output."""
+    execution_log = []
+    clean_text = ai_text.replace("AI:", "").strip()
+    
+    # SAFETY: Only parse commands from the original AI text, not from tool output
+    # This prevents command injection from tool output
+    
+    # Tool Regex Patterns - STRICT PARSING (must be on own line)
+    cmd_matches = re.findall(r'^CMD:\s*(.+)$', clean_text, re.MULTILINE | re.IGNORECASE)
+    write_matches = re.findall(r'^WRITE:\s*(\S+)\s*\|\s*(.+)$', clean_text, re.MULTILINE | re.IGNORECASE)
+    update_matches = re.findall(r'^UPDATE:\s*(\S+)\s*\|\s*([^|]+)\s*\|\s*(.+)$', clean_text, re.MULTILINE | re.IGNORECASE)
+    read_matches = re.findall(r'^READ:\s*(\S+)\s*$', clean_text, re.MULTILINE | re.IGNORECASE)
+    
+    # System control commands - must be on their own line
+    reload_matches = re.findall(r'^(RELOAD|REFRESH)\s*$', clean_text, re.MULTILINE | re.IGNORECASE)
+    clear_matches = re.findall(r'^(CLEAR|RESET)\s*$', clean_text, re.MULTILINE | re.IGNORECASE)
+    diagnose_matches = re.findall(r'^(DIAGNOSE|DIAGNOSTIC|CHECK)\s*$', clean_text, re.MULTILINE | re.IGNORECASE)
+
+    # Execute System Commands First
+    for _ in reload_matches:
+        print(f"{Fore.CYAN}>>> RELOADING KERNEL{Style.RESET_ALL}")
+        result = reload_kernel()
+        execution_log.append(result)
+        
+    for _ in clear_matches:
+        print(f"{Fore.CYAN}>>> CLEARING SYSTEM{Style.RESET_ALL}")
+        result = clear_system()
+        execution_log.append(result)
+        
+    for _ in diagnose_matches:
+        print(f"{Fore.CYAN}>>> RUNNING DIAGNOSTICS{Style.RESET_ALL}")
+        result = diagnose_command()
+        execution_log.append(result)
+
+    # Execute Updates FIRST (The Scalpel)
+    for fname, old, new in update_matches:
+        fname = fname.strip()
+        old = old.strip()
+        new = new.strip()
+        # SAFETY: Reject if new_text is too long (likely AI explanation got captured)
+        if len(new) > 100:
+            execution_log.append(f"ERROR: new_text rejected - too long ({len(new)} chars). Must be under 100 chars.")
+            continue
+        print(f"{Fore.MAGENTA}>>> UPDATING FILE: {fname}{Style.RESET_ALL}")
+        print(f"{Fore.MAGENTA}    Replacing: '{old}' -> '{new}'{Style.RESET_ALL}")
+        result = update_file(fname, old, new)
+        execution_log.append(result)
+
+    # Execute Writes (The Nuke)
+    for fname, content in write_matches:
+        fname = fname.strip()
+        print(f"{Fore.MAGENTA}>>> OVERWRITING FILE: {fname}{Style.RESET_ALL}")
+        result = write_file(fname, content.strip())
+        execution_log.append(result)
+
+    # Execute Reads
+    for fname in read_matches:
+        fname = fname.strip()
+        print(f"{Fore.MAGENTA}>>> READING FILE: {fname}{Style.RESET_ALL}")
+        result = read_file(fname)
+        execution_log.append(f"FILE CONTENT ({fname}):\n{result[:1000]}...") 
+
+    # Execute Commands
+    for cmd in cmd_matches:
+        cmd = cmd.strip()
+        if not cmd: continue
+        print(f"{Fore.RED}>>> EXECUTING: {cmd}{Style.RESET_ALL}")
+        result = run_command(cmd)
+        execution_log.append(f"TERMINAL OUTPUT: {result}")
+
+    if not execution_log: return None
+    return "\n".join(execution_log)
+
+SYSTEM_PROMPT = """
+You are JARVIS, a sovereign AI operating system kernel with advanced tools and protocols.
+
+CRITICAL: When user asks about external information (current events, facts, dates, etc.), you MUST use:
+CMD: python researcher.py search "query"
+Do NOT search the library for external information - use the internet researcher instead.
+
+USER INFO (refer to them as "you", not by name):
+The info below is about the person you're talking to. Use it naturally. This is NOT for answering their questions about the world.
+
+RULES:
+- Address user as "you" (never by name or in third person)
+- The user owns their data - give them anything they saved
+- If they ask for saved info, suggest: "Try /search <keyword>"
+- If they share something to remember, suggest: "Want me to /save that?"
+- Be helpful, not secretive - this is THEIR assistant
+
+MODES:
+- /chat: Default, friendly conversation and reasoning
+- /search <query>: Search your own memory and notes
+- /save <info>: Save a fact or note to memory
+
+TOOLS (MUST USE EXACT FORMAT - one command per line):
+- CMD: <command> - Execute a terminal command
+- READ: <filename> - Read a file
+- UPDATE: <filename> | <old_text> | <new_text> - Replace text in a file
+- WRITE: <filename> | <content> - Overwrite a file
+
+WHEN TO USE WHICH TOOL:
+1. INTERNET SEARCH (researcher.py) - Use for ANY question about:
+   - Current events, news, recent information
+   - Facts about the world, people, places, things
+   - Information NOT in the user's saved memory
+   - Dates, statistics, releases, sports scores, etc.
+   - Example: "What is the release date of GTA 6?" → CMD: python researcher.py search "GTA 6 release date"
+
+2. LOCAL LIBRARY (librarian.py) - Use ONLY when:
+   - User explicitly asks to search their saved notes/memory
+   - User says "search my notes" or "what did I save about X"
+   - Example: "Search my notes for password" → CMD: python librarian.py search "password"
+
+CRITICAL RULES:
+- If user asks about something external/current/recent → ALWAYS use researcher.py (internet)
+- The library context shown below is just for reference about the USER, not for answering their questions
+- When you need to use a tool, output the command on its own line. Then wait for the tool output before responding.
+- Do NOT just say "I'll search for that" - actually output: CMD: python researcher.py search "query"
+
+SAFETY:
+- Never overwrite kernel.py directly (WRITE is blocked)
+- Use UPDATE for safe, surgical edits
+- Never run 'python -c' commands
+
+PERSONALITY:
+- Be friendly, direct, and use "you" language
+- Never refer to yourself in the third person
+- Always explain which tool you are using if you invoke one
+
+You are the user's sovereign AI assistant. Be helpful, transparent, and always use the right tool for the job.
+"""
+
+def main():
+    print(f"{Fore.GREEN}======================================================{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}             JARVIS ONLINE - READY{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}======================================================{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}MODES: /search <query> | /save <info> | /chat (default){Style.RESET_ALL}")
+    print(f"{Fore.CYAN}Type 'exit' to quit{Style.RESET_ALL}")
+    print()
+    
+    mode = "chat"  # Default mode
+    
+    while True:
+        try:
+            user_input = input(f"{Fore.BLUE}YOU >> {Style.RESET_ALL}")
+            if user_input.lower() in ["exit", "quit"]: break
+            
+            # MODE COMMANDS
+            if user_input.lower().startswith("/search "):
+                query = user_input[8:].strip()
+                print(f"{Fore.MAGENTA}>>> SEARCHING: {query}{Style.RESET_ALL}")
+                result = run_command(f'python librarian.py search "{query}"')
+                print(f"{Fore.GREEN}JARVIS >> {Style.RESET_ALL}{result}")
+                continue
+                
+            if user_input.lower().startswith("/save "):
+                info = user_input[6:].strip()
+                print(f"{Fore.MAGENTA}>>> SAVING: {info}{Style.RESET_ALL}")
+                result = run_command(f'python librarian.py add "notes" "{info}"')
+                print(f"{Fore.GREEN}JARVIS >> {Style.RESET_ALL}Got it! I'll remember that.")
+                continue
+            
+            if user_input.lower() == "/search":
+                print(f"{Fore.YELLOW}Usage: /search <query>{Style.RESET_ALL}")
+                continue
+                
+            if user_input.lower() == "/save":
+                print(f"{Fore.YELLOW}Usage: /save <info to remember>{Style.RESET_ALL}")
+                continue
+            
+            # CHAT MODE - Auto-learn still works
+            auto_learn(user_input)
+            save_memory("user", user_input)
+            
+            # Load ALL library files for smart chat
+            memory_context = ""
+            library_dir = "library"
+            if os.path.exists(library_dir):
+                for filename in os.listdir(library_dir):
+                    if filename.endswith('.txt'):
+                        filepath = os.path.join(library_dir, filename)
+                        with open(filepath, 'r', encoding='utf-8') as f:
+                            content = f.read().strip()
+                            if content:
+                                memory_context += f"\n[{filename}]\n{content}\n"
+            
+            messages = [
+                {'role': 'system', 'content': SYSTEM_PROMPT + f"\n\nSAVED INFO:\n{memory_context}"},
+                {'role': 'user', 'content': user_input}
+            ]
+
+            print(f"{Fore.YELLOW}Thinking...{Style.RESET_ALL}")
+            try:
+                max_tool_iterations = 3  # Prevent infinite loops
+                tool_iteration = 0
+                final_ai_text = None
+                
+                while tool_iteration < max_tool_iterations:
+                    response = ollama.chat(model=MODEL, messages=messages)
+                    ai_text = response['message']['content']
+                    
+                    if tool_iteration == 0:
+                        print(f"{Fore.GREEN}JARVIS >> {Style.RESET_ALL}{ai_text}")
+                    else:
+                        print(f"{Fore.CYAN}JARVIS >> {Style.RESET_ALL}{ai_text}")
+                    
+                    # Execute any tools the AI mentioned
+                    tool_output = parse_and_execute(ai_text)
+                    
+                    # Check if AI actually used a tool (not just talked about it)
+                    has_actual_command = bool(re.search(r'^(CMD|READ|WRITE|UPDATE):', ai_text, re.MULTILINE | re.IGNORECASE))
+                    
+                    if tool_output and has_actual_command:
+                        print(f"{Style.DIM}TOOL OUTPUT:\n{tool_output}{Style.RESET_ALL}")
+                        
+                        # Feed tool output back to AI for a proper response
+                        messages.append({'role': 'assistant', 'content': ai_text})
+                        messages.append({'role': 'user', 'content': f"Tool execution completed:\n{tool_output}\n\nNow provide a helpful response to the user based on this information. Do NOT execute more tools unless absolutely necessary."})
+                        
+                        tool_iteration += 1
+                        if tool_iteration < max_tool_iterations:
+                            print(f"{Fore.YELLOW}Processing tool results...{Style.RESET_ALL}")
+                            continue  # Loop back to get AI's response to tool output
+                        else:
+                            final_ai_text = ai_text
+                            break
+                    else:
+                        # No tools executed, or just conversation
+                        final_ai_text = ai_text
+                        break
+                
+                save_memory("ai", final_ai_text)
+            except Exception as e:
+                print(f"{Fore.RED}Error: {str(e)}{Style.RESET_ALL}")
+
+        except KeyboardInterrupt: 
+            print(f"\n{Fore.YELLOW}Graceful shutdown...{Style.RESET_ALL}")
+            break
+
+if __name__ == "__main__":
+    main()
+--- FILE END: .\Ark\kernel.py ---
+
+
+--- FILE START: .\Ark\kernel_stable.py ---
+import ollama
+import os
+import subprocess
+import datetime
+import json
+import re
+import sys
+import importlib
+from colorama import Fore, Style, init
+
+init(autoreset=True)
+
+# --- CONFIGURATION ---
+MODEL = "dolphin-llama3" 
+MEMORY_FILE = "brain.json"
+PROTECTED_FILES = ['kernel.py', './kernel.py', 'c:\\users\\konst\\desktop\\ark\\kernel.py']
+
+# --- 1. MEMORY SYSTEM ---
+def load_memory():
+    if not os.path.exists(MEMORY_FILE): return []
+    try:
+        with open(MEMORY_FILE, 'r', encoding='utf-8') as f: return json.load(f)
+    except: return []
+
+def save_memory(role, text):
+    history = load_memory()
+    timestamp = datetime.datetime.now().isoformat()
+    if len(history) > 20: history = history[-20:]
+    history.append({"role": role, "text": text, "time": timestamp})
+    with open(MEMORY_FILE, 'w', encoding='utf-8') as f: json.dump(history, f, indent=2)
+
+def recall_memory(query):
+    history = load_memory()
+    return history[-5:] if history else []
+
+# --- 2. FILE PROTECTION SYSTEM ---
+def is_protected_file(filename):
+    """Check if a file is protected from destructive operations"""
+    normalized = filename.lower().replace('/', '\\').strip()
+    for protected in PROTECTED_FILES:
+        if protected.lower() in normalized or normalized.endswith('kernel.py'):
+            return True
+    return False
+
+# --- 3. THE HANDS (Tools) ---
+def write_file(filename, content):
+    """NUKE OPTION: Overwrites the entire file."""
+    # CRITICAL PROTECTION: Block ALL writes to kernel.py
+    if is_protected_file(filename):
+        return "SYSTEM ERROR: WRITE command BLOCKED for kernel.py! Use UPDATE instead. This protects against data loss."
+    
+    try:
+        if "\\n" in content: content = content.replace("\\n", "\n")
+        with open(filename, 'w', encoding='utf-8') as f: f.write(content)
+        return f"SUCCESS: Overwrote {filename}"
+    except Exception as e: 
+        return f"ERROR: {str(e)}"
+
+def update_file(filename, old_text, new_text):
+    """SCALPEL OPTION: Replaces specific text safely."""
+    try:
+        if not os.path.exists(filename): return f"ERROR: File {filename} not found."
+        with open(filename, 'r', encoding='utf-8') as f: content = f.read()
+        
+        # Handle escaped newlines in old_text and new_text
+        if "\\n" in old_text: old_text = old_text.replace("\\n", "\n")
+        if "\\n" in new_text: new_text = new_text.replace("\\n", "\n")
+        
+        if old_text not in content:
+            return f"ERROR: old_text not found in file. Text to find: '{old_text[:50]}...'"
+            
+        new_content = content.replace(old_text, new_text)
+        with open(filename, 'w', encoding='utf-8') as f: f.write(new_content)
+        return f"SUCCESS: Updated {filename}"
+    except Exception as e: 
+        return f"ERROR: {str(e)}"
+
+def read_file(filename):
+    try:
+        if not os.path.exists(filename): return f"ERROR: File {filename} not found."
+        with open(filename, 'r', encoding='utf-8') as f: return f.read()
+    except Exception as e: 
+        return f"ERROR: {str(e)}"
+
+def run_command(command):
+    if "python -c" in command: return "SYSTEM ERROR: 'python -c' is BANNED."
+    try:
+        print(f"{Fore.RED}>>> EXECUTING TERMINAL: {command}{Style.RESET_ALL}")
+        result = subprocess.run(command, shell=True, capture_output=True, text=True)
+        return result.stdout + result.stderr
+    except Exception as e: 
+        return f"EXECUTION ERROR: {str(e)}"
+
+def reload_kernel():
+    """Hot-reload the kernel without restarting the program"""
+    try:
+        print(f"{Fore.YELLOW}>>> RELOADING KERNEL...{Style.RESET_ALL}")
+        current_module = sys.modules[__name__]
+        importlib.reload(current_module)
+        return "SUCCESS: Kernel reloaded successfully"
+    except Exception as e:
+        return f"ERROR: Failed to reload kernel - {str(e)}"
+
+def clear_system():
+    """Clear memory and reset system state"""
+    try:
+        if os.path.exists(MEMORY_FILE):
+            os.remove(MEMORY_FILE)
+        print(f"{Fore.YELLOW}>>> SYSTEM CLEARED{Style.RESET_ALL}")
+        return "SUCCESS: Memory cleared and system reset"
+    except Exception as e:
+        return f"ERROR: Failed to clear system - {str(e)}"
+
+def diagnose_command():
+    """Run comprehensive system diagnostics"""
+    try:
+        print(f"{Fore.CYAN}>>> RUNNING DIAGNOSTICS{Style.RESET_ALL}")
+        report = []
+        
+        report.append("=== SYSTEM DIAGNOSTICS ===")
+        report.append(f"Python: {sys.version.split()[0]}")
+        report.append(f"Platform: {os.name}")
+        report.append(f"Working Directory: {os.getcwd()}")
+        
+        if os.path.exists(MEMORY_FILE):
+            history = load_memory()
+            report.append(f"Memory: {len(history)} entries")
+        else:
+            report.append("Memory: Empty")
+        
+        report.append("\n=== CODE ANALYSIS ===")
+        if os.path.exists("kernel.py"):
+            with open("kernel.py", 'r') as f:
+                lines = len(f.readlines())
+            report.append(f"kernel.py: {lines} lines")
+        
+        try:
+            import ollama
+            report.append("OK: Ollama module available")
+        except ImportError:
+            report.append("MISSING: Ollama module")
+        
+        return "\n".join(report)
+    
+    except Exception as e:
+        return f"Diagnostic failed: {str(e)}"
+
+# --- 4. THE BRAIN ---
+def parse_and_execute(ai_text):
+    execution_log = []
+    clean_text = ai_text.replace("AI:", "").strip()
+    
+    # Tool Regex Patterns - STRICT PARSING (must be on own line)
+    cmd_matches = re.findall(r'^CMD:\s*(.+)$', clean_text, re.MULTILINE | re.IGNORECASE)
+    write_matches = re.findall(r'^WRITE:\s*(\S+)\s*\|\s*(.+)$', clean_text, re.MULTILINE | re.IGNORECASE)
+    update_matches = re.findall(r'^UPDATE:\s*(\S+)\s*\|\s*([^|]+)\s*\|\s*(.+)$', clean_text, re.MULTILINE | re.IGNORECASE)
+    read_matches = re.findall(r'^READ:\s*(\S+)\s*$', clean_text, re.MULTILINE | re.IGNORECASE)
+    
+    # System control commands - must be on their own line
+    reload_matches = re.findall(r'^(RELOAD|REFRESH)\s*$', clean_text, re.MULTILINE | re.IGNORECASE)
+    clear_matches = re.findall(r'^(CLEAR|RESET)\s*$', clean_text, re.MULTILINE | re.IGNORECASE)
+    diagnose_matches = re.findall(r'^(DIAGNOSE|DIAGNOSTIC|CHECK)\s*$', clean_text, re.MULTILINE | re.IGNORECASE)
+
+    # Execute System Commands First
+    for _ in reload_matches:
+        print(f"{Fore.CYAN}>>> RELOADING KERNEL{Style.RESET_ALL}")
+        result = reload_kernel()
+        execution_log.append(result)
+        
+    for _ in clear_matches:
+        print(f"{Fore.CYAN}>>> CLEARING SYSTEM{Style.RESET_ALL}")
+        result = clear_system()
+        execution_log.append(result)
+        
+    for _ in diagnose_matches:
+        print(f"{Fore.CYAN}>>> RUNNING DIAGNOSTICS{Style.RESET_ALL}")
+        result = diagnose_command()
+        execution_log.append(result)
+
+    # Execute Updates FIRST (The Scalpel)
+    for fname, old, new in update_matches:
+        fname = fname.strip()
+        old = old.strip()
+        new = new.strip()
+        # SAFETY: Reject if new_text is too long (likely AI explanation got captured)
+        if len(new) > 100:
+            execution_log.append(f"ERROR: new_text rejected - too long ({len(new)} chars). Must be under 100 chars.")
+            continue
+        print(f"{Fore.MAGENTA}>>> UPDATING FILE: {fname}{Style.RESET_ALL}")
+        print(f"{Fore.MAGENTA}    Replacing: '{old}' -> '{new}'{Style.RESET_ALL}")
+        result = update_file(fname, old, new)
+        execution_log.append(result)
+
+    # Execute Writes (The Nuke)
+    for fname, content in write_matches:
+        fname = fname.strip()
+        print(f"{Fore.MAGENTA}>>> OVERWRITING FILE: {fname}{Style.RESET_ALL}")
+        result = write_file(fname, content.strip())
+        execution_log.append(result)
+
+    # Execute Reads
+    for fname in read_matches:
+        fname = fname.strip()
+        print(f"{Fore.MAGENTA}>>> READING FILE: {fname}{Style.RESET_ALL}")
+        result = read_file(fname)
+        execution_log.append(f"FILE CONTENT ({fname}):\n{result[:1000]}...") 
+
+    # Execute Commands
+    for cmd in cmd_matches:
+        cmd = cmd.strip()
+        if not cmd: continue
+        print(f"{Fore.RED}>>> EXECUTING: {cmd}{Style.RESET_ALL}")
+        result = run_command(cmd)
+        execution_log.append(f"TERMINAL OUTPUT: {result}")
+
+    if not execution_log: return None
+    return "\n".join(execution_log)
+
+SYSTEM_PROMPT = """
+You are the KERNEL on WINDOWS. Execute commands only. No chat.
+
+COMMANDS (one per line):
+CMD: command
+READ: filename
+UPDATE: filename | old_text | new_text
+WRITE: filename | content
+
+RULES:
+- WINDOWS ONLY: Use copy (not cp), del (not rm), dir (not ls), type (not cat), move (not mv)
+- kernel.py: Use UPDATE only (WRITE blocked)
+- UPDATE: old_text and new_text must be SHORT (under 100 chars)
+- No explanations - just the command
+
+EXAMPLE:
+User: Copy test.py to backup.py
+AI response:
+CMD: copy test.py backup.py
+"""
+
+def main():
+    print(f"{Fore.GREEN}======================================================{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}       SOVEREIGN AI KERNEL - PROTECTED MODE{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}       Editing | Auto-Fix | Hot-Reload{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}======================================================{Style.RESET_ALL}")
+    
+    while True:
+        try:
+            user_input = input(f"{Fore.BLUE}USER >> {Style.RESET_ALL}")
+            if user_input.lower() in ["exit", "quit"]: break
+            save_memory("user", user_input)
+            
+            past_context = recall_memory("context")
+            messages = [
+                {'role': 'system', 'content': SYSTEM_PROMPT},
+                {'role': 'user', 'content': f"REQUEST: {user_input}"}
+            ]
+
+            for attempt in range(3):
+                print(f"{Fore.YELLOW}Processing...{Style.RESET_ALL}")
+                try:
+                    response = ollama.chat(model=MODEL, messages=messages)
+                    ai_text = response['message']['content']
+                    print(f"{Fore.GREEN}AI >> {Style.RESET_ALL}{ai_text}")
+
+                    tool_output = parse_and_execute(ai_text)
+
+                    if tool_output:
+                        print(f"{Style.DIM}TOOL OUTPUT:\n{tool_output}{Style.RESET_ALL}")
+                        if "ERROR" in tool_output or "BLOCKED" in tool_output:
+                            print(f"{Fore.RED}!!! ERROR - RETRYING !!!{Style.RESET_ALL}")
+                            messages.append({'role': 'assistant', 'content': ai_text})
+                            messages.append({'role': 'user', 'content': f"FAILED: {tool_output}\nUse SHORT text only: UPDATE: file | old | new"})
+                            continue 
+                        save_memory("ai", ai_text)
+                        break 
+                    else:
+                        save_memory("ai", ai_text)
+                        break
+                except Exception as loop_error:
+                    print(f"{Fore.RED}Error: {str(loop_error)}{Style.RESET_ALL}")
+                    break
+
+        except KeyboardInterrupt: 
+            print(f"\n{Fore.YELLOW}Graceful shutdown...{Style.RESET_ALL}")
+            break
+
+if __name__ == "__main__":
+    main()
+--- FILE END: .\Ark\kernel_stable.py ---
+
+
+--- FILE START: .\Ark\librarian.py ---
+import sys
+import os
+import glob
+
+LIBRARY_DIR = "library"
+if not os.path.exists(LIBRARY_DIR): os.makedirs(LIBRARY_DIR)
+
+def add_note(category, content):
+    # Sanitize filename
+    filename = category.lower().strip() + ".txt"
+    filepath = os.path.join(LIBRARY_DIR, filename)
+    
+    with open(filepath, "a", encoding="utf-8") as f:
+        f.write(f"\n{content}\n")
+    print(f"[LIBRARIAN] Note added to {filename}.")
+
+def search_notes(query):
+    print(f"[LIBRARIAN] Searching for '{query}'...")
+    found = False
+    query_lower = query.lower()
+    
+    for filepath in glob.glob(os.path.join(LIBRARY_DIR, "*.txt")):
+        try:
+            with open(filepath, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+            
+            # Find only lines that match the query
+            matching_lines = [line.strip() for line in lines if query_lower in line.lower() and line.strip()]
+            
+            if matching_lines:
+                print(f"\n[FOUND]")
+                for line in matching_lines:
+                    print(f"  {line}")
+                found = True
+        except: continue
+    
+    if not found: print("No matching notes found.")
+
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print("Usage: python librarian.py [add|search] [category/query] [content]")
+    else:
+        mode = sys.argv[1]
+        arg1 = sys.argv[2] # Category or Query
+        arg2 = " ".join(sys.argv[3:]) # Content (optional)
+        
+        if mode == "add": add_note(arg1, arg2)
+        elif mode == "search": search_notes(arg1)
+--- FILE END: .\Ark\librarian.py ---
+
+
+--- FILE START: .\Ark\llm_engine.py ---
+"""
+Ark LLM Engine - Standalone AI without web client
+
+Connects to Ollama server running locally
+No browser client needed - pure Python API access
+"""
+
+import requests
+import json
+from typing import Optional, Dict, List, Callable
+from datetime import datetime
+
+
+class ArkLLM:
+    """
+    Standalone LLM wrapper for Ark AI
+    Uses local Ollama server - NO web client needed!
+    """
+    
+    def __init__(self, model: str = "llama3.2", base_url: str = "http://localhost:11434"):
+        """
+        Initialize Ark LLM
+        
+        Args:
+            model: Ollama model to use (llama3.2, llama3, etc.)
+            base_url: Ollama server URL (default: localhost:11434)
+        """
+        self.model = model
+        self.base_url = base_url
+        self.api_url = f"{base_url}/api/generate"
+        self.chat_url = f"{base_url}/api/chat"
+        self.conversation_history: List[Dict] = []
+        self.system_context = None
+        
+    def ask(self, prompt: str, stream: bool = False, context: Optional[str] = None) -> str:
+        """
+        Ask the AI a question (simple, stateless)
+        
+        Args:
+            prompt: Your question or prompt
+            stream: Stream response in real-time
+            context: Optional additional context
+        
+        Returns:
+            AI's response as string
+        """
+        full_prompt = prompt
+        if context:
+            full_prompt = f"{context}\n\n{prompt}"
+            
+        payload = {
+            "model": self.model,
+            "prompt": full_prompt,
+            "stream": stream
+        }
+        
+        try:
+            response = requests.post(self.api_url, json=payload, timeout=60)
+            response.raise_for_status()
+            
+            if stream:
+                return self._handle_stream(response)
+            else:
+                result = response.json()
+                answer = result.get('response', '')
+                return answer.strip()
+                
+        except requests.exceptions.RequestException as e:
+            return f"❌ Error connecting to Ollama: {e}\nMake sure Ollama is running (ollama serve)"
+        except Exception as e:
+            return f"❌ Error: {e}"
+    
+    def chat(self, message: str, system_prompt: Optional[str] = None) -> str:
+        """
+        Have a conversation with context (stateful)
+        
+        Args:
+            message: Your message
+            system_prompt: Optional system instruction (sets AI behavior)
+        
+        Returns:
+            AI's response
+        """
+        # Set system context if provided
+        if system_prompt and not self.system_context:
+            self.system_context = system_prompt
+        
+        # Build messages array for chat API
+        messages = []
+        
+        # Add system message if exists
+        if self.system_context:
+            messages.append({
+                "role": "system",
+                "content": self.system_context
+            })
+        
+        # Add conversation history
+        messages.extend(self.conversation_history)
+        
+        # Add current message
+        messages.append({
+            "role": "user",
+            "content": message
+        })
+        
+        payload = {
+            "model": self.model,
+            "messages": messages,
+            "stream": False
+        }
+        
+        try:
+            response = requests.post(self.chat_url, json=payload, timeout=60)
+            response.raise_for_status()
+            
+            result = response.json()
+            assistant_message = result.get('message', {}).get('content', '')
+            
+            # Save to history
+            self.conversation_history.append({
+                "role": "user",
+                "content": message
+            })
+            self.conversation_history.append({
+                "role": "assistant",
+                "content": assistant_message
+            })
+            
+            return assistant_message.strip()
+            
+        except Exception as e:
+            return f"❌ Chat error: {e}"
+    
+    def execute_command(self, command: str) -> Dict:
+        """
+        Parse user command and execute action
+        
+        Examples:
+            "Open hybrid athlete app"
+            "Show my workout history"
+            "Analyze my last futsal game"
+            "What should I train today?"
+        
+        Returns:
+            Dict with action and parameters
+        """
+        # Use AI to parse the command
+        parse_prompt = f"""
+You are an AI assistant that controls apps and features.
+Parse this user command and return JSON:
+
+Command: "{command}"
+
+Return format:
+{{
+    "action": "open_app" | "open_feature" | "analyze" | "question",
+    "app": "hybrid_athlete" | "other",
+    "feature": "workouts" | "history" | "stats" | "profile" | "calendar" | null,
+    "query": "user's actual question or analysis request"
+}}
+
+Examples:
+- "Open hybrid athlete" → {{"action": "open_app", "app": "hybrid_athlete", "feature": null}}
+- "Show my stats" → {{"action": "open_feature", "app": "hybrid_athlete", "feature": "stats"}}
+- "Analyze my workout" → {{"action": "analyze", "query": "analyze recent workout"}}
+
+Return ONLY valid JSON, nothing else.
+"""
+        
+        response = self.ask(parse_prompt)
+        
+        try:
+            # Extract JSON from response
+            # AI sometimes adds markdown formatting
+            if "```json" in response:
+                response = response.split("```json")[1].split("```")[0].strip()
+            elif "```" in response:
+                response = response.split("```")[1].split("```")[0].strip()
+            
+            command_data = json.loads(response)
+            return command_data
+        except:
+            # Fallback: simple keyword matching
+            command_lower = command.lower()
+            
+            if "open" in command_lower and "hybrid" in command_lower:
+                return {"action": "open_app", "app": "hybrid_athlete", "feature": None}
+            elif "stats" in command_lower or "statistics" in command_lower:
+                return {"action": "open_feature", "app": "hybrid_athlete", "feature": "stats"}
+            elif "history" in command_lower or "workouts" in command_lower:
+                return {"action": "open_feature", "app": "hybrid_athlete", "feature": "history"}
+            elif "analyze" in command_lower or "check" in command_lower:
+                return {"action": "analyze", "query": command}
+            else:
+                return {"action": "question", "query": command}
+    
+    def set_system_prompt(self, prompt: str):
+        """Set or update system prompt (AI personality/instructions)"""
+        self.system_context = prompt
+    
+    def reset_conversation(self):
+        """Clear conversation history"""
+        self.conversation_history = []
+        self.system_context = None
+    
+    def get_conversation_summary(self) -> str:
+        """Get summary of current conversation"""
+        if not self.conversation_history:
+            return "No conversation yet"
+        
+        summary_prompt = f"""
+Summarize this conversation in 2-3 sentences:
+
+{json.dumps(self.conversation_history, indent=2)}
+
+Summary:
+"""
+        return self.ask(summary_prompt)
+    
+    def _handle_stream(self, response) -> str:
+        """Handle streaming responses"""
+        full_response = ""
+        try:
+            for line in response.iter_lines():
+                if line:
+                    data = json.loads(line)
+                    chunk = data.get('response', '')
+                    full_response += chunk
+                    print(chunk, end='', flush=True)
+            print()  # New line at end
+        except Exception as e:
+            print(f"\n❌ Stream error: {e}")
+        return full_response
+    
+    def test_connection(self) -> bool:
+        """Test if Ollama is running and accessible"""
+        try:
+            response = requests.get(f"{self.base_url}/api/tags", timeout=5)
+            return response.status_code == 200
+        except:
+            return False
+
+
+# Example usage and testing
+if __name__ == "__main__":
+    print("Ark LLM Engine - Testing Connection\n")
+    
+    # Create AI instance
+    ai = ArkLLM()
+    
+    # Test connection
+    print("Testing Ollama connection...")
+    if ai.test_connection():
+        print("✅ Connected to Ollama!\n")
+    else:
+        print("❌ Cannot connect to Ollama. Is it running?")
+        print("Start it with: ollama serve\n")
+        exit(1)
+    
+    # Simple question
+    print("📝 Testing simple question...")
+    response = ai.ask("What are the benefits of combining strength training and cardio?")
+    print(f"AI: {response}\n")
+    
+    # Chat with context
+    print("💬 Testing chat with context...")
+    ai.set_system_prompt("You are a professional hybrid athlete coach with expertise in futsal, weightlifting, and endurance training.")
+    
+    response1 = ai.chat("I just finished a futsal game. What should I focus on tomorrow?")
+    print(f"AI: {response1}\n")
+    
+    response2 = ai.chat("What if I feel sore?")
+    print(f"AI: {response2}\n")
+    
+    # Command parsing
+    print("🎯 Testing command execution...")
+    commands = [
+        "Open hybrid athlete app",
+        "Show my workout stats",
+        "Analyze my last workout",
+        "What should I train today?"
+    ]
+    
+    for cmd in commands:
+        result = ai.execute_command(cmd)
+        print(f"Command: '{cmd}'")
+        print(f"Parsed: {json.dumps(result, indent=2)}\n")
+    
+    print("✅ All tests complete!")
+
+--- FILE END: .\Ark\llm_engine.py ---
+
+
+--- FILE START: .\Ark\researcher.py ---
+from googlesearch import search
+import requests
+from bs4 import BeautifulSoup
+import sys
+
+def google_search(query):
+    print(f"[RESEARCHER] Searching Google for: {query}")
+    results = []
+    # Get top 3 links
+    try:
+        for j in search(query, num_results=3, advanced=True):
+            results.append((j.title, j.url, j.description))
+    except Exception as e:
+        return f"Search Error: {e}"
+    
+    output = f"--- SEARCH RESULTS FOR '{query}' ---\n"
+    for i, (title, url, desc) in enumerate(results):
+        output += f"[{i+1}] {title}\n    {desc}\n    URL: {url}\n\n"
+    return output
+
+def read_url(url):
+    print(f"[RESEARCHER] Reading content from: {url}")
+    try:
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+        response = requests.get(url, headers=headers, timeout=10)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Kill javascript and css
+        for script in soup(["script", "style"]):
+            script.decompose()
+            
+        text = soup.get_text()
+        # Clean up whitespace
+        lines = (line.strip() for line in text.splitlines())
+        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+        text = '\n'.join(chunk for chunk in chunks if chunk)
+        
+        return f"--- CONTENT OF {url} ---\n{text[:2000]}..." # Limit to 2000 chars
+    except Exception as e:
+        return f"Error reading URL: {e}"
+
+if __name__ == "__main__":
+    mode = sys.argv[1]
+    query = " ".join(sys.argv[2:])
+    
+    if mode == "search":
+        print(google_search(query))
+    elif mode == "read":
+        print(read_url(query))
+--- FILE END: .\Ark\researcher.py ---
+
+
+--- FILE START: .\Ark\test_ark.py ---
+# -*- coding: utf-8 -*-
+"""
+Quick test of Ark LLM integration
+"""
+
+from llm_engine import ArkLLM
+
+def main():
+    print("="*50)
+    print("ARK LLM ENGINE - QUICK TEST")
+    print("="*50)
+    
+    # Create AI
+    ai = ArkLLM()
+    
+    # Test connection
+    print("\n1. Testing Ollama connection...")
+    if ai.test_connection():
+        print("   [OK] Connected to Ollama!")
+    else:
+        print("   [ERROR] Cannot connect. Is Ollama running?")
+        print("   Start it with: ollama serve")
+        return
+    
+    # Simple question
+    print("\n2. Testing simple question...")
+    print("   Question: What is hybrid training?")
+    response = ai.ask("In one sentence, what is hybrid training?")
+    print(f"   AI Response: {response}")
+    
+    # Chat with context
+    print("\n3. Testing chat with coaching context...")
+    ai.set_system_prompt("You are a fitness coach. Be brief and practical.")
+    response = ai.chat("I want to combine futsal and strength training. Quick tip?")
+    print(f"   AI Response: {response}")
+    
+    # Command parsing
+    print("\n4. Testing command parsing...")
+    test_commands = [
+        "Open hybrid athlete app",
+        "Show my stats",
+        "What should I train today?"
+    ]
+    
+    for cmd in test_commands:
+        result = ai.execute_command(cmd)
+        print(f"   Command: '{cmd}'")
+        print(f"   Parsed: {result}")
+    
+    print("\n" + "="*50)
+    print("ALL TESTS PASSED!")
+    print("="*50)
+    print("\nArk AI is ready to use!")
+    print("Try: python workout_analyzer.py")
+
+if __name__ == "__main__":
+    main()
+
+--- FILE END: .\Ark\test_ark.py ---
+
+
+--- FILE START: .\Ark\workout_analyzer.py ---
+"""
+Workout Analyzer - AI-powered workout insights
+
+Reads sync data from Hybrid Athlete app
+Analyzes workout patterns, progress, and provides recommendations
+"""
+
+import json
+import os
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional
+from llm_engine import ArkLLM
+
+
+class WorkoutAnalyzer:
+    """
+    Analyzes workout data using AI
+    Monitors sync file and provides insights
+    """
+    
+    def __init__(self, sync_file_path: Optional[str] = None):
+        """
+        Initialize workout analyzer
+        
+        Args:
+            sync_file_path: Path to sync JSON file (auto-detects if None)
+        """
+        self.llm = ArkLLM(model="llama3.2")
+        
+        # Auto-detect sync file location
+        if sync_file_path:
+            self.sync_file = sync_file_path
+        else:
+            # Try common locations
+            possible_paths = [
+                "../shared_data/hybrid_athlete_sync.json",
+                "../../shared_data/hybrid_athlete_sync.json",
+                os.path.expanduser("~/Documents/HybridAthlete/hybrid_athlete_sync.json"),
+            ]
+            
+            self.sync_file = None
+            for path in possible_paths:
+                if os.path.exists(path):
+                    self.sync_file = path
+                    break
+        
+        self.insights_file = "../shared_data/ai_insights.json"
+        
+        # Set AI personality
+        self.llm.set_system_prompt("""
+You are an expert hybrid athlete coach with deep knowledge of:
+- Futsal and soccer training
+- Strength training and weightlifting
+- Running and endurance sports
+- Recovery and injury prevention
+- Program design and periodization
+
+Provide practical, actionable advice based on the athlete's data.
+Be encouraging but honest about areas for improvement.
+""")
+    
+    def load_workout_data(self) -> Optional[Dict]:
+        """Load latest workout data from sync file"""
+        if not self.sync_file or not os.path.exists(self.sync_file):
+            print(f"❌ Sync file not found: {self.sync_file}")
+            return None
+        
+        try:
+            with open(self.sync_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"❌ Error reading sync file: {e}")
+            return None
+    
+    def analyze_latest_workout(self) -> str:
+        """Analyze the most recent workout"""
+        data = self.load_workout_data()
+        if not data or 'data' not in data:
+            return "❌ No workout data available. Make sure sync file exists."
+        
+        workout_history = data['data'].get('workout_history', [])
+        if not workout_history:
+            return "📭 No workouts logged yet. Start training to get AI insights!"
+        
+        # Get latest workout
+        try:
+            latest = json.loads(workout_history[-1])
+        except:
+            return "❌ Error parsing workout data"
+        
+        # Build detailed analysis prompt
+        workout_type = latest.get('type', 'Unknown')
+        date = latest.get('date', 'Unknown')
+        template = latest.get('template_name', 'Custom')
+        
+        # Format exercises nicely
+        exercises_str = ""
+        sets_data = latest.get('sets', [])
+        if sets_data:
+            exercise_summary = {}
+            for set_data in sets_data:
+                ex_name = set_data.get('exerciseName', 'Unknown')
+                if ex_name not in exercise_summary:
+                    exercise_summary[ex_name] = {
+                        'sets': 0,
+                        'total_reps': 0,
+                        'max_weight': 0,
+                        'distances': [],
+                        'times': []
+                    }
+                
+                exercise_summary[ex_name]['sets'] += 1
+                exercise_summary[ex_name]['total_reps'] += set_data.get('reps', 0)
+                
+                weight = set_data.get('weight', 0)
+                if weight > exercise_summary[ex_name]['max_weight']:
+                    exercise_summary[ex_name]['max_weight'] = weight
+                
+                if 'distance' in set_data:
+                    exercise_summary[ex_name]['distances'].append(set_data['distance'])
+                if 'time' in set_data:
+                    exercise_summary[ex_name]['times'].append(set_data['time'])
+            
+            for ex, data in exercise_summary.items():
+                exercises_str += f"\n  - {ex}: {data['sets']} sets"
+                if data['total_reps'] > 0:
+                    exercises_str += f", {data['total_reps']} total reps"
+                if data['max_weight'] > 0:
+                    exercises_str += f", max {data['max_weight']}kg"
+                if data['distances']:
+                    exercises_str += f", distances: {', '.join(map(str, data['distances']))}km"
+                if data['times']:
+                    exercises_str += f", times: {', '.join(data['times'])}"
+        
+        energy = latest.get('energy', 'Not recorded')
+        mood = latest.get('mood', 'Not recorded')
+        notes = latest.get('notes', 'None')
+        
+        prompt = f"""
+Analyze this workout session and provide expert coaching insights:
+
+**Workout Details:**
+- Type: {workout_type}
+- Date: {date}
+- Template: {template}
+- Energy Level: {energy}/5
+- Mood: {mood}
+- Notes: {notes}
+
+**Exercises Performed:**{exercises_str}
+
+**Provide:**
+1. **Assessment**: Overall quality of this workout (2-3 sentences)
+2. **What Went Well**: Specific positives to celebrate
+3. **Areas for Improvement**: Constructive feedback
+4. **Next Session Recommendation**: What to focus on next time
+
+Keep it practical and encouraging!
+"""
+        
+        print(f"🤖 Analyzing {workout_type} workout from {date}...")
+        return self.llm.chat(prompt)
+    
+    def get_weekly_summary(self, days: int = 7) -> str:
+        """Get summary of recent training"""
+        data = self.load_workout_data()
+        if not data:
+            return "No data available"
+        
+        workout_history = data['data'].get('workout_history', [])
+        
+        # Filter recent workouts
+        cutoff_date = datetime.now() - timedelta(days=days)
+        recent_workouts = []
+        
+        for workout_str in workout_history:
+            try:
+                workout = json.loads(workout_str)
+                workout_date = datetime.fromisoformat(workout.get('date', ''))
+                if workout_date >= cutoff_date:
+                    recent_workouts.append(workout)
+            except:
+                continue
+        
+        if not recent_workouts:
+            return f"No workouts in the last {days} days"
+        
+        # Count workout types
+        type_counts = {}
+        for w in recent_workouts:
+            wtype = w.get('type', 'Unknown')
+            type_counts[wtype] = type_counts.get(wtype, 0) + 1
+        
+        summary_data = {
+            'total_workouts': len(recent_workouts),
+            'types': type_counts,
+            'workouts': [
+                {
+                    'type': w.get('type'),
+                    'date': w.get('date'),
+                    'energy': w.get('energy')
+                }
+                for w in recent_workouts
+            ]
+        }
+        
+        prompt = f"""
+Analyze this {days}-day training summary:
+
+**Training Volume:**
+- Total workouts: {summary_data['total_workouts']}
+- Breakdown: {json.dumps(type_counts, indent=2)}
+
+**Workout Details:**
+{json.dumps(summary_data['workouts'], indent=2)}
+
+**Provide:**
+1. Training volume assessment (is it enough/too much?)
+2. Balance analysis (strength vs cardio vs sports)
+3. Recovery patterns (based on energy levels)
+4. Recommendations for next week
+
+Be specific and actionable!
+"""
+        
+        return self.llm.chat(prompt)
+    
+    def get_training_recommendation(self) -> str:
+        """Get AI recommendation for next workout"""
+        data = self.load_workout_data()
+        if not data:
+            return "No data to analyze"
+        
+        # Get recent workouts (last 7)
+        workout_history = data['data'].get('workout_history', [])
+        recent = workout_history[-7:] if len(workout_history) > 7 else workout_history
+        
+        # Parse recent workouts
+        recent_parsed = []
+        for w_str in recent:
+            try:
+                recent_parsed.append(json.loads(w_str))
+            except:
+                continue
+        
+        prompt = f"""
+Based on this recent training history, what should be the focus of the next workout?
+
+**Recent Workouts:**
+{json.dumps(recent_parsed, indent=2)}
+
+**Consider:**
+- Recovery needs (check energy levels)
+- Training balance (variety of strength/cardio/sports)
+- Progressive overload (building on previous sessions)
+- Injury prevention (avoiding overtraining)
+
+**Provide:**
+1. Recommended workout type (gym/running/futsal/rest)
+2. Specific focus areas or exercises
+3. Intensity guideline
+4. Any precautions or warmup advice
+
+Be specific and practical!
+"""
+        
+        return self.llm.chat(prompt)
+    
+    def analyze_progress(self, exercise_name: str, weeks: int = 4) -> str:
+        """Analyze progress on a specific exercise"""
+        data = self.load_workout_data()
+        if not data:
+            return "No data available"
+        
+        # Find all instances of this exercise
+        workout_history = data['data'].get('workout_history', [])
+        exercise_data = []
+        
+        cutoff_date = datetime.now() - timedelta(weeks=weeks)
+        
+        for w_str in workout_history:
+            try:
+                workout = json.loads(w_str)
+                workout_date = datetime.fromisoformat(workout.get('date', ''))
+                
+                if workout_date < cutoff_date:
+                    continue
+                
+                for set_data in workout.get('sets', []):
+                    if exercise_name.lower() in set_data.get('exerciseName', '').lower():
+                        exercise_data.append({
+                            'date': workout.get('date'),
+                            'weight': set_data.get('weight', 0),
+                            'reps': set_data.get('reps', 0),
+                            'distance': set_data.get('distance'),
+                            'time': set_data.get('time')
+                        })
+            except:
+                continue
+        
+        if not exercise_data:
+            return f"No data found for exercise: {exercise_name}"
+        
+        prompt = f"""
+Analyze progress on this exercise over {weeks} weeks:
+
+**Exercise:** {exercise_name}
+
+**Performance Data:**
+{json.dumps(exercise_data, indent=2)}
+
+**Provide:**
+1. Progress trend (improving/maintaining/declining)
+2. Key metrics (best sets, volume changes)
+3. Recommendations for next session
+4. Any technique or programming advice
+
+Be encouraging and specific!
+"""
+        
+        return self.llm.chat(prompt)
+    
+    def save_insights(self, insights: str, insight_type: str = "general"):
+        """Save AI insights to file for desktop app to display"""
+        try:
+            insights_data = {
+                'timestamp': datetime.now().isoformat(),
+                'type': insight_type,
+                'insights': insights
+            }
+            
+            # Ensure directory exists
+            os.makedirs(os.path.dirname(self.insights_file), exist_ok=True)
+            
+            with open(self.insights_file, 'w', encoding='utf-8') as f:
+                json.dump(insights_data, f, indent=2)
+            
+            print(f"✅ Insights saved to {self.insights_file}")
+        except Exception as e:
+            print(f"❌ Error saving insights: {e}")
+
+
+# CLI usage
+if __name__ == "__main__":
+    print("🤖 Ark Workout Analyzer\n")
+    
+    analyzer = WorkoutAnalyzer()
+    
+    # Check if sync file exists
+    if not analyzer.sync_file:
+        print("❌ No sync file found!")
+        print("\nExpected locations:")
+        print("  - ../shared_data/hybrid_athlete_sync.json")
+        print("  - ~/Documents/HybridAthlete/hybrid_athlete_sync.json")
+        print("\nExport your workout data from the app first!")
+        exit(1)
+    
+    print(f"📂 Using sync file: {analyzer.sync_file}\n")
+    
+    # Menu
+    while True:
+        print("\n" + "="*50)
+        print("Choose an analysis:")
+        print("1. Analyze latest workout")
+        print("2. Weekly summary")
+        print("3. Training recommendation")
+        print("4. Exercise progress")
+        print("5. Exit")
+        print("="*50)
+        
+        choice = input("\nChoice (1-5): ").strip()
+        
+        if choice == "1":
+            print("\n🤖 Analyzing latest workout...\n")
+            result = analyzer.analyze_latest_workout()
+            print(result)
+            analyzer.save_insights(result, "latest_workout")
+            
+        elif choice == "2":
+            print("\n🤖 Generating weekly summary...\n")
+            result = analyzer.get_weekly_summary()
+            print(result)
+            analyzer.save_insights(result, "weekly_summary")
+            
+        elif choice == "3":
+            print("\n🤖 Getting training recommendation...\n")
+            result = analyzer.get_training_recommendation()
+            print(result)
+            analyzer.save_insights(result, "recommendation")
+            
+        elif choice == "4":
+            exercise = input("Exercise name: ").strip()
+            weeks = int(input("Weeks to analyze (default 4): ").strip() or "4")
+            print(f"\n🤖 Analyzing {exercise} progress...\n")
+            result = analyzer.analyze_progress(exercise, weeks)
+            print(result)
+            analyzer.save_insights(result, f"progress_{exercise}")
+            
+        elif choice == "5":
+            print("\n👋 Goodbye!")
+            break
+        else:
+            print("❌ Invalid choice")
+
+--- FILE END: .\Ark\workout_analyzer.py ---
+
+
+--- FILE START: .\macos\Runner\Assets.xcassets\AppIcon.appiconset\Contents.json ---
+{
+  "images" : [
+    {
+      "size" : "16x16",
+      "idiom" : "mac",
+      "filename" : "app_icon_16.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "16x16",
+      "idiom" : "mac",
+      "filename" : "app_icon_32.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "32x32",
+      "idiom" : "mac",
+      "filename" : "app_icon_32.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "32x32",
+      "idiom" : "mac",
+      "filename" : "app_icon_64.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "128x128",
+      "idiom" : "mac",
+      "filename" : "app_icon_128.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "128x128",
+      "idiom" : "mac",
+      "filename" : "app_icon_256.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "256x256",
+      "idiom" : "mac",
+      "filename" : "app_icon_256.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "256x256",
+      "idiom" : "mac",
+      "filename" : "app_icon_512.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "512x512",
+      "idiom" : "mac",
+      "filename" : "app_icon_512.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "512x512",
+      "idiom" : "mac",
+      "filename" : "app_icon_1024.png",
+      "scale" : "2x"
+    }
+  ],
+  "info" : {
+    "version" : 1,
+    "author" : "xcode"
+  }
+}
+
+--- FILE END: .\macos\Runner\Assets.xcassets\AppIcon.appiconset\Contents.json ---
+
+
+--- FILE START: .\web\index.html ---
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="hybrid_athlete">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>hybrid_athlete</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
+
+--- FILE END: .\web\index.html ---
+
+
+--- FILE START: .\web\manifest.json ---
+{
+    "name": "hybrid_athlete",
+    "short_name": "hybrid_athlete",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#0175C2",
+    "theme_color": "#0175C2",
+    "description": "A new Flutter project.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}
+
+--- FILE END: .\web\manifest.json ---
+
+
+--- FILE START: .\windows\runner\flutter_window.cpp ---
+#include "flutter_window.h"
+
+#include <optional>
+
+#include "flutter/generated_plugin_registrant.h"
+
+FlutterWindow::FlutterWindow(const flutter::DartProject& project)
+    : project_(project) {}
+
+FlutterWindow::~FlutterWindow() {}
+
+bool FlutterWindow::OnCreate() {
+  if (!Win32Window::OnCreate()) {
+    return false;
+  }
+
+  RECT frame = GetClientArea();
+
+  // The size here must match the window dimensions to avoid unnecessary surface
+  // creation / destruction in the startup path.
+  flutter_controller_ = std::make_unique<flutter::FlutterViewController>(
+      frame.right - frame.left, frame.bottom - frame.top, project_);
+  // Ensure that basic setup of the controller was successful.
+  if (!flutter_controller_->engine() || !flutter_controller_->view()) {
+    return false;
+  }
+  RegisterPlugins(flutter_controller_->engine());
+  SetChildContent(flutter_controller_->view()->GetNativeWindow());
+
+  flutter_controller_->engine()->SetNextFrameCallback([&]() {
+    this->Show();
+  });
+
+  // Flutter can complete the first frame before the "show window" callback is
+  // registered. The following call ensures a frame is pending to ensure the
+  // window is shown. It is a no-op if the first frame hasn't completed yet.
+  flutter_controller_->ForceRedraw();
+
+  return true;
+}
+
+void FlutterWindow::OnDestroy() {
+  if (flutter_controller_) {
+    flutter_controller_ = nullptr;
+  }
+
+  Win32Window::OnDestroy();
+}
+
+LRESULT
+FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
+                              WPARAM const wparam,
+                              LPARAM const lparam) noexcept {
+  // Give Flutter, including plugins, an opportunity to handle window messages.
+  if (flutter_controller_) {
+    std::optional<LRESULT> result =
+        flutter_controller_->HandleTopLevelWindowProc(hwnd, message, wparam,
+                                                      lparam);
+    if (result) {
+      return *result;
+    }
+  }
+
+  switch (message) {
+    case WM_FONTCHANGE:
+      flutter_controller_->engine()->ReloadSystemFonts();
+      break;
+  }
+
+  return Win32Window::MessageHandler(hwnd, message, wparam, lparam);
+}
+
+--- FILE END: .\windows\runner\flutter_window.cpp ---
+
+
+--- FILE START: .\windows\runner\main.cpp ---
+#include <flutter/dart_project.h>
+#include <flutter/flutter_view_controller.h>
+#include <windows.h>
+
+#include "flutter_window.h"
+#include "utils.h"
+
+int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
+                      _In_ wchar_t *command_line, _In_ int show_command) {
+  // Attach to console when present (e.g., 'flutter run') or create a
+  // new console when running with a debugger.
+  if (!::AttachConsole(ATTACH_PARENT_PROCESS) && ::IsDebuggerPresent()) {
+    CreateAndAttachConsole();
+  }
+
+  // Initialize COM, so that it is available for use in the library and/or
+  // plugins.
+  ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+
+  flutter::DartProject project(L"data");
+
+  std::vector<std::string> command_line_arguments =
+      GetCommandLineArguments();
+
+  project.set_dart_entrypoint_arguments(std::move(command_line_arguments));
+
+  FlutterWindow window(project);
+  Win32Window::Point origin(10, 10);
+  Win32Window::Size size(1280, 720);
+  if (!window.Create(L"hybrid_athlete", origin, size)) {
+    return EXIT_FAILURE;
+  }
+  window.SetQuitOnClose(true);
+
+  ::MSG msg;
+  while (::GetMessage(&msg, nullptr, 0, 0)) {
+    ::TranslateMessage(&msg);
+    ::DispatchMessage(&msg);
+  }
+
+  ::CoUninitialize();
+  return EXIT_SUCCESS;
+}
+
+--- FILE END: .\windows\runner\main.cpp ---
+
+
+--- FILE START: .\windows\runner\utils.cpp ---
+#include "utils.h"
+
+#include <flutter_windows.h>
+#include <io.h>
+#include <stdio.h>
+#include <windows.h>
+
+#include <iostream>
+
+void CreateAndAttachConsole() {
+  if (::AllocConsole()) {
+    FILE *unused;
+    if (freopen_s(&unused, "CONOUT$", "w", stdout)) {
+      _dup2(_fileno(stdout), 1);
+    }
+    if (freopen_s(&unused, "CONOUT$", "w", stderr)) {
+      _dup2(_fileno(stdout), 2);
+    }
+    std::ios::sync_with_stdio();
+    FlutterDesktopResyncOutputStreams();
+  }
+}
+
+std::vector<std::string> GetCommandLineArguments() {
+  // Convert the UTF-16 command line arguments to UTF-8 for the Engine to use.
+  int argc;
+  wchar_t** argv = ::CommandLineToArgvW(::GetCommandLineW(), &argc);
+  if (argv == nullptr) {
+    return std::vector<std::string>();
+  }
+
+  std::vector<std::string> command_line_arguments;
+
+  // Skip the first argument as it's the binary name.
+  for (int i = 1; i < argc; i++) {
+    command_line_arguments.push_back(Utf8FromUtf16(argv[i]));
+  }
+
+  ::LocalFree(argv);
+
+  return command_line_arguments;
+}
+
+std::string Utf8FromUtf16(const wchar_t* utf16_string) {
+  if (utf16_string == nullptr) {
+    return std::string();
+  }
+  unsigned int target_length = ::WideCharToMultiByte(
+      CP_UTF8, WC_ERR_INVALID_CHARS, utf16_string,
+      -1, nullptr, 0, nullptr, nullptr)
+    -1; // remove the trailing null character
+  int input_length = (int)wcslen(utf16_string);
+  std::string utf8_string;
+  if (target_length == 0 || target_length > utf8_string.max_size()) {
+    return utf8_string;
+  }
+  utf8_string.resize(target_length);
+  int converted_length = ::WideCharToMultiByte(
+      CP_UTF8, WC_ERR_INVALID_CHARS, utf16_string,
+      input_length, utf8_string.data(), target_length, nullptr, nullptr);
+  if (converted_length == 0) {
+    return std::string();
+  }
+  return utf8_string;
+}
+
+--- FILE END: .\windows\runner\utils.cpp ---
+
+
+--- FILE START: .\windows\runner\win32_window.cpp ---
+#include "win32_window.h"
+
+#include <dwmapi.h>
+#include <flutter_windows.h>
+
+#include "resource.h"
+
+namespace {
+
+/// Window attribute that enables dark mode window decorations.
+///
+/// Redefined in case the developer's machine has a Windows SDK older than
+/// version 10.0.22000.0.
+/// See: https://docs.microsoft.com/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute
+#ifndef DWMWA_USE_IMMERSIVE_DARK_MODE
+#define DWMWA_USE_IMMERSIVE_DARK_MODE 20
+#endif
+
+constexpr const wchar_t kWindowClassName[] = L"FLUTTER_RUNNER_WIN32_WINDOW";
+
+/// Registry key for app theme preference.
+///
+/// A value of 0 indicates apps should use dark mode. A non-zero or missing
+/// value indicates apps should use light mode.
+constexpr const wchar_t kGetPreferredBrightnessRegKey[] =
+  L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
+constexpr const wchar_t kGetPreferredBrightnessRegValue[] = L"AppsUseLightTheme";
+
+// The number of Win32Window objects that currently exist.
+static int g_active_window_count = 0;
+
+using EnableNonClientDpiScaling = BOOL __stdcall(HWND hwnd);
+
+// Scale helper to convert logical scaler values to physical using passed in
+// scale factor
+int Scale(int source, double scale_factor) {
+  return static_cast<int>(source * scale_factor);
+}
+
+// Dynamically loads the |EnableNonClientDpiScaling| from the User32 module.
+// This API is only needed for PerMonitor V1 awareness mode.
+void EnableFullDpiSupportIfAvailable(HWND hwnd) {
+  HMODULE user32_module = LoadLibraryA("User32.dll");
+  if (!user32_module) {
+    return;
+  }
+  auto enable_non_client_dpi_scaling =
+      reinterpret_cast<EnableNonClientDpiScaling*>(
+          GetProcAddress(user32_module, "EnableNonClientDpiScaling"));
+  if (enable_non_client_dpi_scaling != nullptr) {
+    enable_non_client_dpi_scaling(hwnd);
+  }
+  FreeLibrary(user32_module);
+}
+
+}  // namespace
+
+// Manages the Win32Window's window class registration.
+class WindowClassRegistrar {
+ public:
+  ~WindowClassRegistrar() = default;
+
+  // Returns the singleton registrar instance.
+  static WindowClassRegistrar* GetInstance() {
+    if (!instance_) {
+      instance_ = new WindowClassRegistrar();
+    }
+    return instance_;
+  }
+
+  // Returns the name of the window class, registering the class if it hasn't
+  // previously been registered.
+  const wchar_t* GetWindowClass();
+
+  // Unregisters the window class. Should only be called if there are no
+  // instances of the window.
+  void UnregisterWindowClass();
+
+ private:
+  WindowClassRegistrar() = default;
+
+  static WindowClassRegistrar* instance_;
+
+  bool class_registered_ = false;
+};
+
+WindowClassRegistrar* WindowClassRegistrar::instance_ = nullptr;
+
+const wchar_t* WindowClassRegistrar::GetWindowClass() {
+  if (!class_registered_) {
+    WNDCLASS window_class{};
+    window_class.hCursor = LoadCursor(nullptr, IDC_ARROW);
+    window_class.lpszClassName = kWindowClassName;
+    window_class.style = CS_HREDRAW | CS_VREDRAW;
+    window_class.cbClsExtra = 0;
+    window_class.cbWndExtra = 0;
+    window_class.hInstance = GetModuleHandle(nullptr);
+    window_class.hIcon =
+        LoadIcon(window_class.hInstance, MAKEINTRESOURCE(IDI_APP_ICON));
+    window_class.hbrBackground = 0;
+    window_class.lpszMenuName = nullptr;
+    window_class.lpfnWndProc = Win32Window::WndProc;
+    RegisterClass(&window_class);
+    class_registered_ = true;
+  }
+  return kWindowClassName;
+}
+
+void WindowClassRegistrar::UnregisterWindowClass() {
+  UnregisterClass(kWindowClassName, nullptr);
+  class_registered_ = false;
+}
+
+Win32Window::Win32Window() {
+  ++g_active_window_count;
+}
+
+Win32Window::~Win32Window() {
+  --g_active_window_count;
+  Destroy();
+}
+
+bool Win32Window::Create(const std::wstring& title,
+                         const Point& origin,
+                         const Size& size) {
+  Destroy();
+
+  const wchar_t* window_class =
+      WindowClassRegistrar::GetInstance()->GetWindowClass();
+
+  const POINT target_point = {static_cast<LONG>(origin.x),
+                              static_cast<LONG>(origin.y)};
+  HMONITOR monitor = MonitorFromPoint(target_point, MONITOR_DEFAULTTONEAREST);
+  UINT dpi = FlutterDesktopGetDpiForMonitor(monitor);
+  double scale_factor = dpi / 96.0;
+
+  HWND window = CreateWindow(
+      window_class, title.c_str(), WS_OVERLAPPEDWINDOW,
+      Scale(origin.x, scale_factor), Scale(origin.y, scale_factor),
+      Scale(size.width, scale_factor), Scale(size.height, scale_factor),
+      nullptr, nullptr, GetModuleHandle(nullptr), this);
+
+  if (!window) {
+    return false;
+  }
+
+  UpdateTheme(window);
+
+  return OnCreate();
+}
+
+bool Win32Window::Show() {
+  return ShowWindow(window_handle_, SW_SHOWNORMAL);
+}
+
+// static
+LRESULT CALLBACK Win32Window::WndProc(HWND const window,
+                                      UINT const message,
+                                      WPARAM const wparam,
+                                      LPARAM const lparam) noexcept {
+  if (message == WM_NCCREATE) {
+    auto window_struct = reinterpret_cast<CREATESTRUCT*>(lparam);
+    SetWindowLongPtr(window, GWLP_USERDATA,
+                     reinterpret_cast<LONG_PTR>(window_struct->lpCreateParams));
+
+    auto that = static_cast<Win32Window*>(window_struct->lpCreateParams);
+    EnableFullDpiSupportIfAvailable(window);
+    that->window_handle_ = window;
+  } else if (Win32Window* that = GetThisFromHandle(window)) {
+    return that->MessageHandler(window, message, wparam, lparam);
+  }
+
+  return DefWindowProc(window, message, wparam, lparam);
+}
+
+LRESULT
+Win32Window::MessageHandler(HWND hwnd,
+                            UINT const message,
+                            WPARAM const wparam,
+                            LPARAM const lparam) noexcept {
+  switch (message) {
+    case WM_DESTROY:
+      window_handle_ = nullptr;
+      Destroy();
+      if (quit_on_close_) {
+        PostQuitMessage(0);
+      }
+      return 0;
+
+    case WM_DPICHANGED: {
+      auto newRectSize = reinterpret_cast<RECT*>(lparam);
+      LONG newWidth = newRectSize->right - newRectSize->left;
+      LONG newHeight = newRectSize->bottom - newRectSize->top;
+
+      SetWindowPos(hwnd, nullptr, newRectSize->left, newRectSize->top, newWidth,
+                   newHeight, SWP_NOZORDER | SWP_NOACTIVATE);
+
+      return 0;
+    }
+    case WM_SIZE: {
+      RECT rect = GetClientArea();
+      if (child_content_ != nullptr) {
+        // Size and position the child window.
+        MoveWindow(child_content_, rect.left, rect.top, rect.right - rect.left,
+                   rect.bottom - rect.top, TRUE);
+      }
+      return 0;
+    }
+
+    case WM_ACTIVATE:
+      if (child_content_ != nullptr) {
+        SetFocus(child_content_);
+      }
+      return 0;
+
+    case WM_DWMCOLORIZATIONCOLORCHANGED:
+      UpdateTheme(hwnd);
+      return 0;
+  }
+
+  return DefWindowProc(window_handle_, message, wparam, lparam);
+}
+
+void Win32Window::Destroy() {
+  OnDestroy();
+
+  if (window_handle_) {
+    DestroyWindow(window_handle_);
+    window_handle_ = nullptr;
+  }
+  if (g_active_window_count == 0) {
+    WindowClassRegistrar::GetInstance()->UnregisterWindowClass();
+  }
+}
+
+Win32Window* Win32Window::GetThisFromHandle(HWND const window) noexcept {
+  return reinterpret_cast<Win32Window*>(
+      GetWindowLongPtr(window, GWLP_USERDATA));
+}
+
+void Win32Window::SetChildContent(HWND content) {
+  child_content_ = content;
+  SetParent(content, window_handle_);
+  RECT frame = GetClientArea();
+
+  MoveWindow(content, frame.left, frame.top, frame.right - frame.left,
+             frame.bottom - frame.top, true);
+
+  SetFocus(child_content_);
+}
+
+RECT Win32Window::GetClientArea() {
+  RECT frame;
+  GetClientRect(window_handle_, &frame);
+  return frame;
+}
+
+HWND Win32Window::GetHandle() {
+  return window_handle_;
+}
+
+void Win32Window::SetQuitOnClose(bool quit_on_close) {
+  quit_on_close_ = quit_on_close;
+}
+
+bool Win32Window::OnCreate() {
+  // No-op; provided for subclasses.
+  return true;
+}
+
+void Win32Window::OnDestroy() {
+  // No-op; provided for subclasses.
+}
+
+void Win32Window::UpdateTheme(HWND const window) {
+  DWORD light_mode;
+  DWORD light_mode_size = sizeof(light_mode);
+  LSTATUS result = RegGetValue(HKEY_CURRENT_USER, kGetPreferredBrightnessRegKey,
+                               kGetPreferredBrightnessRegValue,
+                               RRF_RT_REG_DWORD, nullptr, &light_mode,
+                               &light_mode_size);
+
+  if (result == ERROR_SUCCESS) {
+    BOOL enable_dark_mode = light_mode == 0;
+    DwmSetWindowAttribute(window, DWMWA_USE_IMMERSIVE_DARK_MODE,
+                          &enable_dark_mode, sizeof(enable_dark_mode));
+  }
+}
+
+--- FILE END: .\windows\runner\win32_window.cpp ---

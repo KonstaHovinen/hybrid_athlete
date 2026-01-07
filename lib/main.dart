@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/home_screen.dart';
-import 'screens/settings_screen.dart';
+
 import 'app_theme.dart';
 import 'utils/preferences_cache.dart';
 import 'screens/github_setup_screen.dart';

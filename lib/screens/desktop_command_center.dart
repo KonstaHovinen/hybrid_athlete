@@ -15,7 +15,7 @@ import 'history_screen.dart';
 import 'workout_calendar_screen.dart';
 import 'profile_screen.dart';
 import 'device_sync_screen.dart';
-import 'ai_assistant_screen.dart';
+
 
 /// Desktop Command Center - View-only version for planning and analysis
 /// NO active workout tracking - designed for desktop viewing and planning
@@ -141,7 +141,7 @@ class _DesktopCommandCenterState extends State<DesktopCommandCenter> with Single
                       Container(
                         padding: AppSpacing.paddingSM,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: AppBorderRadius.borderRadiusMD,
                         ),
                         child: const Icon(
@@ -172,7 +172,7 @@ class _DesktopCommandCenterState extends State<DesktopCommandCenter> with Single
                     children: [
                       CircleAvatar(
                         radius: 24,
-                        backgroundColor: AppColors.primary.withOpacity(0.2),
+                        backgroundColor: AppColors.primary.withValues(alpha: 0.2),
                         child: Icon(
                           Icons.person,
                           color: AppColors.primary,
@@ -276,8 +276,8 @@ class _DesktopCommandCenterState extends State<DesktopCommandCenter> with Single
                             padding: AppSpacing.paddingSM,
                             decoration: BoxDecoration(
                               color: _lastSyncTime != null
-                                  ? AppColors.primary.withOpacity(0.15 * _pulseAnimation.value)
-                                  : AppColors.textMuted.withOpacity(0.1),
+                                  ? AppColors.primary.withValues(alpha: 0.15 * _pulseAnimation.value)
+                                  : AppColors.textMuted.withValues(alpha: 0.1),
                               borderRadius: AppBorderRadius.borderRadiusMD,
                               border: Border.all(
                                 color: _lastSyncTime != null
@@ -437,7 +437,7 @@ class _NavItem extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: isSelected
-                ? AppColors.primary.withOpacity(0.15)
+                ? AppColors.primary.withValues(alpha: 0.15)
                 : Colors.transparent,
             border: isSelected
                 ? Border(
@@ -644,7 +644,7 @@ class _DashboardViewState extends State<_DashboardView> {
                             Container(
                               padding: AppSpacing.paddingSM,
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.15),
+                                color: AppColors.primary.withValues(alpha: 0.15),
                                 borderRadius: AppBorderRadius.borderRadiusMD,
                               ),
                               child: Icon(
@@ -681,7 +681,7 @@ class _DashboardViewState extends State<_DashboardView> {
                                   vertical: AppSpacing.xs,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.warning.withOpacity(0.15),
+                                  color: AppColors.warning.withValues(alpha: 0.15),
                                   borderRadius: AppBorderRadius.borderRadiusSM,
                                 ),
                                 child: Row(
@@ -789,7 +789,7 @@ class _DashboardViewState extends State<_DashboardView> {
                                           vertical: AppSpacing.xs,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: AppColors.warning.withOpacity(0.15),
+                                          color: AppColors.warning.withValues(alpha: 0.15),
                                           borderRadius: AppBorderRadius.borderRadiusSM,
                                         ),
                                         child: Text(
@@ -869,7 +869,7 @@ class _QuickStatCard extends StatelessWidget {
           Container(
             padding: AppSpacing.paddingSM,
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.15),
+              color: iconColor.withValues(alpha: 0.15),
               borderRadius: AppBorderRadius.borderRadiusMD,
             ),
             child: Icon(icon, color: iconColor, size: 24),
@@ -1008,7 +1008,7 @@ class _TemplatesViewState extends State<_TemplatesView> {
                         Container(
                           padding: AppSpacing.paddingSM,
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.15),
+                            color: AppColors.primary.withValues(alpha: 0.15),
                             borderRadius: AppBorderRadius.borderRadiusMD,
                           ),
                           child: Icon(

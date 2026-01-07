@@ -32,10 +32,10 @@ class GitHubGistSync {
       }
       
       _isInitialized = true;
-      print('GitHub Gist sync initialized');
+      debugPrint('GitHub Gist sync initialized');
       return true;
     } catch (e) {
-      print('GitHub Gist initialization failed: $e');
+      debugPrint('GitHub Gist initialization failed: $e');
       return false;
     }
   }
@@ -61,13 +61,13 @@ class GitHubGistSync {
         final prefs = await PreferencesCache.getInstance();
         await prefs.setString('github_token', token);
         _userToken = token;
-        print('GitHub token validated and saved');
+        debugPrint('GitHub token validated and saved');
         return true;
       } else {
         throw Exception('Invalid GitHub token');
       }
     } catch (e) {
-      print('GitHub token setup failed: $e');
+      debugPrint('GitHub token setup failed: $e');
       return false;
     }
   }
@@ -97,13 +97,13 @@ class GitHubGistSync {
       final response = await _createOrUpdateGist(gistContent);
       
       if (response != null) {
-        print('Data uploaded to GitHub Gist');
+        debugPrint('Data uploaded to GitHub Gist');
         return true;
       }
       
       return false;
     } catch (e) {
-      print('Gist upload error: $e');
+      debugPrint('Gist upload error: $e');
       return false;
     }
   }
@@ -130,14 +130,14 @@ class GitHubGistSync {
         if (content != null) {
           final syncData = jsonDecode(content) as Map<String, dynamic>;
           await _importGistData(syncData);
-          print('Data downloaded from GitHub Gist');
+          debugPrint('Data downloaded from GitHub Gist');
           return true;
         }
       }
       
       return false;
     } catch (e) {
-      print('Gist download error: $e');
+      debugPrint('Gist download error: $e');
       return false;
     }
   }
@@ -182,7 +182,7 @@ class GitHubGistSync {
     await prefs.remove('sync_gist_id');
     _userToken = null;
     _syncGistId = null;
-    print('GitHub sync data cleared');
+    debugPrint('GitHub sync data cleared');
   }
   
   /// Validate GitHub token
@@ -300,6 +300,6 @@ class GitHubGistSync {
     await prefs.remove('stats_cache_timestamp');
     await prefs.remove('workout_history_cache');
     await prefs.remove('workout_history_cache_timestamp');
-    print('All caches invalidated after GitHub Gist sync');
+    debugPrint('All caches invalidated after GitHub Gist sync');
   }
 }

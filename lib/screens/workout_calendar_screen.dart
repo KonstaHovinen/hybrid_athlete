@@ -98,7 +98,7 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen>
             decoration: BoxDecoration(
               color: AppColors.card,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.accent.withOpacity(0.3)),
+              border: Border.all(color: AppColors.accent.withValues(alpha: 0.3)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,12 +229,12 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen>
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [AppColors.accent.withOpacity(0.15), AppColors.surface],
+          colors: [AppColors.accent.withValues(alpha: 0.15), AppColors.surface],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.accent.withOpacity(0.3)),
+        border: Border.all(color: AppColors.accent.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,7 +244,7 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen>
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withOpacity(0.2),
+                  color: AppColors.accent.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
@@ -333,7 +333,7 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen>
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.accent.withOpacity(0.15),
+                        color: AppColors.accent.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -361,14 +361,14 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen>
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.15),
+              color: AppColors.primary.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(
@@ -393,7 +393,7 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen>
                           size: 14,
                           color: i < energy
                               ? AppColors.warning
-                              : AppColors.textMuted.withOpacity(0.3),
+                              : AppColors.textMuted.withValues(alpha: 0.3),
                         ),
                       ),
                     ],
@@ -851,7 +851,7 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen>
                     shape: BoxShape.circle,
                   ),
                   todayDecoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     shape: BoxShape.circle,
                     border: Border.all(color: AppColors.primary, width: 2),
                   ),
@@ -874,7 +874,7 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen>
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: color.withOpacity(0.4),
+                              color: color.withValues(alpha: 0.4),
                               blurRadius: 8,
                               spreadRadius: 1,
                             ),
@@ -997,7 +997,7 @@ class _StatTile extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       margin: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(

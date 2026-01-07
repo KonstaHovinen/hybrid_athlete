@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'utils/sync_service.dart';
@@ -22,7 +23,7 @@ class ProStats {
           userGoals[key] = (value is int) ? value.toDouble() : (value as double);
         });
         return userGoals;
-      } catch (e) { print("Error loading goals"); }
+      } catch (e) { debugPrint("Error loading goals"); }
     }
     return Map.from(defaultGoals);
   }
@@ -337,7 +338,7 @@ class ProfileManager {
     final prefs = await SharedPreferences.getInstance();
     final String? profileJson = prefs.getString(_profileKey);
     if (profileJson != null) {
-      try { return UserProfile.fromJson(jsonDecode(profileJson)); } catch (e) { print(e); }
+      try { return UserProfile.fromJson(jsonDecode(profileJson)); } catch (e) { debugPrint(e.toString()); }
     }
     return UserProfile();
   }

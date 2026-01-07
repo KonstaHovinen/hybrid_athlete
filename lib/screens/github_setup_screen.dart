@@ -224,7 +224,7 @@ class _GitHubSetupScreenState extends State<GitHubSetupScreen> {
                     Container(
                       padding: AppSpacing.paddingMD,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.1),
+                        color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: AppBorderRadius.borderRadiusMD,
                       ),
                       child: Row(
@@ -320,7 +320,7 @@ class _GitHubSetupScreenState extends State<GitHubSetupScreen> {
             width: 24,
             height: 24,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.2),
+              color: AppColors.primary.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(

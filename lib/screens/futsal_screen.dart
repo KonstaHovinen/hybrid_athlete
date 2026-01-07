@@ -119,7 +119,7 @@ class _FutsalLoggerScreenState extends State<FutsalLoggerScreen> {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [AppColors.accent.withOpacity(0.2), AppColors.surface],
+                colors: [AppColors.accent.withValues(alpha: 0.2), AppColors.surface],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -179,7 +179,7 @@ class _FutsalLoggerScreenState extends State<FutsalLoggerScreen> {
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: AppColors.accent.withOpacity(0.5),
+                          color: AppColors.accent.withValues(alpha: 0.5),
                           width: 2,
                         ),
                         borderRadius: BorderRadius.circular(16),
@@ -274,7 +274,7 @@ class _FutsalLoggerScreenState extends State<FutsalLoggerScreen> {
                                   style: const TextStyle(fontSize: 12),
                                 ),
                                 selected: _selectedMoods.contains(mood),
-                                selectedColor: AppColors.accent.withOpacity(
+                                selectedColor: AppColors.accent.withValues(alpha: 
                                   0.3,
                                 ),
                                 checkmarkColor: AppColors.accent,
@@ -320,7 +320,7 @@ class _FutsalLoggerScreenState extends State<FutsalLoggerScreen> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.accent.withOpacity(0.4),
+                        color: AppColors.accent.withValues(alpha: 0.4),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),
@@ -500,21 +500,21 @@ class _GameCard extends StatelessWidget {
                   case 'Struggle':
                     bgColor = isSelected
                         ? AppColors.error
-                        : AppColors.error.withOpacity(0.1);
+                        : AppColors.error.withValues(alpha: 0.1);
                     textColor = isSelected ? Colors.white : AppColors.error;
                     icon = Icons.trending_down;
                     break;
                   case 'Push':
                     bgColor = isSelected
                         ? AppColors.primary
-                        : AppColors.primary.withOpacity(0.1);
+                        : AppColors.primary.withValues(alpha: 0.1);
                     textColor = isSelected ? Colors.white : AppColors.primary;
                     icon = Icons.trending_up;
                     break;
                   default:
                     bgColor = isSelected
                         ? AppColors.accent
-                        : AppColors.accent.withOpacity(0.1);
+                        : AppColors.accent.withValues(alpha: 0.1);
                     textColor = isSelected ? Colors.white : AppColors.accent;
                     icon = Icons.trending_flat;
                 }
@@ -532,7 +532,7 @@ class _GameCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: bgColor,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: textColor.withOpacity(0.5)),
+                          border: Border.all(color: textColor.withValues(alpha: 0.5)),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -583,7 +583,7 @@ class _SummaryItem extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.15),
+            color: color.withValues(alpha: 0.15),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: color, size: 24),
@@ -624,9 +624,9 @@ class _StatCounter extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -698,7 +698,7 @@ class _ImpactBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.2),
+        color: color.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -782,7 +782,7 @@ class FutsalSummaryScreen extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.accent.withOpacity(0.4),
+                      color: AppColors.accent.withValues(alpha: 0.4),
                       blurRadius: 30,
                       spreadRadius: 5,
                     ),
@@ -831,9 +831,9 @@ class FutsalSummaryScreen extends StatelessWidget {
                   vertical: 12,
                 ),
                 decoration: BoxDecoration(
-                  color: impactColor.withOpacity(0.2),
+                  color: impactColor.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: impactColor.withOpacity(0.5)),
+                  border: Border.all(color: impactColor.withValues(alpha: 0.5)),
                 ),
                 child: Text(
                   "$impactEmoji Overall: $dominantImpact",
@@ -872,7 +872,7 @@ class FutsalSummaryScreen extends StatelessWidget {
                       .map(
                         (m) => Chip(
                           label: Text(m, style: const TextStyle(fontSize: 12)),
-                          backgroundColor: AppColors.accent.withOpacity(0.2),
+                          backgroundColor: AppColors.accent.withValues(alpha: 0.2),
                         ),
                       )
                       .toList(),
@@ -888,7 +888,7 @@ class FutsalSummaryScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.4),
+                      color: AppColors.primary.withValues(alpha: 0.4),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),

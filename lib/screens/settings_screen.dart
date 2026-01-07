@@ -37,17 +37,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _loadVersion() async {
     final info = await PackageInfo.fromPlatform();
-    setState(() {
-      _version = '${info.version}+${info.buildNumber}';
-    });
+    if (mounted) {
+      setState(() {
+        _version = '${info.version}+${info.buildNumber}';
+      });
+    }
   }
 
   Future<void> _loadSyncMeta() async {
     final prefs = await PreferencesCache.getInstance();
-    setState(() {
-      _gistId = prefs.getString('sync_gist_id');
-      _lastSync = prefs.getString('last_sync_time');
-    });
+    if (mounted) {
+      setState(() {
+        _gistId = prefs.getString('sync_gist_id');
+        _lastSync = prefs.getString('last_sync_time');
+      });
+    }
   }
 
   Future<void> _checkUpdates() async {
@@ -56,6 +60,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       final uri = Uri.parse('https://api.github.com/repos/KonstaHovinen/hybrid_athlete/releases/latest');
       final resp = await http.get(uri);
       final body = resp.body;
+      
+      if (!mounted) return;
+
       if (resp.statusCode == 200) {
         final json = jsonDecode(body) as Map<String, dynamic>;
         final tag = (json['tag_name'] ?? '').toString();
@@ -70,10 +77,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         );
       }
     } catch (e) {
-      setState(() { _updateStatus = 'Error'; });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Update check error: $e')),
-      );
+      if (mounted) {
+        setState(() { _updateStatus = 'Error'; });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Update check error: $e')),
+        );
+      }
     } finally {
       if (mounted) setState(() { _checkingUpdate = false; });
     }
@@ -86,15 +95,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
       final prefs = await PreferencesCache.getInstance();
       await prefs.setString('last_sync_time', DateTime.now().toIso8601String());
       await _loadSyncMeta();
+      
+      if (!mounted) return;
+
       setState(() { _syncStatus = 'Upload: ${results['upload_success']}, Download: ${results['download_success']}'; });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Sync done. Upload: ${results['upload_success']}  Download: ${results['download_success']}  Gist: ${results['gist_id'] ?? 'n/a'}')),
       );
     } catch (e) {
-      setState(() { _syncStatus = 'Error'; });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Sync error: $e')),
-      );
+      if (mounted) {
+        setState(() { _syncStatus = 'Error'; });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Sync error: $e')),
+        );
+      }
     } finally {
       if (mounted) setState(() { _syncing = false; });
     }
@@ -103,14 +117,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _testAI() async {
     try {
       final res = await HybridAthleteAI.processCommand('ping');
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(res == null ? 'AI test failed' : 'AI responded.')),
       );
       setState(() { _aiStatus = HybridAthleteAI.getStatus(); });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('AI test error: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('AI test error: $e')),
+        );
+      }
     }
   }
 
@@ -132,6 +149,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         'ai_interaction_history': prefs.getStringList('ai_interaction_history') ?? [],
       };
       final jsonStr = const JsonEncoder.withIndent('  ').convert(data);
+      
+      if (!mounted) return;
+
       await showDialog(context: context, builder: (c) => AlertDialog(
         backgroundColor: AppColors.card,
         title: const Text('Export Data'),
@@ -139,9 +159,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [TextButton(onPressed: () => Navigator.pop(c), child: const Text('Close'))],
       ));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Export error: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Export error: $e')),
+        );
+      }
     }
   }
 

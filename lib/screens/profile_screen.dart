@@ -101,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isEarned ? badge.color.withOpacity(0.2) : AppColors.surfaceLight,
+                  color: isEarned ? badge.color.withValues(alpha: 0.2) : AppColors.surfaceLight,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(badge.icon, size: 50, color: isEarned ? badge.color : AppColors.textMuted),
@@ -123,9 +123,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   decoration: BoxDecoration(
-                    color: AppColors.error.withOpacity(0.1),
+                    color: AppColors.error.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.error.withOpacity(0.5)),
+                    border: Border.all(color: AppColors.error.withValues(alpha: 0.5)),
                   ),
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -146,7 +146,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             if (isEarned)
               Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [badge.color, badge.color.withOpacity(0.7)]),
+                  gradient: LinearGradient(colors: [badge.color, badge.color.withValues(alpha: 0.7)]),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: ElevatedButton(
@@ -222,7 +222,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.3),
+                      color: AppColors.primary.withValues(alpha: 0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -239,8 +239,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: 90,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(0.15),
-                            border: Border.all(color: Colors.white.withOpacity(0.4), width: 3),
+                            color: Colors.white.withValues(alpha: 0.15),
+                            border: Border.all(color: Colors.white.withValues(alpha: 0.4), width: 3),
                           ),
                           child: const Icon(Icons.person, size: 45, color: Colors.white),
                         ),
@@ -260,7 +260,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   shape: BoxShape.circle,
                                   border: Border.all(color: Colors.white, width: 2),
                                   boxShadow: [
-                                    BoxShadow(color: AppColors.warning.withOpacity(0.5), blurRadius: 10),
+                                    BoxShadow(color: AppColors.warning.withValues(alpha: 0.5), blurRadius: 10),
                                   ],
                                 ),
                                 child: Icon(
@@ -287,13 +287,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ],
                     ),
-                    Text("Member since $_memberSince", style: TextStyle(color: Colors.white.withOpacity(0.7))),
+                    Text("Member since $_memberSince", style: TextStyle(color: Colors.white.withValues(alpha: 0.7))),
                     const SizedBox(height: 20),
                     // Quick stats row
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        color: Colors.white.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Row(
@@ -326,7 +326,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.warning.withOpacity(0.2),
+                      color: AppColors.warning.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text("${_earnedBadges.length}/${ProfileManager.getAllAvailableBadges().length}", 
@@ -358,7 +358,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ? Border.all(color: AppColors.warning, width: 2) 
                             : Border.all(color: AppColors.surfaceLight),
                           boxShadow: isActive ? [
-                            BoxShadow(color: AppColors.warning.withOpacity(0.3), blurRadius: 10),
+                            BoxShadow(color: AppColors.warning.withValues(alpha: 0.3), blurRadius: 10),
                           ] : null,
                         ),
                         child: Opacity(
@@ -369,7 +369,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Container(
                                 padding: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: badge.color.withOpacity(0.15),
+                                  color: badge.color.withValues(alpha: 0.15),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(badge.icon, size: 32, color: badge.color),
@@ -406,7 +406,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       value: progress,
                                       minHeight: 4,
                                       backgroundColor: AppColors.surfaceLight,
-                                      valueColor: AlwaysStoppedAnimation(badge.color.withOpacity(0.7)),
+                                      valueColor: AlwaysStoppedAnimation(badge.color.withValues(alpha: 0.7)),
                                     ),
                                   ),
                                 ),
@@ -465,7 +465,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: AppColors.warning.withOpacity(0.15),
+                              color: AppColors.warning.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: const Icon(Icons.emoji_events, color: AppColors.warning, size: 20),
@@ -477,7 +477,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.15),
+                          color: AppColors.primary.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
@@ -572,7 +572,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Text(
                             'Connect your devices with Device ID',
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
                               fontSize: 12,
                             ),
                           ),
@@ -641,7 +641,7 @@ class _QuickStat extends StatelessWidget {
       children: [
         Text(value, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
         const SizedBox(height: 4),
-        Text(label, style: TextStyle(fontSize: 11, color: Colors.white.withOpacity(0.7))),
+        Text(label, style: TextStyle(fontSize: 11, color: Colors.white.withValues(alpha: 0.7))),
       ],
     );
   }
@@ -671,7 +671,7 @@ class _StatTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.15),
+                  color: color.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(icon, size: 16, color: color),

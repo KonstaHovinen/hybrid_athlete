@@ -634,7 +634,7 @@ AppSpacing.gapVerticalXL,
             Container(
               padding: AppSpacing.paddingLG,
               decoration: BoxDecoration(
-                color: AppColors.surface.withOpacity(0.5),
+                color: AppColors.surface.withValues(alpha: 0.5),
                 borderRadius: AppBorderRadius.borderRadiusLG,
                 border: Border.all(color: AppColors.surfaceLight),
               ),
@@ -678,7 +678,7 @@ AppSpacing.gapVerticalXL,
             width: 24,
             height: 24,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.2),
+              color: AppColors.primary.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Center(
