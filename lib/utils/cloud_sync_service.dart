@@ -10,9 +10,7 @@ import 'sync_service.dart';
 /// Cloud Sync Service - Alternative to local network sync
 /// Works everywhere including iOS PWA
 class CloudSyncService {
-  // CHANGE THIS: Setup your own cloud service and update URL
-  static const String _cloudBaseUrl = 'https://api.hybrid-athlete.com'; // Your future API - SETUP NEEDED
-  static const String _fallbackUrl = 'https://jsonbin.org/hybrid-athlete'; // Temporary free service for testing
+  static const String _githubApiUrl = 'https://api.github.com/gists';
   static Timer? _syncTimer;
   static String? _lastCloudSyncId;
   static bool _isCloudSyncEnabled = false;
@@ -74,7 +72,6 @@ class CloudSyncService {
         'platform': kIsWeb ? 'web' : Platform.operatingSystem,
       };
       
-      // Try primary cloud service first
       final response = await _uploadToCloudService(cloudData);
       
       if (response != null) {
@@ -148,14 +145,9 @@ class CloudSyncService {
   
   /// Check if cloud sync is available
   static Future<bool> isCloudSyncAvailable() async {
-    try {
-      final response = await http.get(
-        Uri.parse('$_fallbackUrl/health'),
-      ).timeout(const Duration(seconds: 3));
-      return response.statusCode == 200;
-    } catch (e) {
-      return false;
-    }
+    final prefs = await PreferencesCache.getInstance();
+    final token = prefs.getString('github_token');
+    return token != null && token.isNotEmpty;
   }
   
   /// Get cloud sync status
@@ -167,68 +159,99 @@ class CloudSyncService {
     };
   }
   
-  /// Upload to cloud service (with fallback)
+  /// Upload to GitHub Gist
   static Future<String?> _uploadToCloudService(Map<String, dynamic> data) async {
     try {
-      // Try primary service
-      final response = await http.post(
-        Uri.parse('$_cloudBaseUrl/sync'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(data),
-      ).timeout(const Duration(seconds: 10));
+      final prefs = await PreferencesCache.getInstance();
+      final token = prefs.getString('github_token');
+      var gistId = prefs.getString('gist_id');
+
+      if (token == null || token.isEmpty) {
+        debugPrint('GitHub token not found');
+        return null;
+      }
+
+      final contentString = jsonEncode(data);
+      final body = {
+        "description": "Hybrid Athlete App Data Sync",
+        "public": false,
+        "files": {
+          "hybrid_athlete_data.json": {
+            "content": contentString
+          }
+        }
+      };
+
+      http.Response response;
+      if (gistId != null && gistId.isNotEmpty) {
+        // Update existing Gist
+        response = await http.patch(
+          Uri.parse('$_githubApiUrl/$gistId'),
+          headers: {
+            'Authorization': 'token $token',
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(body),
+        );
+      } else {
+        // Create new Gist
+        response = await http.post(
+          Uri.parse(_githubApiUrl),
+          headers: {
+            'Authorization': 'token $token',
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(body),
+        );
+      }
       
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final result = jsonDecode(response.body);
-        return result['sync_id'];
+        final newGistId = result['id'];
+        if (gistId != newGistId) {
+          await prefs.setString('gist_id', newGistId);
+        }
+        return newGistId;
+      } else {
+        debugPrint('Gist upload failed: ${response.statusCode} ${response.body}');
       }
     } catch (e) {
-      debugPrint('Primary cloud service failed: $e');
-    }
-    
-    try {
-      // Fallback to free service
-      final response = await http.post(
-        Uri.parse('$_fallbackUrl/upload'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(data),
-      ).timeout(const Duration(seconds: 10));
-      
-      if (response.statusCode == 200) {
-        return 'fallback_sync_${DateTime.now().millisecondsSinceEpoch}';
-      }
-    } catch (e) {
-      debugPrint('Fallback cloud service failed: $e');
+      debugPrint('Gist upload error: $e');
     }
     
     return null;
   }
   
-  /// Download from cloud service
+  /// Download from GitHub Gist
   static Future<Map<String, dynamic>?> _downloadFromCloudService(String deviceId) async {
     try {
-      // Try primary service
+      final prefs = await PreferencesCache.getInstance();
+      final token = prefs.getString('github_token');
+      final gistId = prefs.getString('gist_id');
+
+      if (token == null || gistId == null) return null;
+
       final response = await http.get(
-        Uri.parse('$_cloudBaseUrl/sync/$deviceId'),
-      ).timeout(const Duration(seconds: 10));
+        Uri.parse('$_githubApiUrl/$gistId'),
+        headers: {
+          'Authorization': 'token $token',
+          'Accept': 'application/vnd.github.v3+json',
+        },
+      );
       
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final jsonResponse = jsonDecode(response.body);
+        final files = jsonResponse['files'] as Map<String, dynamic>;
+        if (files.containsKey('hybrid_athlete_data.json')) {
+          final content = files['hybrid_athlete_data.json']['content'];
+          // The content inside the gist is the cloudData object we uploaded
+          return jsonDecode(content);
+        }
       }
     } catch (e) {
-      debugPrint('Primary download failed: $e');
-    }
-    
-    try {
-      // Fallback service
-      final response = await http.get(
-        Uri.parse('$_fallbackUrl/data/$deviceId'),
-      ).timeout(const Duration(seconds: 10));
-      
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      }
-    } catch (e) {
-      debugPrint('Fallback download failed: $e');
+      debugPrint('Gist download failed: $e');
     }
     
     return null;
