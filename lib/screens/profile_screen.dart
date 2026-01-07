@@ -161,7 +161,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     });
                     await ProfileManager.saveProfile(_profile);
                     if (!mounted) return;
-                    if (mounted) Navigator.pop(context); 
+                    if (context.mounted) Navigator.pop(context); 
                   },
                   child: const Text("Set Active", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
@@ -190,9 +190,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               if (nameController.text.isNotEmpty) {
                 _profile.name = nameController.text;
                 await ProfileManager.saveProfile(_profile);
-                setState(() {});
+                if (mounted) setState(() {});
               }
-                    if (!mounted) return;
+              if (!context.mounted) return;
               Navigator.pop(context);
             },
             child: const Text("Save"),

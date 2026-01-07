@@ -73,7 +73,7 @@ class _WeeklyStatsScreenState extends State<WeeklyStatsScreen> {
                 StatsCache.invalidateCache(); // Refresh stats cache
                 if (!mounted) return;
                 setState(() => _weeklyGoal = tempGoal);
-                Navigator.pop(context);
+                if (context.mounted) Navigator.pop(context);
               },
               child: const Text("Save"),
             ),

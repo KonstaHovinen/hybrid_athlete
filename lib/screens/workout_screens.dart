@@ -295,7 +295,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(/*FIXED*/
-                  value: type,
+                  initialValue: type,
                   items: ['Gym', 'Running', 'Recovery']
                       .map<DropdownMenuItem<String>>((t) => DropdownMenuItem(value: t, child: Text(t)))
                       .toList(),
@@ -405,7 +405,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     ),
                     const SizedBox(height: 8),
                     DropdownButtonFormField<String>(/*FIXED*/
-                      value: type,
+                      initialValue: type,
                       items: ['Gym', 'Running', 'Recovery']
                           .map<DropdownMenuItem<String>>((t) => DropdownMenuItem(value: t, child: Text(t)),
                           )
@@ -416,7 +416,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                     ),
                     const SizedBox(height: 8),
                     DropdownButtonFormField<String>(/*FIXED*/
-                      value: difficulty,
+                      initialValue: difficulty,
                       items: ['Low', 'Medium', 'High']
                           .map<DropdownMenuItem<String>>((d) => DropdownMenuItem(value: d, child: Text(d)),
                           )
@@ -1093,7 +1093,7 @@ class _CreateTemplateScreenState extends State<CreateTemplateScreen> {
                   vertical: 8.0,
                 ),
                 child: DropdownButtonFormField<String>(/*FIXED*/
-                  value: _selectedExercises[index],
+                  initialValue: _selectedExercises[index],
                   decoration: const InputDecoration(
                     labelText: "Exercise",
                     filled: true,
