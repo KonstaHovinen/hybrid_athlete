@@ -128,8 +128,9 @@ class _ExerciseEditorScreenState extends State<ExerciseEditorScreen> {
   @override
   Widget build(BuildContext context) {
     bool isRunning = widget.exercise.type == "Running";
-    if (!_isLoaded)
+    if (!_isLoaded) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
     return Scaffold(
       appBar: AppBar(title: Text("Edit ${widget.exercise.name}")),
@@ -293,10 +294,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                   decoration: const InputDecoration(labelText: 'Default Sets'),
                 ),
                 const SizedBox(height: 8),
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField<String>(/*FIXED*/
                   value: type,
                   items: ['Gym', 'Running', 'Recovery']
-                      .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                      .map<DropdownMenuItem<String>>((t) => DropdownMenuItem(value: t, child: Text(t)))
                       .toList(),
                   onChanged: (v) => type = v ?? 'Gym',
                   decoration: const InputDecoration(labelText: 'Type'),
@@ -403,11 +404,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    DropdownButtonFormField<String>(
+                    DropdownButtonFormField<String>(/*FIXED*/
                       value: type,
                       items: ['Gym', 'Running', 'Recovery']
-                          .map(
-                            (t) => DropdownMenuItem(value: t, child: Text(t)),
+                          .map<DropdownMenuItem<String>>((t) => DropdownMenuItem(value: t, child: Text(t)),
                           )
                           .toList(),
                       onChanged: (v) =>
@@ -415,11 +415,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
                       decoration: const InputDecoration(labelText: 'Type'),
                     ),
                     const SizedBox(height: 8),
-                    DropdownButtonFormField<String>(
+                    DropdownButtonFormField<String>(/*FIXED*/
                       value: difficulty,
                       items: ['Low', 'Medium', 'High']
-                          .map(
-                            (d) => DropdownMenuItem(value: d, child: Text(d)),
+                          .map<DropdownMenuItem<String>>((d) => DropdownMenuItem(value: d, child: Text(d)),
                           )
                           .toList(),
                       onChanged: (v) =>
@@ -808,8 +807,8 @@ class _TemplateSelectionScreenState extends State<TemplateSelectionScreen> {
       List<dynamic> decoded = jsonDecode(templatesJson);
       setState(() {
         _loadedTemplates = decoded
-            .map((e) => WorkoutTemplate.fromJson(e))
-            .toList();
+        .map((e) => WorkoutTemplate.fromJson(e))
+        .toList();
       });
     } else {
       setState(() {
@@ -967,9 +966,9 @@ class _TemplateSelectionScreenState extends State<TemplateSelectionScreen> {
           type: "Gym",
         ),
       );
-      if (exercise.type == "Running")
+      if (exercise.type == "Running") {
         hasRunning = true;
-      else if (exercise.type == "Gym" || exercise.type == "Recovery")
+      } else if (exercise.type == "Gym" || exercise.type == "Recovery")
         hasGym = true;
     }
 
@@ -1091,7 +1090,7 @@ class _CreateTemplateScreenState extends State<CreateTemplateScreen> {
                   horizontal: 16.0,
                   vertical: 8.0,
                 ),
-                child: DropdownButtonFormField<String>(
+                child: DropdownButtonFormField<String>(/*FIXED*/
                   value: _selectedExercises[index],
                   decoration: const InputDecoration(
                     labelText: "Exercise",
@@ -1099,8 +1098,7 @@ class _CreateTemplateScreenState extends State<CreateTemplateScreen> {
                     fillColor: Colors.black12,
                   ),
                   items: _availableExercises
-                      .map(
-                        (e) => DropdownMenuItem(
+                      .map<DropdownMenuItem<String>>((e) => DropdownMenuItem(
                           value: e.name,
                           child: Text(e.name),
                         ),
@@ -1249,7 +1247,7 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
   Timer? _restTimer;
 
   int _energyLevel = 3;
-  List<String> _selectedMoods = [];
+  final List<String> _selectedMoods = [];
   final TextEditingController _notesController = TextEditingController();
   final List<String> _moodOptions = [
     '💪 Strong',
@@ -1394,13 +1392,15 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
     String name = exerciseName.toLowerCase();
     if (name.contains("squat") ||
         name.contains("deadlift") ||
-        name.contains("trap bar"))
+        name.contains("trap bar")) {
       return 5.0;
+    }
     if (name.contains("bench") ||
         name.contains("pull") ||
         name.contains("row") ||
-        name.contains("press"))
+        name.contains("press")) {
       return 2.5;
+    }
     return 1.25;
   }
 
@@ -1544,8 +1544,9 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (currentExerciseIndex >= widget.template.exercises.length)
+    if (currentExerciseIndex >= widget.template.exercises.length) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
     String currentExercise = widget.template.exercises[currentExerciseIndex];
     int total = widget.template.exercises.length;
@@ -1823,10 +1824,11 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
                             ),
                             selected: _selectedMoods.contains(mood),
                             onSelected: (selected) => setState(() {
-                              if (selected)
+                              if (selected) {
                                 _selectedMoods.add(mood);
-                              else
+                              } else {
                                 _selectedMoods.remove(mood);
+                              }
                             }),
                           ),
                         )
@@ -1961,7 +1963,7 @@ class _EnhancedRunScreenState extends State<EnhancedRunScreen> {
   String selectedRunType = "Steady State";
 
   int _energyLevel = 3;
-  List<String> _selectedMoods = [];
+  final List<String> _selectedMoods = [];
   final List<String> _moodOptions = [
     '💪 Strong',
     '🔥 Pumped',
@@ -2164,10 +2166,11 @@ class _EnhancedRunScreenState extends State<EnhancedRunScreen> {
                               ),
                               selected: _selectedMoods.contains(mood),
                               onSelected: (selected) => setState(() {
-                                if (selected)
+                                if (selected) {
                                   _selectedMoods.add(mood);
-                                else
+                                } else {
                                   _selectedMoods.remove(mood);
+                                }
                               }),
                             ),
                           )
@@ -2282,8 +2285,9 @@ class RunSummaryScreen extends StatelessWidget {
     UserProfile profile = await ProfileManager.getProfile();
     profile.totalExercises++;
     profile.totalRunExercises++; 
-    if (distance > profile.longestRunDistance)
+    if (distance > profile.longestRunDistance) {
       profile.longestRunDistance = distance;
+    }
     if (time > profile.longestRunTime) profile.longestRunTime = time;
     await ProfileManager.saveProfile(profile);
   }

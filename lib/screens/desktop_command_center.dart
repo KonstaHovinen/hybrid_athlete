@@ -8,7 +8,6 @@ import '../utils/stats_cache.dart';
 import '../utils/workout_history_cache.dart';
 import '../utils/preferences_cache.dart';
 import '../utils/sync_service.dart';
-import '../utils/hybrid_athlete_ai.dart';
 import 'dart:async';
 import 'stats_screen.dart';
 import 'history_screen.dart';
@@ -119,7 +118,7 @@ class _DesktopCommandCenterState extends State<DesktopCommandCenter> with Single
           // Sidebar Navigation
           Container(
             width: 280,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.surface,
               border: Border(
                 right: BorderSide(color: AppColors.surfaceLight, width: 1),
@@ -130,7 +129,7 @@ class _DesktopCommandCenterState extends State<DesktopCommandCenter> with Single
                 // Header
                 Container(
                   padding: AppSpacing.paddingLG,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     gradient: AppColors.primaryGradient,
                     border: Border(
                       bottom: BorderSide(color: AppColors.surfaceLight, width: 1),
@@ -173,7 +172,7 @@ class _DesktopCommandCenterState extends State<DesktopCommandCenter> with Single
                       CircleAvatar(
                         radius: 24,
                         backgroundColor: AppColors.primary.withValues(alpha: 0.2),
-                        child: Icon(
+                        child: const Icon(
                           Icons.person,
                           color: AppColors.primary,
                           size: 24,
@@ -261,7 +260,7 @@ class _DesktopCommandCenterState extends State<DesktopCommandCenter> with Single
                 // Sync Status & Footer
                 Container(
                   padding: AppSpacing.paddingLG,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     border: Border(
                       top: BorderSide(color: AppColors.surfaceLight, width: 1),
                     ),
@@ -431,7 +430,7 @@ class _NavItem extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Container(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.md,
           ),
@@ -440,7 +439,7 @@ class _NavItem extends StatelessWidget {
                 ? AppColors.primary.withValues(alpha: 0.15)
                 : Colors.transparent,
             border: isSelected
-                ? Border(
+                ? const Border(
                     left: BorderSide(
                       color: AppColors.primary,
                       width: 3,
@@ -544,7 +543,7 @@ class _DashboardViewState extends State<_DashboardView> {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.info_outline, color: AppColors.primary, size: 20),
+                    const Icon(Icons.info_outline, color: AppColors.primary, size: 20),
                     AppSpacing.gapHorizontalSM,
                     Text(
                       "View & Plan Mode",
@@ -604,7 +603,7 @@ class _DashboardViewState extends State<_DashboardView> {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.history, color: AppColors.primary, size: 24),
+                        const Icon(Icons.history, color: AppColors.primary, size: 24),
                         AppSpacing.gapHorizontalSM,
                         Text(
                           "Recent Workouts",
@@ -632,7 +631,7 @@ class _DashboardViewState extends State<_DashboardView> {
                       )
                     else
                       ..._recentWorkouts.map((workout) => Container(
-                        margin: EdgeInsets.only(bottom: AppSpacing.md),
+                        margin: const EdgeInsets.only(bottom: AppSpacing.md),
                         padding: AppSpacing.paddingLG,
                         decoration: BoxDecoration(
                           color: AppColors.card,
@@ -676,7 +675,7 @@ class _DashboardViewState extends State<_DashboardView> {
                             ),
                             if (workout['energy'] != null)
                               Container(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                   horizontal: AppSpacing.sm,
                                   vertical: AppSpacing.xs,
                                 ),
@@ -687,7 +686,7 @@ class _DashboardViewState extends State<_DashboardView> {
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.bolt,
                                       size: 14,
                                       color: AppColors.warning,
@@ -695,7 +694,7 @@ class _DashboardViewState extends State<_DashboardView> {
                                     AppSpacing.gapHorizontalXS,
                                     Text(
                                       "${workout['energy']}/5",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: AppColors.warning,
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
@@ -720,7 +719,7 @@ class _DashboardViewState extends State<_DashboardView> {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.emoji_events, color: AppColors.warning, size: 24),
+                        const Icon(Icons.emoji_events, color: AppColors.warning, size: 24),
                         AppSpacing.gapHorizontalSM,
                         Text(
                           "Recent PRs",
@@ -764,7 +763,7 @@ class _DashboardViewState extends State<_DashboardView> {
                             final progress = goal > 0 ? (entry.value / goal).clamp(0.0, 1.0) : 0.0;
                             
                             return Container(
-                              margin: EdgeInsets.only(bottom: AppSpacing.md),
+                              margin: const EdgeInsets.only(bottom: AppSpacing.md),
                               padding: AppSpacing.paddingLG,
                               decoration: BoxDecoration(
                                 color: AppColors.card,
@@ -784,7 +783,7 @@ class _DashboardViewState extends State<_DashboardView> {
                                         ),
                                       ),
                                       Container(
-                                        padding: EdgeInsets.symmetric(
+                                        padding: const EdgeInsets.symmetric(
                                           horizontal: AppSpacing.sm,
                                           vertical: AppSpacing.xs,
                                         ),
@@ -794,7 +793,7 @@ class _DashboardViewState extends State<_DashboardView> {
                                         ),
                                         child: Text(
                                           "${entry.value.toStringAsFixed(1)} kg",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             color: AppColors.warning,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 14,
@@ -817,7 +816,7 @@ class _DashboardViewState extends State<_DashboardView> {
                                     ),
                                     AppSpacing.gapVerticalXS,
                                     Text(
-                                      "${(progress * 100).toStringAsFixed(0)}% of ${goal} kg goal",
+                                      "${(progress * 100).toStringAsFixed(0)}% of $goal kg goal",
                                       style: Theme.of(context).textTheme.bodySmall,
                                     ),
                                   ],
@@ -950,7 +949,7 @@ class _TemplatesViewState extends State<_TemplatesView> {
         children: [
           Row(
             children: [
-              Icon(Icons.fitness_center, color: AppColors.primary, size: 28),
+              const Icon(Icons.fitness_center, color: AppColors.primary, size: 28),
               AppSpacing.gapHorizontalMD,
               Text(
                 "Workout Templates",
@@ -966,7 +965,7 @@ class _TemplatesViewState extends State<_TemplatesView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.fitness_center_outlined, size: 64, color: AppColors.textMuted),
+                    const Icon(Icons.fitness_center_outlined, size: 64, color: AppColors.textMuted),
                     AppSpacing.gapVerticalLG,
                     Text(
                       "No templates yet",
@@ -1011,7 +1010,7 @@ class _TemplatesViewState extends State<_TemplatesView> {
                             color: AppColors.primary.withValues(alpha: 0.15),
                             borderRadius: AppBorderRadius.borderRadiusMD,
                           ),
-                          child: Icon(
+                          child: const Icon(
                             Icons.playlist_play,
                             color: AppColors.primary,
                             size: 24,

@@ -95,7 +95,7 @@ class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
             children: [
               // AI Logo/Icon
               Container(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   gradient: AppColors.primaryGradient,
                   shape: BoxShape.circle,
@@ -107,7 +107,7 @@ class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
                     ),
                   ],
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.psychology,
                   size: 64,
                   color: Colors.white,
@@ -152,7 +152,7 @@ class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
                           child: GestureDetector(
                             onTap: () => setState(() => _isGuestMode = false),
                             child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 12),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
                               decoration: BoxDecoration(
                                 color: !_isGuestMode ? AppColors.primary.withValues(alpha: 0.1) : Colors.transparent,
                                 borderRadius: AppBorderRadius.borderRadiusMD,
@@ -177,7 +177,7 @@ class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
                           child: GestureDetector(
                             onTap: () => setState(() => _isGuestMode = true),
                             child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 12),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
                               decoration: BoxDecoration(
                                 color: _isGuestMode ? AppColors.accent.withValues(alpha: 0.1) : Colors.transparent,
                                 borderRadius: AppBorderRadius.borderRadiusMD,
@@ -204,7 +204,7 @@ class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
                       AppSpacing.gapVerticalMD,
                       TextField(
                         controller: _nameController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Enter your name',
                           prefixIcon: Icon(Icons.person),
                           border: OutlineInputBorder(
@@ -218,12 +218,12 @@ class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
                         obscureText: !_showPassword,
                         decoration: InputDecoration(
                           hintText: 'Enter password',
-                          prefixIcon: Icon(Icons.lock),
+                          prefixIcon: const Icon(Icons.lock),
                           suffixIcon: IconButton(
                             icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off),
                             onPressed: () => setState(() => _showPassword = !_showPassword),
                           ),
-                          border: OutlineInputBorder(
+                          border: const OutlineInputBorder(
                             borderRadius: AppBorderRadius.borderRadiusMD,
                           ),
                         ),
@@ -234,13 +234,13 @@ class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
                       AppSpacing.gapVerticalMD,
                       Container(
                         padding: AppSpacing.paddingMD,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: AppColors.surface,
                           borderRadius: AppBorderRadius.borderRadiusMD,
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.info_outline, color: AppColors.accent, size: 20),
+                            const Icon(Icons.info_outline, color: AppColors.accent, size: 20),
                             AppSpacing.gapHorizontalSM,
                             Expanded(
                               child: Text(
@@ -267,13 +267,13 @@ class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
                   onPressed: _isLoading ? null : _login,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isGuestMode ? AppColors.accent : AppColors.primary,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: const RoundedRectangleBorder(
                       borderRadius: AppBorderRadius.borderRadiusMD,
                     ),
                   ),
                   child: _isLoading
-                      ? Row(
+                      ? const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SizedBox(
@@ -290,7 +290,7 @@ class _AIChatLoginScreenState extends State<AIChatLoginScreen> {
                         )
                       : Text(
                           _isGuestMode ? 'Continue as Guest' : 'Login',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -317,7 +317,7 @@ class EnhancedAIAssistantScreen extends StatefulWidget {
 class _EnhancedAIAssistantScreenState extends State<EnhancedAIAssistantScreen> {
   String _userName = 'User';
   bool _isGuestMode = false;
-  bool _isInitialized = false;
+  final bool _isInitialized = false;
   
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -364,7 +364,7 @@ class _EnhancedAIAssistantScreenState extends State<EnhancedAIAssistantScreen> {
     if (mounted) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => AIChatLoginScreen()),
+        MaterialPageRoute(builder: (context) => const AIChatLoginScreen()),
       );
     }
   }
@@ -375,18 +375,18 @@ class _EnhancedAIAssistantScreenState extends State<EnhancedAIAssistantScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            Icon(Icons.psychology, color: AppColors.primary),
+            const Icon(Icons.psychology, color: AppColors.primary),
             AppSpacing.gapHorizontalSM,
-            Text('AI Assistant'),
+            const Text('AI Assistant'),
             if (_isGuestMode)
               Container(
-                margin: EdgeInsets.only(left: 8),
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                margin: const EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.accent.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Text(
+                child: const Text(
                   'GUEST',
                   style: TextStyle(
                     color: AppColors.accent,
@@ -409,7 +409,7 @@ class _EnhancedAIAssistantScreenState extends State<EnhancedAIAssistantScreen> {
                 value: 'logout',
                 child: Row(
                   children: [
-                    Icon(Icons.logout, size: 16),
+                    const Icon(Icons.logout, size: 16),
                     AppSpacing.gapHorizontalSM,
                     Text(_isGuestMode ? 'Clear Data & Exit' : 'Logout'),
                   ],
@@ -426,7 +426,7 @@ class _EnhancedAIAssistantScreenState extends State<EnhancedAIAssistantScreen> {
             width: double.infinity,
             padding: AppSpacing.paddingLG,
             margin: AppSpacing.marginHorizontalMD + AppSpacing.marginVerticalSM,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: AppColors.primaryGradient,
               borderRadius: AppBorderRadius.borderRadiusLG,
             ),
@@ -446,7 +446,7 @@ class _EnhancedAIAssistantScreenState extends State<EnhancedAIAssistantScreen> {
                     children: [
                       Text(
                         'Hello, $_userName!',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -456,7 +456,7 @@ class _EnhancedAIAssistantScreenState extends State<EnhancedAIAssistantScreen> {
                         _isGuestMode 
                             ? 'Temporary session - data cleared on exit'
                             : 'Personal AI with persistent memory',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white70,
                           fontSize: 12,
                         ),
@@ -481,7 +481,7 @@ class _EnhancedAIAssistantScreenState extends State<EnhancedAIAssistantScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.psychology,
                     size: 64,
                     color: AppColors.primary,
@@ -506,8 +506,8 @@ class _EnhancedAIAssistantScreenState extends State<EnhancedAIAssistantScreen> {
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
-                          icon: Icon(Icons.chat),
-                          label: Text('Start Chat'),
+                          icon: const Icon(Icons.chat),
+                          label: const Text('Start Chat'),
 onPressed: () {
                             // Navigate to actual AI chat (will be imported properly)
                             _showError('AI Chat interface coming soon!');

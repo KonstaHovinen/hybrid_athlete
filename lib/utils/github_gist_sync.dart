@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
-import 'dart:io';
 import 'preferences_cache.dart';
 import 'device_id.dart';
 import 'sync_service.dart';
@@ -55,7 +54,7 @@ class GitHubGistSync {
           'Authorization': 'token $token',
           'Accept': 'application/vnd.github.v3+json',
         },
-      ).timeout(Duration(seconds: 10));
+      ).timeout(const Duration(seconds: 10));
       
       if (response.statusCode == 200) {
         final prefs = await PreferencesCache.getInstance();
@@ -121,7 +120,7 @@ class GitHubGistSync {
           'Authorization': 'token $_userToken',
           'Accept': 'application/vnd.github.v3+json',
         },
-      ).timeout(Duration(seconds: 10));
+      ).timeout(const Duration(seconds: 10));
       
       if (response.statusCode == 200) {
         final gist = jsonDecode(response.body);
@@ -196,7 +195,7 @@ class GitHubGistSync {
           'Authorization': 'token $_userToken',
           'Accept': 'application/vnd.github.v3+json',
         },
-      ).timeout(Duration(seconds: 5));
+      ).timeout(const Duration(seconds: 5));
       
       return response.statusCode == 200;
     } catch (e) {
@@ -217,7 +216,7 @@ class GitHubGistSync {
           'Content-Type': 'application/json',
         },
         body: jsonEncode(gistContent),
-      ).timeout(Duration(seconds: 15));
+      ).timeout(const Duration(seconds: 15));
       
       if (response.statusCode == 201) {
         final gist = jsonDecode(response.body);

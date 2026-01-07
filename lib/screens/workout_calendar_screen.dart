@@ -105,7 +105,7 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen>
               children: [
                 Row(
                   children: [
-                    Icon(Icons.event_note, color: AppColors.accent),
+                    const Icon(Icons.event_note, color: AppColors.accent),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -846,7 +846,7 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen>
                 ),
                 calendarStyle: CalendarStyle(
                   outsideDaysVisible: false,
-                  selectedDecoration: BoxDecoration(
+                  selectedDecoration: const BoxDecoration(
                     color: AppColors.secondary,
                     shape: BoxShape.circle,
                   ),
@@ -898,8 +898,8 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen>
           ),
 
           // Legend
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

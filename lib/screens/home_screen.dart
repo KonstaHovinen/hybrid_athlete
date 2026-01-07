@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       try {
         activeBadge = ProfileManager.getAllAvailableBadges()
             .firstWhere((b) => b.id == _userProfile!.activeBadgeId);
-      } catch (e) {}
+      } catch (e) { debugPrint(e.toString()); }
     }
 
     return Scaffold(
@@ -120,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   Widget _buildHeader(String date, String greeting, Badge? activeBadge) {
     return Container(
-      padding: EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.sm),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.sm),
       child: Row(
         // FIXED: Syntax error corrected here
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -183,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   Widget _buildBadgeSection(Badge? activeBadge) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.lg),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.lg),
       padding: AppSpacing.paddingXXL,
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -430,7 +430,7 @@ class _QuickActionChip extends StatelessWidget {
         onTap: onTap,
         borderRadius: AppBorderRadius.borderRadiusLG,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 14),
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.15),
             borderRadius: AppBorderRadius.borderRadiusLG,
@@ -491,7 +491,7 @@ class _MenuCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.15),
                   borderRadius: AppBorderRadius.borderRadiusMD,

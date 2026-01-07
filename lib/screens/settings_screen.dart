@@ -68,7 +68,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         final tag = (json['tag_name'] ?? '').toString();
         setState(() { _updateStatus = tag.isEmpty ? 'Up-to-date' : 'Latest release: $tag'; });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Update check complete: ${_updateStatus}')),
+          SnackBar(content: Text('Update check complete: $_updateStatus')),
         );
       } else {
         setState(() { _updateStatus = 'Error ${resp.statusCode}'; });

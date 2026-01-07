@@ -129,6 +129,7 @@ Future<void> _discoverDevices() async {
     try {
       await CloudSyncService.setCloudSyncEnabled(!_isCloudSyncEnabled);
       
+                    if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_isCloudSyncEnabled ? 'Cloud sync disabled' : 'Cloud sync enabled'),
@@ -153,6 +154,7 @@ Future<void> _discoverDevices() async {
     try {
       final success = await CloudSyncService.manualCloudSync();
       
+                    if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(success ? 'Cloud sync successful!' : 'Cloud sync failed'),
@@ -227,6 +229,7 @@ Future<void> _discoverDevices() async {
       final success = await DeviceId.setDeviceId(result);
       if (success && mounted) {
         await _loadDeviceInfo();
+                    if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Device ID updated!'),
@@ -294,7 +297,7 @@ Future<void> _discoverDevices() async {
             // Device Identity Card
             Container(
               padding: AppSpacing.paddingXL,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: AppColors.primaryGradient,
                 borderRadius: AppBorderRadius.borderRadiusLG,
               ),
@@ -508,12 +511,12 @@ AppSpacing.gapVerticalXL,
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         icon: _isCloudSyncing
-                            ? SizedBox(
+                            ? const SizedBox(
                                 width: 16,
                                 height: 16,
                                 child: CircularProgressIndicator(strokeWidth: 2),
                               )
-                            : Icon(Icons.sync),
+                            : const Icon(Icons.sync),
                         label: Text(_isCloudSyncing ? 'Syncing...' : 'Sync Now'),
                         onPressed: _isCloudSyncing ? null : _manualCloudSync,
                         style: ElevatedButton.styleFrom(
@@ -572,7 +575,7 @@ AppSpacing.gapVerticalXL,
                     )
                   else
                     ..._discoveredDevices.map((deviceUrl) => Container(
-                          margin: EdgeInsets.only(bottom: AppSpacing.md),
+                          margin: const EdgeInsets.only(bottom: AppSpacing.md),
                           padding: AppSpacing.paddingMD,
                           decoration: BoxDecoration(
                             color: AppColors.surface,
@@ -641,11 +644,11 @@ AppSpacing.gapVerticalXL,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  const Row(
                     children: [
-                      const Icon(Icons.info_outline, color: AppColors.primary),
+                      Icon(Icons.info_outline, color: AppColors.primary),
                       AppSpacing.gapHorizontalSM,
-                      const Text(
+                      Text(
                         'How It Works',
                         style: TextStyle(
                           fontSize: 16,
@@ -670,7 +673,7 @@ AppSpacing.gapVerticalXL,
 
   Widget _buildInfoItem(String number, String text) {
     return Padding(
-      padding: EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

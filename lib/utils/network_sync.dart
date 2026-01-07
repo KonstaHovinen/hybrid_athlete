@@ -18,9 +18,9 @@ class NetworkSync {
       if (kIsWeb) {
         // Web browsers have different network restrictions
         // Try a simple network test to see if we can make requests
-        final testUrl = 'http://localhost:8080/ping?deviceId=test';
+        const testUrl = 'http://localhost:8080/ping?deviceId=test';
         try {
-          final response = await http.get(Uri.parse(testUrl)).timeout(Duration(milliseconds: 500));
+          final response = await http.get(Uri.parse(testUrl)).timeout(const Duration(milliseconds: 500));
           // If we get any response (even error), network is accessible
           return true;
         } catch (e) {
@@ -278,7 +278,7 @@ class NetworkSync {
         return 'http://$ip:8080';
       }
     } on SocketException catch (e) {
-      if (Platform.isIOS && e.osError?.message?.contains('Permission') == true) {
+      if (Platform.isIOS && e.osError?.message.contains('Permission') == true) {
         debugPrint('iOS network permission denied during device discovery');
       }
       // Device not found or not responding - ignore

@@ -17,7 +17,7 @@ class _FutsalLoggerScreenState extends State<FutsalLoggerScreen> {
 
   // Overall session tracking
   int _energyLevel = 3;
-  List<String> _selectedMoods = [];
+  final List<String> _selectedMoods = [];
   final TextEditingController _notesController = TextEditingController();
   final List<String> _moodOptions = [
     '💪 Dominant',
@@ -279,10 +279,11 @@ class _FutsalLoggerScreenState extends State<FutsalLoggerScreen> {
                                 ),
                                 checkmarkColor: AppColors.accent,
                                 onSelected: (selected) => setState(() {
-                                  if (selected)
+                                  if (selected) {
                                     _selectedMoods.add(mood);
-                                  else
+                                  } else {
                                     _selectedMoods.remove(mood);
+                                  }
                                 }),
                               ),
                             )

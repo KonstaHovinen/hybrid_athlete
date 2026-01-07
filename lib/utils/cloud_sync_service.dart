@@ -151,7 +151,7 @@ class CloudSyncService {
     try {
       final response = await http.get(
         Uri.parse('$_fallbackUrl/health'),
-      ).timeout(Duration(seconds: 3));
+      ).timeout(const Duration(seconds: 3));
       return response.statusCode == 200;
     } catch (e) {
       return false;
@@ -175,7 +175,7 @@ class CloudSyncService {
         Uri.parse('$_cloudBaseUrl/sync'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(data),
-      ).timeout(Duration(seconds: 10));
+      ).timeout(const Duration(seconds: 10));
       
       if (response.statusCode == 200) {
         final result = jsonDecode(response.body);
@@ -191,7 +191,7 @@ class CloudSyncService {
         Uri.parse('$_fallbackUrl/upload'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(data),
-      ).timeout(Duration(seconds: 10));
+      ).timeout(const Duration(seconds: 10));
       
       if (response.statusCode == 200) {
         return 'fallback_sync_${DateTime.now().millisecondsSinceEpoch}';
@@ -209,7 +209,7 @@ class CloudSyncService {
       // Try primary service
       final response = await http.get(
         Uri.parse('$_cloudBaseUrl/sync/$deviceId'),
-      ).timeout(Duration(seconds: 10));
+      ).timeout(const Duration(seconds: 10));
       
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
@@ -222,7 +222,7 @@ class CloudSyncService {
       // Fallback service
       final response = await http.get(
         Uri.parse('$_fallbackUrl/data/$deviceId'),
-      ).timeout(Duration(seconds: 10));
+      ).timeout(const Duration(seconds: 10));
       
       if (response.statusCode == 200) {
         return jsonDecode(response.body);

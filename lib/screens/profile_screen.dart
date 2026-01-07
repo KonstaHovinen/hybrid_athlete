@@ -160,6 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _profile.activeBadgeId = badge.id;
                     });
                     await ProfileManager.saveProfile(_profile);
+                    if (!mounted) return;
                     if (mounted) Navigator.pop(context); 
                   },
                   child: const Text("Set Active", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
@@ -191,6 +192,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 await ProfileManager.saveProfile(_profile);
                 setState(() {});
               }
+                    if (!mounted) return;
               Navigator.pop(context);
             },
             child: const Text("Save"),
@@ -439,12 +441,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: AppColors.surfaceLight),
                   ),
-                  child: Column(
+                  child: const Column(
                     children: [
                       Icon(Icons.emoji_events_outlined, size: 48, color: AppColors.textMuted),
-                      const SizedBox(height: 12),
-                      const Text("No records yet", style: TextStyle(color: AppColors.textMuted)),
-                      const Text("Complete workouts to track PRs!", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                      SizedBox(height: 12),
+                      Text("No records yet", style: TextStyle(color: AppColors.textMuted)),
+                      Text("Complete workouts to track PRs!", style: TextStyle(color: Colors.grey, fontSize: 12)),
                     ],
                   ),
                 )
@@ -715,6 +717,7 @@ class _EditGoalsScreenState extends State<EditGoalsScreen> {
       newGoals[name] = double.tryParse(controller.text) ?? 0;
     });
     await ProStats.saveGoals(newGoals);
+                    if (!mounted) return;
     if (mounted) Navigator.pop(context);
   }
 

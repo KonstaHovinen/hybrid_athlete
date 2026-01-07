@@ -207,7 +207,7 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
                               color: AppColors.secondary.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Icon(Icons.fitness_center, color: AppColors.secondary, size: 20),
+                            child: const Icon(Icons.fitness_center, color: AppColors.secondary, size: 20),
                           ),
                           const SizedBox(width: 12),
                           Text(
@@ -298,13 +298,13 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
 
           // Recent exercises
           if (_recentExercises.isNotEmpty && _selectedExercise == null) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
-                  const Icon(Icons.history, size: 16, color: AppColors.textMuted),
-                  const SizedBox(width: 8),
-                  const Text("Recent", style: TextStyle(color: AppColors.textMuted)),
+                  Icon(Icons.history, size: 16, color: AppColors.textMuted),
+                  SizedBox(width: 8),
+                  Text("Recent", style: TextStyle(color: AppColors.textMuted)),
                 ],
               ),
             ),

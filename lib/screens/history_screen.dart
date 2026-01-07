@@ -353,7 +353,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.dark(
+            colorScheme: const ColorScheme.dark(
               primary: AppColors.primary,
               onPrimary: Colors.white,
               surface: AppColors.card,
@@ -518,7 +518,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                   ],
                   if (workout['mood'] != null && (workout['mood'] as List).isNotEmpty) ...[
                     const SizedBox(height: 8),
-                    Text('Mood', style: const TextStyle(color: AppColors.textMuted, fontSize: 12)),
+                    const Text('Mood', style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
                     const SizedBox(height: 4),
                     Wrap(
                       spacing: 8,
@@ -532,7 +532,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                   // Notes
                   if (workout['notes'] != null && workout['notes'].toString().isNotEmpty) ...[
                     const SizedBox(height: 16),
-                    Text('Notes', style: const TextStyle(color: AppColors.textMuted, fontSize: 12)),
+                    const Text('Notes', style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
                     const SizedBox(height: 4),
                     Text(workout['notes'].toString(), style: const TextStyle(fontStyle: FontStyle.italic)),
                   ],
@@ -638,18 +638,18 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text("📋 Workout History")),
       body: _loadedWorkouts.isEmpty && !_isLoading
-          ? Center(
+          ? const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.history, size: 60, color: AppColors.textMuted),
-                  const SizedBox(height: 16),
-                  const Text(
+                  SizedBox(height: 16),
+                  Text(
                     "No history found",
                     style: TextStyle(color: AppColors.textMuted, fontSize: 16),
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
+                  SizedBox(height: 8),
+                  Text(
                     "Complete a workout to see it here!",
                     style: TextStyle(color: AppColors.textMuted, fontSize: 12),
                   ),
@@ -913,7 +913,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                                     const SizedBox(width: 16),
                                     Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.sports_soccer,
                                           size: 16,
                                           color: AppColors.primary,
@@ -924,7 +924,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        Icon(
+                                        const Icon(
                                           Icons.assistant,
                                           size: 16,
                                           color: AppColors.secondary,
@@ -1326,7 +1326,7 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
                             ),
                           ],
                         ),
-                        Divider(color: AppColors.surfaceLight),
+                        const Divider(color: AppColors.surfaceLight),
 
                         // Sets List
                         for (

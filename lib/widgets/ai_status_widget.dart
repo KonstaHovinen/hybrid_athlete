@@ -42,7 +42,7 @@ class _AIStatusWidgetState extends State<AIStatusWidget> with SingleTickerProvid
 
   void _startStatusUpdates() {
     _statusTimer?.cancel();
-    _statusTimer = Timer.periodic(Duration(seconds: 5), (timer) {
+    _statusTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
       _updateAIStatus();
     });
   }
@@ -91,9 +91,9 @@ class _AIStatusWidgetState extends State<AIStatusWidget> with SingleTickerProvid
           Row(
             children: [
               ScaleTransition(
-                scale: isInitialized ? _pulseAnimation : AlwaysStoppedAnimation(1.0),
+                scale: isInitialized ? _pulseAnimation : const AlwaysStoppedAnimation(1.0),
                 child: Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: isInitialized 
                         ? Colors.white.withAlpha((0.2 * 255).toInt()) 
@@ -136,7 +136,7 @@ class _AIStatusWidgetState extends State<AIStatusWidget> with SingleTickerProvid
               ),
               if (isInitialized && !hasError)
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: learningActive 
                         ? Colors.green.withAlpha((0.3 * 255).toInt()) 
@@ -154,10 +154,10 @@ class _AIStatusWidgetState extends State<AIStatusWidget> with SingleTickerProvid
                           shape: BoxShape.circle,
                         ),
                       ),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
                       Text(
                         learningActive ? 'Learning' : 'Idle',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
@@ -169,7 +169,7 @@ class _AIStatusWidgetState extends State<AIStatusWidget> with SingleTickerProvid
             ],
           ),
           if (isInitialized && !hasError) ...[
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(

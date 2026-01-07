@@ -17,7 +17,7 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _isAIInitialized = false;
   bool _isProcessing = false;
-  List<Map<String, dynamic>> _conversation = [];
+  final List<Map<String, dynamic>> _conversation = [];
   String? _currentInsight;
   Timer? _insightTimer;
   Map<String, dynamic>? _aiStatus;
@@ -55,7 +55,7 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
 
   void _startInsightGeneration() {
     _insightTimer?.cancel();
-    _insightTimer = Timer.periodic(Duration(minutes: 5), (timer) async {
+    _insightTimer = Timer.periodic(const Duration(minutes: 5), (timer) async {
       if (_isAIInitialized && mounted) {
         final insight = await HybridAthleteAI.generateInsights();
         if (insight != null && mounted) {
@@ -107,7 +107,7 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
       }
@@ -175,15 +175,15 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            Icon(Icons.psychology, color: AppColors.primary),
+            const Icon(Icons.psychology, color: AppColors.primary),
             AppSpacing.gapHorizontalSM,
-            Text('AI Assistant'),
+            const Text('AI Assistant'),
             if (_isAIInitialized)
               Container(
-                margin: EdgeInsets.only(left: 8),
+                margin: const EdgeInsets.only(left: 8),
                 width: 8,
                 height: 8,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.green,
                   shape: BoxShape.circle,
                 ),
@@ -193,7 +193,7 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
         actions: [
           if (_aiStatus != null)
             IconButton(
-              icon: Icon(Icons.info_outline),
+              icon: const Icon(Icons.info_outline),
               onPressed: () => _showAIStatus(),
             ),
         ],
@@ -206,25 +206,25 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
               width: double.infinity,
               padding: AppSpacing.paddingMD,
               margin: AppSpacing.marginHorizontalMD + AppSpacing.marginVerticalSM,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: AppColors.primaryGradient,
                 borderRadius: AppBorderRadius.borderRadiusMD,
               ),
               child: Row(
                 children: [
-                  Icon(Icons.lightbulb, color: Colors.white, size: 20),
+                  const Icon(Icons.lightbulb, color: Colors.white, size: 20),
                   AppSpacing.gapHorizontalSM,
                   Expanded(
                     child: Text(
                       _currentInsight!,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 14,
                       ),
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.close, color: Colors.white, size: 16),
+                    icon: const Icon(Icons.close, color: Colors.white, size: 16),
                     onPressed: () => setState(() => _currentInsight = null),
                   ),
                 ],
@@ -254,16 +254,16 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      icon: Icon(Icons.analytics),
-                      label: Text('Analyze Workout'),
+                      icon: const Icon(Icons.analytics),
+                      label: const Text('Analyze Workout'),
                       onPressed: _isProcessing ? null : _analyzeCurrentWorkout,
                     ),
                   ),
                   AppSpacing.gapHorizontalMD,
                   Expanded(
                     child: ElevatedButton.icon(
-                      icon: Icon(Icons.calendar_today),
-                      label: Text('Generate Plan'),
+                      icon: const Icon(Icons.calendar_today),
+                      label: const Text('Generate Plan'),
                       onPressed: _isProcessing ? null : _generateWorkoutPlan,
                     ),
                   ),
@@ -285,12 +285,12 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
                   child: TextField(
                     controller: _commandController,
                     enabled: _isAIInitialized && !_isProcessing,
-                    style: TextStyle(color: AppColors.textPrimary),
+                    style: const TextStyle(color: AppColors.textPrimary),
                     decoration: InputDecoration(
                       hintText: _isAIInitialized 
                           ? 'Ask AI anything about your training...' 
                           : 'Initializing AI...',
-                      hintStyle: TextStyle(color: AppColors.textMuted),
+                      hintStyle: const TextStyle(color: AppColors.textMuted),
                       border: InputBorder.none,
                       contentPadding: AppSpacing.paddingLG,
                     ),
@@ -300,7 +300,7 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
                 if (_isProcessing)
                   Container(
                     padding: AppSpacing.paddingLG,
-                    child: SizedBox(
+                    child: const SizedBox(
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
@@ -308,7 +308,7 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
                   )
                 else
                   IconButton(
-                    icon: Icon(Icons.send, color: AppColors.primary),
+                    icon: const Icon(Icons.send, color: AppColors.primary),
                     onPressed: _isAIInitialized ? _sendCommand : null,
                   ),
               ],
@@ -324,7 +324,7 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.psychology,
             size: 64,
             color: AppColors.textMuted,
@@ -362,14 +362,14 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
         final isAI = message['isAI'] as bool;
         
         return Container(
-          margin: EdgeInsets.only(bottom: AppSpacing.md),
+          margin: const EdgeInsets.only(bottom: AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: isAI ? AppColors.primary : AppColors.surface,
                       borderRadius: BorderRadius.circular(12),
@@ -402,7 +402,7 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
                 ),
                 child: Text(
                   message['message'] as String,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 14,
                   ),
@@ -432,7 +432,7 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.card,
-        title: Text('AI Status', style: TextStyle(color: AppColors.textPrimary)),
+        title: const Text('AI Status', style: TextStyle(color: AppColors.textPrimary)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -449,7 +449,7 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Close'),
+            child: const Text('Close'),
           ),
         ],
       ),
@@ -458,14 +458,14 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
 
   Widget _buildStatusItem(String label, String value) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
           SizedBox(
             width: 120,
             child: Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 color: AppColors.textMuted,
                 fontSize: 14,
               ),
@@ -473,7 +473,7 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
           ),
           Text(
             value,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.textPrimary,
               fontSize: 14,
               fontWeight: FontWeight.bold,

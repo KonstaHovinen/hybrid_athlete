@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../app_theme.dart';
 import '../design_system.dart';
 import '../utils/github_gist_sync.dart';
-import '../utils/preferences_cache.dart';
 
 /// GitHub Token Setup Screen
 class GitHubSetupScreen extends StatefulWidget {
@@ -66,15 +65,15 @@ class _GitHubSetupScreenState extends State<GitHubSetupScreen> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.card,
-        title: Text('✅ Success!', style: TextStyle(color: AppColors.textPrimary)),
-        content: Text(
+        title: const Text('✅ Success!', style: TextStyle(color: AppColors.textPrimary)),
+        content: const Text(
           'GitHub token validated! Your data will now sync to your private GitHub Gist.',
           style: TextStyle(color: AppColors.textPrimary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('OK'),
+            child: const Text('OK'),
           ),
         ],
       ),
@@ -85,7 +84,7 @@ class _GitHubSetupScreenState extends State<GitHubSetupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('GitHub Sync Setup'),
+        title: const Text('GitHub Sync Setup'),
         backgroundColor: AppColors.surface,
         elevation: 0,
       ),
@@ -98,11 +97,11 @@ class _GitHubSetupScreenState extends State<GitHubSetupScreen> {
             Container(
               width: double.infinity,
               padding: AppSpacing.paddingLG,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: AppColors.primaryGradient,
                 borderRadius: AppBorderRadius.borderRadiusLG,
               ),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
@@ -203,11 +202,11 @@ class _GitHubSetupScreenState extends State<GitHubSetupScreen> {
                     obscureText: true,
                     decoration: InputDecoration(
                       hintText: 'ghp_...',
-                      prefixIcon: Icon(Icons.lock),
+                      prefixIcon: const Icon(Icons.lock),
                       suffixIcon: _tokenValid
-                          ? Icon(Icons.check_circle, color: AppColors.primary)
+                          ? const Icon(Icons.check_circle, color: AppColors.primary)
                           : null,
-                      border: OutlineInputBorder(
+                      border: const OutlineInputBorder(
                         borderRadius: AppBorderRadius.borderRadiusMD,
                       ),
                       errorText: _errorMessage,
@@ -227,7 +226,7 @@ class _GitHubSetupScreenState extends State<GitHubSetupScreen> {
                         color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: AppBorderRadius.borderRadiusMD,
                       ),
-                      child: Row(
+                      child: const Row(
                         children: [
                           Icon(Icons.check_circle, color: AppColors.primary, size: 20),
                           AppSpacing.gapHorizontalSM,
@@ -258,13 +257,13 @@ class _GitHubSetupScreenState extends State<GitHubSetupScreen> {
                     onPressed: _isLoading ? null : _validateAndSaveToken,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: const RoundedRectangleBorder(
                         borderRadius: AppBorderRadius.borderRadiusMD,
                       ),
                     ),
                     child: _isLoading
-                        ? Row(
+                        ? const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SizedBox(
@@ -279,7 +278,7 @@ class _GitHubSetupScreenState extends State<GitHubSetupScreen> {
                               Text('Validating...', style: TextStyle(color: Colors.white)),
                             ],
                           )
-                        : Text(
+                        : const Text(
                             'Validate & Save Token',
                             style: TextStyle(
                               color: Colors.white,
@@ -298,7 +297,7 @@ class _GitHubSetupScreenState extends State<GitHubSetupScreen> {
             Center(
               child: TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text(
+                child: const Text(
                   'Skip for now (use local sync only)',
                   style: TextStyle(color: AppColors.textMuted),
                 ),
@@ -312,7 +311,7 @@ class _GitHubSetupScreenState extends State<GitHubSetupScreen> {
 
   Widget _buildStep(String number, String text) {
     return Padding(
-      padding: EdgeInsets.only(bottom: AppSpacing.md),
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -326,7 +325,7 @@ class _GitHubSetupScreenState extends State<GitHubSetupScreen> {
             child: Center(
               child: Text(
                 number,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.primary,
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
