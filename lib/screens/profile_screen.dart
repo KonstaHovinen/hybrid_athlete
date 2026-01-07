@@ -309,10 +309,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const DeviceSyncScreen()),
-            ),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const DeviceSyncScreen()),
+              );
+              _loadExtraStats(); // Refresh stats when returning
+            },
           ),
         ],
       ),

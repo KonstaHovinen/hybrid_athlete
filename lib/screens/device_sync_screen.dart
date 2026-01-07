@@ -23,6 +23,7 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
   bool _isCloudSyncEnabled = false;
   bool _isCloudSyncing = false;
   String _maskedToken = "Not Connected";
+  String _gistIdStatus = "Checking...";
 
   @override
   void initState() {
@@ -40,11 +41,13 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
     _statusTimer = Timer.periodic(const Duration(seconds: 2), (timer) async {
       final prefs = await PreferencesCache.getInstance();
       final token = prefs.getString('github_token');
+      final gistId = prefs.getString('gist_id');
       
       if (mounted) {
         final cloudStatus = CloudSyncService.getCloudSyncStatus();
         setState(() {
           _isCloudSyncEnabled = cloudStatus['enabled'] ?? false;
+          _gistIdStatus = (gistId != null && gistId.isNotEmpty) ? "Connected" : "Not Linked";
           _maskedToken = (token != null && token.isNotEmpty) 
               ? "•••• ${token.substring(token.length > 4 ? token.length - 4 : 0)}" 
               : "Not Connected";
@@ -151,6 +154,16 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _resetGistConnection() async {
+    final prefs = await PreferencesCache.getInstance();
+    await prefs.remove('gist_id');
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Connection reset. Re-syncing...")),
+    );
+    _manualCloudSync();
   }
 
   Future<void> _exportData() async {
@@ -401,6 +414,14 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
                         Text(_maskedToken, style: const TextStyle(fontFamily: 'monospace')),
                       ],
                     ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(Icons.cloud_done, size: 16, color: AppColors.textMuted),
+                        const SizedBox(width: 8),
+                        Text(_gistIdStatus, style: const TextStyle(fontFamily: 'monospace', fontSize: 12, color: AppColors.textSecondary)),
+                      ],
+                    ),
                   ),
                   AppSpacing.gapVerticalMD,
                   SizedBox(
@@ -421,6 +442,15 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
                       ),
                     ),
                   ),
+                  if (_gistIdStatus == "Connected") ...[
+                    AppSpacing.gapVerticalSM,
+                    Center(
+                      child: TextButton(
+                        onPressed: _resetGistConnection,
+                        child: const Text("Reset Connection", style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

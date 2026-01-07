@@ -167,6 +167,14 @@ class CloudSyncService {
         debugPrint('GitHub token not found');
         return null;
       }
+      
+      // Check for existing Gist ID if we don't have one locally
+      if (gistId == null || gistId.isEmpty) {
+        gistId = await _findGistId(token);
+        if (gistId != null) {
+          await prefs.setString('gist_id', gistId);
+        }
+      }
 
       final contentString = jsonEncode(data);
       final body = {
