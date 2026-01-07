@@ -52,6 +52,8 @@ class SyncService {
       final exerciseSettings = prefs.getString('exercise_settings');
       final proGoals = prefs.getString('pro_goals');
       final weeklyGoal = prefs.getInt('weekly_goal');
+      final activeBadgeId = prefs.getString('active_badge_id');
+      final earnedBadges = prefs.getStringList('earned_badges');
       
       // Get device ID for sync metadata
       final deviceId = await DeviceId.getDeviceId();
@@ -73,6 +75,8 @@ class SyncService {
           'exercise_settings': exerciseSettings,
           'pro_goals': proGoals,
           'weekly_goal': weeklyGoal,
+          'active_badge_id': activeBadgeId,
+          'earned_badges': earnedBadges,
         },
       };
       

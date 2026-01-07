@@ -5,6 +5,7 @@ import '../app_theme.dart';
 import '../design_system.dart';
 import '../utils/device_id.dart';
 import '../utils/network_sync.dart';
+import '../utils/cloud_sync_service.dart';
 import 'dart:async';
 
 /// Device Sync Screen - Manage device ID and network sync
@@ -18,11 +19,13 @@ class DeviceSyncScreen extends StatefulWidget {
 class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
   String _deviceId = '';
   String _deviceName = '';
-  bool _isServerRunning = false;
+bool _isServerRunning = false;
   List<String> _discoveredDevices = [];
   bool _isDiscovering = false;
   String? _connectedDevice;
   Timer? _statusTimer;
+  bool _isCloudSyncEnabled = false;
+  bool _isCloudSyncing = false;
 
   @override
   void initState() {
@@ -38,12 +41,14 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
     super.dispose();
   }
 
-  void _startStatusUpdates() {
-    _statusTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
+void _startStatusUpdates() {
+    _statusTimer = Timer.periodic(const Duration(seconds: 2), (timer) async {
       if (mounted) {
+        final cloudStatus = CloudSyncService.getCloudSyncStatus();
         setState(() {
           _isServerRunning = NetworkSync.isServerRunning();
           _connectedDevice = NetworkSync.getConnectedDevice();
+          _isCloudSyncEnabled = cloudStatus['enabled'] ?? false;
         });
       }
     });
@@ -98,7 +103,7 @@ Future<void> _discoverDevices() async {
     if (devices.isEmpty) {
       String message = 'No devices found. Check WiFi and Device ID.';
       if (kIsWeb) {
-        message = 'Web PWA: Network discovery limited. Use native app for device scanning.';
+        message = 'Web PWA: Use Cloud Sync instead - Network discovery limited.';
       } else if (Platform.isIOS) {
         message = 'iOS: Make sure Local Network permission is granted in Settings.';
       }
@@ -116,6 +121,54 @@ Future<void> _discoverDevices() async {
       _discoveredDevices = devices;
       _isDiscovering = false;
     });
+  }
+  
+  Future<void> _toggleCloudSync() async {
+    setState(() => _isCloudSyncing = true);
+    
+    try {
+      await CloudSyncService.setCloudSyncEnabled(!_isCloudSyncEnabled);
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_isCloudSyncEnabled ? 'Cloud sync disabled' : 'Cloud sync enabled'),
+          backgroundColor: AppColors.primary,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Cloud sync error: $e'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    } finally {
+      setState(() => _isCloudSyncing = false);
+    }
+  }
+  
+  Future<void> _manualCloudSync() async {
+    setState(() => _isCloudSyncing = true);
+    
+    try {
+      final success = await CloudSyncService.manualCloudSync();
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(success ? 'Cloud sync successful!' : 'Cloud sync failed'),
+          backgroundColor: success ? AppColors.primary : AppColors.error,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Cloud sync error: $e'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    } finally {
+      setState(() => _isCloudSyncing = false);
+    }
   }
 
   Future<void> _connectToDevice(String deviceUrl) async {
@@ -374,6 +427,101 @@ Future<void> _discoverDevices() async {
                         : 'Start server to allow other devices to sync with you.',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
+                ],
+              ),
+            ),
+
+AppSpacing.gapVerticalXL,
+
+            // Cloud Sync Section
+            Container(
+              padding: AppSpacing.paddingLG,
+              decoration: BoxDecoration(
+                color: AppColors.card,
+                borderRadius: AppBorderRadius.borderRadiusLG,
+                border: Border.all(color: AppColors.surfaceLight),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Cloud Sync',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          AppSpacing.gapVerticalXS,
+                          Row(
+                            children: [
+                              Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  color: _isCloudSyncEnabled
+                                      ? AppColors.primary
+                                      : AppColors.textMuted,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              AppSpacing.gapHorizontalSM,
+                              Text(
+                                _isCloudSyncEnabled ? 'Enabled' : 'Disabled',
+                                style: TextStyle(
+                                  color: _isCloudSyncEnabled
+                                      ? AppColors.primary
+                                      : AppColors.textMuted,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      ElevatedButton.icon(
+                        icon: Icon(_isCloudSyncEnabled ? Icons.cloud_off : Icons.cloud_upload),
+                        label: Text(_isCloudSyncEnabled ? 'Disable' : 'Enable'),
+                        onPressed: _isCloudSyncing ? null : _toggleCloudSync,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _isCloudSyncEnabled
+                              ? AppColors.error
+                              : AppColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  AppSpacing.gapVerticalMD,
+                  Text(
+                    _isCloudSyncEnabled
+                        ? 'Your data syncs to the cloud automatically. Works on all platforms including iOS PWA.'
+                        : 'Enable cloud sync to backup your data and sync across all devices.',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  if (_isCloudSyncEnabled) ...[
+                    AppSpacing.gapVerticalMD,
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        icon: _isCloudSyncing
+                            ? SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : Icon(Icons.sync),
+                        label: Text(_isCloudSyncing ? 'Syncing...' : 'Sync Now'),
+                        onPressed: _isCloudSyncing ? null : _manualCloudSync,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.accent,
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

@@ -213,6 +213,14 @@ class NetworkSync {
       await prefs.setInt('weekly_goal', data['weekly_goal'] as int);
     }
     
+    if (data['active_badge_id'] != null) {
+      await prefs.setString('active_badge_id', data['active_badge_id'] as String);
+    }
+    
+    if (data['earned_badges'] != null) {
+      await prefs.setStringList('earned_badges', (data['earned_badges'] as List).cast<String>());
+    }
+    
     // Invalidate caches
     // Note: Import the cache classes if needed
   }
