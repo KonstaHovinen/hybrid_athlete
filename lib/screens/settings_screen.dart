@@ -1,14 +1,13 @@
 import 'dart:convert';
-import 'dart:io' show File, Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:http/http.dart' as http;
 import '../app_theme.dart';
 import '../design_system.dart';
 import '../utils/github_gist_sync.dart';
 import '../utils/preferences_cache.dart';
 import '../utils/hybrid_athlete_ai.dart';
-import '../utils/sync_service.dart';
 import 'github_setup_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -54,11 +53,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _checkUpdates() async {
     setState(() { _checkingUpdate = true; _updateStatus = 'Checking...'; });
     try {
-      // Minimal GitHub Releases check
-      // You can make this configurable if repo changes
       final uri = Uri.parse('https://api.github.com/repos/KonstaHovinen/hybrid_athlete/releases/latest');
-      final resp = await HttpClient().getUrl(uri).then((r) => r.close());
-      final body = await resp.transform(utf8.decoder).join();
+      final resp = await http.get(uri);
+      final body = resp.body;
       if (resp.statusCode == 200) {
         final json = jsonDecode(body) as Map<String, dynamic>;
         final tag = (json['tag_name'] ?? '').toString();
@@ -135,21 +132,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         'ai_interaction_history': prefs.getStringList('ai_interaction_history') ?? [],
       };
       final jsonStr = const JsonEncoder.withIndent('  ').convert(data);
-      if (kIsWeb) {
-        // For web, instruct user to copy; full download implementation would require JS interop
-        await showDialog(context: context, builder: (c) => AlertDialog(
-          backgroundColor: AppColors.card,
-          title: const Text('Export Data'),
-          content: SingleChildScrollView(child: SelectableText(jsonStr)),
-          actions: [TextButton(onPressed: () => Navigator.pop(c), child: const Text('Close'))],
-        ));
-      } else {
-        final file = File('export_hybrid_athlete_${DateTime.now().millisecondsSinceEpoch}.json');
-        await file.writeAsString(jsonStr);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Data exported to: ${file.path}')),
-        );
-      }
+      await showDialog(context: context, builder: (c) => AlertDialog(
+        backgroundColor: AppColors.card,
+        title: const Text('Export Data'),
+        content: SingleChildScrollView(child: SelectableText(jsonStr)),
+        actions: [TextButton(onPressed: () => Navigator.pop(c), child: const Text('Close'))],
+      ));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Export error: $e')),
@@ -158,55 +146,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _importData() async {
-    // For simplicity, expect a file named import_hybrid_athlete.json in CWD on desktop
-    try {
-      if (kIsWeb) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Import on web requires file picker integration; not implemented.')),
-        );
-        return;
-      }
-      final file = File('import_hybrid_athlete.json');
-      if (!await file.exists()) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Place "import_hybrid_athlete.json" in the app directory and retry.')),
-        );
-        return;
-      }
-      final jsonStr = await file.readAsString();
-      final data = jsonDecode(jsonStr) as Map<String, dynamic>;
-      final prefs = await PreferencesCache.getInstance();
-
-      Future<void> putOpt(String k, String? v) async { if (v != null) await prefs.setString(k, v); }
-      Future<void> putList(String k, List<String>? v) async { if (v != null) await prefs.setStringList(k, v); }
-
-      await putList('workout_history', (data['workout_history'] as List?)?.cast<String>());
-      await putOpt('logged_workouts', data['logged_workouts'] as String?);
-      await putOpt('scheduled_workouts', data['scheduled_workouts'] as String?);
-      await putOpt('user_templates', data['user_templates'] as String?);
-      await putOpt('user_exercises', data['user_exercises'] as String?);
-      await putOpt('user_profile', data['user_profile'] as String?);
-      await putOpt('exercise_settings', data['exercise_settings'] as String?);
-      await putOpt('pro_goals', data['pro_goals'] as String?);
-      if (data['weekly_goal'] is int) { await prefs.setInt('weekly_goal', data['weekly_goal'] as int); }
-      await putList('earned_badges', (data['earned_badges'] as List?)?.cast<String>());
-      await putOpt('ai_memory', data['ai_memory'] as String?);
-      await putList('ai_interaction_history', (data['ai_interaction_history'] as List?)?.cast<String>());
-
-      // Invalidate caches similar to GitHubGistSync
-      await prefs.remove('cached_stats');
-      await prefs.remove('stats_cache_timestamp');
-      await prefs.remove('workout_history_cache');
-      await prefs.remove('workout_history_cache_timestamp');
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Import complete. Caches invalidated.')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Import error: $e')),
-      );
-    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Manual import via UI is not available yet. Use GitHub Sync or manually merge JSON.')),
+    );
   }
 
   @override
