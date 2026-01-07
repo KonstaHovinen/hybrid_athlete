@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../data_models.dart';
 import '../app_theme.dart';
 import 'device_sync_screen.dart';
+import '../utils/cloud_sync_service.dart';
 
 // --- PROFILE SCREEN ---
 class ProfileScreen extends StatefulWidget {
@@ -20,6 +21,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _totalWorkouts = 0;
   int _currentStreak = 0;
   String _memberSince = "";
+  bool _isGitHubConnected = false;
 
   @override
   void initState() {
@@ -30,6 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _earnedBadges = [ProfileManager.getAllAvailableBadges().first];
     }
     _loadExtraStats();
+    _checkGitHubStatus();
   }
 
   Future<void> _loadExtraStats() async {
@@ -85,6 +88,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _memberSince = "Today";
         });
       }
+    }
+  }
+
+  Future<void> _checkGitHubStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('github_token');
+    if (mounted) {
+      setState(() {
+        _isGitHubConnected = token != null && token.isNotEmpty;
+      });
     }
   }
 
@@ -242,8 +255,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               if (context.mounted) {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Token saved! Cloud sync enabled.")),
+                  const SnackBar(content: Text("Token saved! Syncing data...")),
                 );
+                // Immediate sync to restore data
+                await CloudSyncService.downloadFromCloud();
+                await _loadExtraStats(); // Refresh UI
+                _checkGitHubStatus();
               }
             },
             child: const Text("Save"),
@@ -598,60 +615,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 28),
               
-              // Device Sync Section
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  gradient: AppColors.primaryGradient,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.sync, color: Colors.white, size: 32),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Device Sync',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Connect your devices with Device ID',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.8),
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.arrow_forward, size: 18),
-                      label: const Text('Open'),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const DeviceSyncScreen(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: AppColors.primary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -686,13 +649,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                     ),
+                    if (_isGitHubConnected)
+                      IconButton(
+                        icon: const Icon(Icons.settings, color: AppColors.accent),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const DeviceSyncScreen()),
+                          );
+                        },
+                      ),
                     ElevatedButton(
                       onPressed: _showGitHubTokenDialog,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.surface,
-                        foregroundColor: AppColors.accent,
+                        backgroundColor: _isGitHubConnected ? AppColors.primary.withValues(alpha: 0.1) : AppColors.surface,
+                        foregroundColor: _isGitHubConnected ? AppColors.primary : AppColors.accent,
+                        elevation: 0,
                       ),
-                      child: const Text('Setup'),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (_isGitHubConnected) ...[
+                            const Icon(Icons.check, size: 16),
+                            const SizedBox(width: 4),
+                          ],
+                          Text(_isGitHubConnected ? 'Connected' : 'Setup'),
+                        ],
+                      ),
                     ),
                   ],
                 ),

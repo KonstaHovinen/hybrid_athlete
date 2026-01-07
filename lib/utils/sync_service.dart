@@ -37,49 +37,61 @@ class SyncService {
     return File('${directory.path}/$_syncFileName');
   }
 
+  /// Generate export data map (platform agnostic)
+  static Future<Map<String, dynamic>> generateExportData() async {
+    final prefs = await PreferencesCache.getInstance();
+    
+    // Gather all data
+    final workoutHistory = prefs.getStringList('workout_history') ?? [];
+    final loggedWorkouts = prefs.getString('logged_workouts');
+    final scheduledWorkouts = prefs.getString('scheduled_workouts');
+    final userTemplates = prefs.getString('user_templates');
+    final userExercises = prefs.getString('user_exercises');
+    final userProfile = prefs.getString('user_profile');
+    final exerciseSettings = prefs.getString('exercise_settings');
+    final proGoals = prefs.getString('pro_goals');
+    final weeklyGoal = prefs.getInt('weekly_goal');
+    final activeBadgeId = prefs.getString('active_badge_id');
+    final earnedBadges = prefs.getStringList('earned_badges');
+    
+    // Get device ID for sync metadata (handle web gracefully)
+    String deviceId = 'web_device';
+    Map<String, String> deviceInfo = {'name': 'Web', 'platform': 'web'};
+    
+    if (!kIsWeb) {
+      deviceId = await DeviceId.getDeviceId();
+      deviceInfo = await DeviceId.getDeviceInfo();
+    }
+    
+    return {
+      'version': '1.0',
+      'lastSync': DateTime.now().toIso8601String(),
+      'deviceId': deviceId,
+      'deviceName': deviceInfo['name'],
+      'platform': deviceInfo['platform'],
+      'data': {
+        'workout_history': workoutHistory,
+        'logged_workouts': loggedWorkouts,
+        'scheduled_workouts': scheduledWorkouts,
+        'user_templates': userTemplates,
+        'user_exercises': userExercises,
+        'user_profile': userProfile,
+        'exercise_settings': exerciseSettings,
+        'pro_goals': proGoals,
+        'weekly_goal': weeklyGoal,
+        'active_badge_id': activeBadgeId,
+        'earned_badges': earnedBadges,
+      },
+    };
+  }
+
   /// Export all workout data to sync file
   static Future<bool> exportData() async {
     try {
-      final prefs = await PreferencesCache.getInstance();
+      if (kIsWeb) return false; // File system not supported on web
+
+      final syncData = await generateExportData();
       final syncFile = await _getSyncFile();
-      
-      // Gather all data
-      final workoutHistory = prefs.getStringList('workout_history') ?? [];
-      final loggedWorkouts = prefs.getString('logged_workouts');
-      final scheduledWorkouts = prefs.getString('scheduled_workouts');
-      final userTemplates = prefs.getString('user_templates');
-      final userExercises = prefs.getString('user_exercises');
-      final userProfile = prefs.getString('user_profile');
-      final exerciseSettings = prefs.getString('exercise_settings');
-      final proGoals = prefs.getString('pro_goals');
-      final weeklyGoal = prefs.getInt('weekly_goal');
-      final activeBadgeId = prefs.getString('active_badge_id');
-      final earnedBadges = prefs.getStringList('earned_badges');
-      
-      // Get device ID for sync metadata
-      final deviceId = await DeviceId.getDeviceId();
-      final deviceInfo = await DeviceId.getDeviceInfo();
-      
-      final syncData = {
-        'version': '1.0',
-        'lastSync': DateTime.now().toIso8601String(),
-        'deviceId': deviceId,
-        'deviceName': deviceInfo['name'],
-        'platform': deviceInfo['platform'],
-        'data': {
-          'workout_history': workoutHistory,
-          'logged_workouts': loggedWorkouts,
-          'scheduled_workouts': scheduledWorkouts,
-          'user_templates': userTemplates,
-          'user_exercises': userExercises,
-          'user_profile': userProfile,
-          'exercise_settings': exerciseSettings,
-          'pro_goals': proGoals,
-          'weekly_goal': weeklyGoal,
-          'active_badge_id': activeBadgeId,
-          'earned_badges': earnedBadges,
-        },
-      };
       
       // Write to file
       await syncFile.writeAsString(

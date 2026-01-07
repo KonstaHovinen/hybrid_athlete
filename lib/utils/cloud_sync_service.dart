@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'preferences_cache.dart';
-import 'device_id.dart';
 import 'sync_service.dart';
 
 /// Cloud Sync Service - Alternative to local network sync
@@ -57,14 +56,12 @@ class CloudSyncService {
   /// Upload all data to cloud
   static Future<bool> uploadToCloud() async {
     try {
-      final deviceId = await DeviceId.getDeviceId();
       final syncData = await SyncService.importData();
       
       if (syncData == null) return false;
       
       // Prepare cloud sync payload
       final cloudData = {
-        'deviceId': deviceId,
         'timestamp': DateTime.now().toIso8601String(),
         'syncType': 'full_sync',
         'data': syncData,
@@ -90,8 +87,7 @@ class CloudSyncService {
   /// Download data from cloud
   static Future<bool> downloadFromCloud() async {
     try {
-      final deviceId = await DeviceId.getDeviceId();
-      final cloudData = await _downloadFromCloudService(deviceId);
+      final cloudData = await _downloadFromCloudService();
       
       if (cloudData != null) {
         await _importCloudData(cloudData);
@@ -225,13 +221,23 @@ class CloudSyncService {
   }
   
   /// Download from GitHub Gist
-  static Future<Map<String, dynamic>?> _downloadFromCloudService(String deviceId) async {
+  static Future<Map<String, dynamic>?> _downloadFromCloudService() async {
     try {
       final prefs = await PreferencesCache.getInstance();
       final token = prefs.getString('github_token');
-      final gistId = prefs.getString('gist_id');
+      var gistId = prefs.getString('gist_id');
 
-      if (token == null || gistId == null) return null;
+      if (token == null) return null;
+
+      // If we have a token but no Gist ID (New Device Login), try to find the data
+      if (gistId == null) {
+        gistId = await _findGistId(token);
+        if (gistId != null) {
+          await prefs.setString('gist_id', gistId);
+        } else {
+          return null; // No existing data found
+        }
+      }
 
       final response = await http.get(
         Uri.parse('$_githubApiUrl/$gistId'),
@@ -257,6 +263,32 @@ class CloudSyncService {
     return null;
   }
   
+  /// Find existing Gist ID from GitHub using just the token
+  static Future<String?> _findGistId(String token) async {
+    try {
+      final response = await http.get(
+        Uri.parse(_githubApiUrl), // Lists all gists for the user
+        headers: {
+          'Authorization': 'token $token',
+          'Accept': 'application/vnd.github.v3+json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> gists = jsonDecode(response.body);
+        for (var gist in gists) {
+          final files = gist['files'] as Map<String, dynamic>;
+          if (files.containsKey('hybrid_athlete_data.json')) {
+            return gist['id'];
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error finding Gist: $e');
+    }
+    return null;
+  }
+
   /// Import cloud data into local storage
   static Future<void> _importCloudData(Map<String, dynamic> cloudData) async {
     final prefs = await PreferencesCache.getInstance();
