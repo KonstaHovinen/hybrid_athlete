@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import '../app_theme.dart';
 import '../design_system.dart';
 import '../utils/device_id.dart';
@@ -63,16 +64,21 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
     });
   }
 
-  Future<void> _toggleServer() async {
+Future<void> _toggleServer() async {
     if (_isServerRunning) {
       await NetworkSync.stopServer();
     } else {
       final started = await NetworkSync.startServer();
       if (!started && mounted) {
+        String errorMessage = 'Failed to start server. Check network permissions.';
+        if (Platform.isIOS) {
+          errorMessage = 'iOS: Check Local Network permissions in Settings > Hybrid Athlete.';
+        }
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to start server. Check network permissions.'),
+          SnackBar(
+            content: Text(errorMessage),
             backgroundColor: AppColors.error,
+            duration: const Duration(seconds: 5),
           ),
         );
       }
@@ -80,10 +86,22 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
     _checkServerStatus();
   }
 
-  Future<void> _discoverDevices() async {
+Future<void> _discoverDevices() async {
     setState(() => _isDiscovering = true);
     final devices = await NetworkSync.discoverDevices();
     if (!mounted) return;
+    
+    // Show iOS-specific message if no devices found
+    if (devices.isEmpty && Platform.isIOS) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('iOS: Make sure Local Network permission is granted in Settings.'),
+          backgroundColor: AppColors.error,
+          duration: Duration(seconds: 4),
+        ),
+      );
+    }
+    
     setState(() {
       _discoveredDevices = devices;
       _isDiscovering = false;

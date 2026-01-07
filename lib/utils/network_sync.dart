@@ -10,6 +10,20 @@ import 'preferences_cache.dart';
 /// Devices with the same Device ID can sync over local network
 /// Uses HTTP server/client model - one device hosts, others connect
 class NetworkSync {
+  /// Check if network permissions are available (especially for iOS)
+  static Future<bool> checkNetworkPermissions() async {
+    if (Platform.isIOS) {
+      try {
+        // Test network connectivity by checking local interface
+        final interfaces = await NetworkInterface.list();
+        return interfaces.isNotEmpty;
+      } catch (e) {
+        print('iOS network permission check failed: $e');
+        return false;
+      }
+    }
+    return true; // Other platforms typically don't need special permission checks
+  }
   static HttpServer? _server;
   static Timer? _discoveryTimer;
   static String? _connectedDeviceUrl;
@@ -18,6 +32,13 @@ class NetworkSync {
   /// Other devices can connect to this device
   static Future<bool> startServer({int port = 8080}) async {
     try {
+      // Check network permissions first (especially for iOS)
+      final hasPermissions = await checkNetworkPermissions();
+      if (!hasPermissions) {
+        print('Network permissions not granted');
+        return false;
+      }
+      
       if (_server != null) {
         return true; // Already running
       }
@@ -30,6 +51,9 @@ class NetworkSync {
       return true;
     } catch (e) {
       print('Failed to start sync server: $e');
+      if (Platform.isIOS && e.toString().contains('Permission')) {
+        print('iOS network permission error - check Info.plist configuration');
+      }
       return false;
     }
   }
@@ -177,12 +201,22 @@ class NetworkSync {
   /// Discover devices on local network with same device ID
   /// Scans common local IP ranges
   static Future<List<String>> discoverDevices() async {
+    // Check network permissions first (especially for iOS)
+    final hasPermissions = await checkNetworkPermissions();
+    if (!hasPermissions) {
+      print('Network permissions not granted for device discovery');
+      return [];
+    }
+    
     final localDeviceId = await DeviceId.getDeviceId();
     final discovered = <String>[];
     
     // Get local IP address
     final localIp = await _getLocalIpAddress();
-    if (localIp == null) return discovered;
+    if (localIp == null) {
+      print('Could not get local IP address');
+      return discovered;
+    }
     
     // Extract network prefix (e.g., 192.168.1.x)
     final parts = localIp.split('.');
@@ -216,6 +250,11 @@ class NetworkSync {
       if (response.statusCode == 200) {
         return 'http://$ip:8080';
       }
+    } on SocketException catch (e) {
+      if (Platform.isIOS && e.osError?.message?.contains('Permission') == true) {
+        print('iOS network permission denied during device discovery');
+      }
+      // Device not found or not responding - ignore
     } catch (e) {
       // Device not found or not responding - ignore
     }
