@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart' hide Badge; 
-import 'package:flutter/services.dart';
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../data_models.dart';
 import '../app_theme.dart';
 import 'device_sync_screen.dart';
-import '../utils/cloud_sync_service.dart';
+import '../utils/preferences_cache.dart';
 
 // --- PROFILE SCREEN ---
 class ProfileScreen extends StatefulWidget {
@@ -22,7 +20,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _totalWorkouts = 0;
   int _currentStreak = 0;
   String _memberSince = "";
-  bool _isGitHubConnected = false;
 
   @override
   void initState() {
@@ -33,12 +30,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _earnedBadges = [ProfileManager.getAllAvailableBadges().first];
     }
     _loadExtraStats();
-    _checkGitHubStatus();
   }
 
   Future<void> _loadExtraStats() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await PreferencesCache.getInstance();
       final history = prefs.getStringList('workout_history') ?? [];
       final loggedRaw = prefs.getString('logged_workouts');
       
@@ -89,16 +85,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _memberSince = "Today";
         });
       }
-    }
-  }
-
-  Future<void> _checkGitHubStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('github_token');
-    if (mounted) {
-      setState(() {
-        _isGitHubConnected = token != null && token.isNotEmpty;
-      });
     }
   }
 
@@ -212,90 +198,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: const Text("Save"),
           ),
         ],
-      ),
-    );
-  }
-
-  void _showGitHubTokenDialog() async {
-    final prefs = await SharedPreferences.getInstance();
-    final currentToken = prefs.getString('github_token') ?? '';
-    final TextEditingController tokenController = TextEditingController(text: currentToken);
-    bool isObscured = true;
-
-    if (!mounted) return;
-    
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: const Text("GitHub Cloud Sync"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                "Enter your GitHub Personal Access Token with 'gist' scope to enable cloud sync.",
-                style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: tokenController,
-                obscureText: isObscured,
-                decoration: InputDecoration(
-                  labelText: "GitHub Token",
-                  border: const OutlineInputBorder(),
-                  hintText: "ghp_...",
-                  suffixIcon: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(isObscured ? Icons.visibility : Icons.visibility_off),
-                        onPressed: () => setState(() => isObscured = !isObscured),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.copy),
-                        onPressed: () {
-                          Clipboard.setData(ClipboardData(text: tokenController.text));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Token copied to clipboard!")),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              await prefs.setString('github_token', tokenController.text.trim());
-              
-              // Enable sync automatically
-              try { await CloudSyncService.setCloudSyncEnabled(true); } catch (_) {}
-
-              if (context.mounted) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Token saved! Connecting...")),
-                );
-                
-                // Try to restore. If no data found (new user), create the Gist.
-                final hasData = await CloudSyncService.downloadFromCloud();
-                if (!hasData) await CloudSyncService.uploadToCloud();
-
-                await _loadExtraStats(); // Refresh UI
-                _checkGitHubStatus();
-              }
-            },
-            child: const Text("Save"),
-          ),
-        ],
-      ),
       ),
     );
   }

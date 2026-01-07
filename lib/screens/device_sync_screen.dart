@@ -56,31 +56,6 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
     });
   }
 
-  Future<void> _toggleCloudSync() async {
-    setState(() => _isCloudSyncing = true);
-    
-    try {
-      await CloudSyncService.setCloudSyncEnabled(!_isCloudSyncEnabled);
-      
-                    if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_isCloudSyncEnabled ? 'Cloud sync disabled' : 'Cloud sync enabled'),
-          backgroundColor: AppColors.primary,
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Cloud sync error: $e'),
-          backgroundColor: AppColors.error,
-        ),
-      );
-    } finally {
-      setState(() => _isCloudSyncing = false);
-    }
-  }
-  
   Future<void> _manualCloudSync() async {
     setState(() => _isCloudSyncing = true);
     
@@ -293,9 +268,11 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
                   );
                 }
               } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Invalid JSON: $e'), backgroundColor: AppColors.error),
-                );
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Invalid JSON: $e'), backgroundColor: AppColors.error),
+                  );
+                }
               }
             },
             child: const Text('Import'),
@@ -407,19 +384,24 @@ class _DeviceSyncScreenState extends State<DeviceSyncScreen> {
                       color: AppColors.surface,
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.key, size: 16, color: AppColors.textMuted),
-                        const SizedBox(width: 8),
-                        Text(_maskedToken, style: const TextStyle(fontFamily: 'monospace')),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Icon(Icons.cloud_done, size: 16, color: AppColors.textMuted),
-                        const SizedBox(width: 8),
-                        Text(_gistIdStatus, style: const TextStyle(fontFamily: 'monospace', fontSize: 12, color: AppColors.textSecondary)),
+                        Row(
+                          children: [
+                            const Icon(Icons.key, size: 16, color: AppColors.textMuted),
+                            const SizedBox(width: 8),
+                            Text(_maskedToken, style: const TextStyle(fontFamily: 'monospace')),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            const Icon(Icons.cloud_done, size: 16, color: AppColors.textMuted),
+                            const SizedBox(width: 8),
+                            Text(_gistIdStatus, style: const TextStyle(fontFamily: 'monospace', fontSize: 12, color: AppColors.textSecondary)),
+                          ],
+                        ),
                       ],
                     ),
                   ),
