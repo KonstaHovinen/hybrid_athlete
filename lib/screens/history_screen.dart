@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data_models.dart';
 import '../app_theme.dart';
+import '../utils/workout_history_cache.dart';
+import '../utils/preferences_cache.dart';
+import '../utils/sync_service.dart';
+import '../utils/stats_cache.dart';
 import 'workout_screens.dart';
 
 // --- EDIT SET ROW WIDGET (Isolated state for text fields) ---
@@ -259,25 +263,75 @@ Future<void> _syncCalendarWithHistory() async {
 }
 
 class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
-  Future<List<Map<String, dynamic>>> _getHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String>? historyJson = prefs.getStringList('workout_history');
-    if (historyJson == null) return [];
-    return historyJson
-        .map((e) => jsonDecode(e) as Map<String, dynamic>)
-        .toList();
+  static const int _itemsPerPage = 20;
+  int _currentPage = 0;
+  bool _isLoading = false;
+  bool _hasMore = true;
+  List<Map<String, dynamic>> _loadedWorkouts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMoreWorkouts();
+  }
+
+  Future<void> _loadMoreWorkouts() async {
+    if (_isLoading || !_hasMore) return;
+    
+    setState(() => _isLoading = true);
+    
+    final newWorkouts = await WorkoutHistoryCache.getHistory(
+      limit: _itemsPerPage,
+      offset: _currentPage * _itemsPerPage,
+    );
+    
+    if (!mounted) return;
+    
+    setState(() {
+      if (newWorkouts.isEmpty) {
+        _hasMore = false;
+      } else {
+        _loadedWorkouts.addAll(newWorkouts);
+        _currentPage++;
+        _hasMore = newWorkouts.length == _itemsPerPage;
+      }
+      _isLoading = false;
+    });
+  }
+  
+  void _refreshHistory() {
+    WorkoutHistoryCache.invalidateCache();
+    setState(() {
+      _currentPage = 0;
+      _hasMore = true;
+      _loadedWorkouts = [];
+    });
+    _loadMoreWorkouts();
   }
 
   void _deleteWorkout(int index) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await PreferencesCache.getInstance();
     List<String> historyJson = prefs.getStringList('workout_history') ?? [];
-    if (index >= 0 && index < historyJson.length) {
-      historyJson.removeAt(index);
+    
+    // Calculate actual index in full history (accounting for pagination)
+    final allWorkouts = await WorkoutHistoryCache.getHistory();
+    final workoutToDelete = _loadedWorkouts[index];
+    final actualIndex = allWorkouts.indexWhere((w) => 
+      w['date'] == workoutToDelete['date'] && 
+      w['template_name'] == workoutToDelete['template_name']
+    );
+    
+    if (actualIndex >= 0 && actualIndex < historyJson.length) {
+      historyJson.removeAt(actualIndex);
       await prefs.setStringList('workout_history', historyJson);
+      WorkoutHistoryCache.invalidateCache();
+      StatsCache.invalidateCache();
       // Re-sync calendar to remove deleted workout date if needed
       await _syncCalendarWithHistory();
+      // Sync to desktop
+      await SyncService.exportData();
       if (!mounted) return;
-      setState(() {});
+      _refreshHistory();
     }
   }
 
@@ -313,17 +367,29 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
 
     if (picked == null || !mounted) return;
 
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await PreferencesCache.getInstance();
     List<String> historyJson = prefs.getStringList('workout_history') ?? [];
     
-    if (index >= 0 && index < historyJson.length) {
+    // Find actual index in full history
+    final allWorkouts = await WorkoutHistoryCache.getHistory();
+    final workoutToEdit = _loadedWorkouts[index];
+    final actualIndex = allWorkouts.indexWhere((w) => 
+      w['date'] == workoutToEdit['date'] && 
+      w['template_name'] == workoutToEdit['template_name']
+    );
+    
+    if (actualIndex >= 0 && actualIndex < historyJson.length) {
       final updatedWorkout = Map<String, dynamic>.from(workout);
       updatedWorkout['date'] = '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
-      historyJson[index] = jsonEncode(updatedWorkout);
+      historyJson[actualIndex] = jsonEncode(updatedWorkout);
       await prefs.setStringList('workout_history', historyJson);
+      WorkoutHistoryCache.invalidateCache();
+      StatsCache.invalidateCache();
       await _syncCalendarWithHistory();
+      // Sync to desktop
+      await SyncService.exportData();
       if (!mounted) return;
-      setState(() {});
+      _refreshHistory();
     }
   }
 
@@ -566,35 +632,13 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Reverse for newest first
+    final history = _loadedWorkouts.reversed.toList();
+    
     return Scaffold(
       appBar: AppBar(title: const Text("📋 Workout History")),
-      body: FutureBuilder(
-        future: _getHistory(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.error_outline,
-                    size: 60,
-                    color: AppColors.error,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    "Error: ${snapshot.error}",
-                    style: const TextStyle(color: AppColors.textMuted),
-                  ),
-                ],
-              ),
-            );
-          }
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
+      body: _loadedWorkouts.isEmpty && !_isLoading
+          ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -611,17 +655,25 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                   ),
                 ],
               ),
-            );
-          }
-          final history = snapshot.data!.reversed.toList();
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(12),
-            itemCount: history.length,
-            itemBuilder: (context, index) {
-              final workout = history[index];
-              // Calculate original index because list is reversed
-              final originalIndex = snapshot.data!.length - 1 - index;
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(12),
+              itemCount: history.length + (_hasMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                // Load more when reaching the end
+                if (index == history.length) {
+                  _loadMoreWorkouts();
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+                
+                final workout = history[index];
+                // Use index from reversed list
+                final displayIndex = history.length - 1 - index;
 
               // Check if this is a futsal session
               final isFutsal = workout['type'] == 'futsal';
@@ -984,7 +1036,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                                 "Date",
                                 style: TextStyle(color: AppColors.accent),
                               ),
-                              onPressed: () => _editWorkoutDate(originalIndex, workout),
+                              onPressed: () => _editWorkoutDate(displayIndex, workout),
                             ),
                             // Edit button for regular workouts
                             if (workout['type'] != 'futsal' && workout['type'] != 'running')
@@ -1002,11 +1054,11 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => EditWorkoutScreen(
-                                      workoutIndex: originalIndex,
+                                      workoutIndex: displayIndex,
                                       workout: workout,
                                     ),
                                   ),
-                                ).then((_) => setState(() {})),
+                                ).then((_) => _refreshHistory()),
                               ),
                             TextButton.icon(
                               icon: const Icon(
@@ -1018,8 +1070,8 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                                 "Delete",
                                 style: TextStyle(color: AppColors.error),
                               ),
-                              onPressed: () => _deleteWorkout(originalIndex),
-                            ),
+                              onPressed: () => _deleteWorkout(displayIndex),
+                            )
                           ],
                         ),
                       ),
@@ -1028,9 +1080,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                 ),
               );
             },
-          );
-        },
-      ),
+          ),
     );
   }
 }
@@ -1110,7 +1160,7 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
   }
 
   Future<void> _saveChanges() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await PreferencesCache.getInstance();
     final List<String> historyJson =
         prefs.getStringList('workout_history') ?? [];
 
@@ -1122,8 +1172,12 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
       };
       historyJson[widget.workoutIndex] = jsonEncode(updated);
       await prefs.setStringList('workout_history', historyJson);
+      WorkoutHistoryCache.invalidateCache();
+      StatsCache.invalidateCache();
       // Re-sync calendar to reflect edited workout
       await _syncCalendarWithHistory();
+      // Sync to desktop
+      await SyncService.exportData();
       if (mounted) Navigator.pop(context);
     }
   }

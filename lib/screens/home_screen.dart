@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide Badge;
 import 'package:intl/intl.dart';
 import '../data_models.dart';
 import '../app_theme.dart';
+import '../design_system.dart';
 import 'profile_screen.dart';
 import 'workout_screens.dart';
 import 'history_screen.dart';
@@ -122,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   Widget _buildHeader(String date, String greeting, Badge? activeBadge) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+      padding: EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.sm),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -131,21 +132,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             children: [
               Text(
                 date.toUpperCase(),
-                style: const TextStyle(
-                  color: AppColors.textMuted,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   letterSpacing: 1.5,
                 ),
               ),
-              const SizedBox(height: 4),
+              AppSpacing.gapVerticalXS,
               Text(
                 "$greeting, ${_userProfile?.name ?? 'Athlete'}",
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.displaySmall,
               ),
             ],
           ),
@@ -180,8 +174,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   Widget _buildBadgeSection(Badge? activeBadge) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      padding: const EdgeInsets.all(24),
+      margin: EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.lg),
+      padding: AppSpacing.paddingXXL,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -193,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: AppBorderRadius.borderRadiusXXL,
         border: Border.all(
           color: activeBadge?.color.withOpacity(0.3) ?? AppColors.surfaceLight,
           width: 1,
@@ -220,36 +214,26 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     child: Icon(activeBadge.icon, size: 40, color: activeBadge.color),
                   ),
                 ),
-                const SizedBox(width: 20),
+                AppSpacing.gapHorizontalXL,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         "ACTIVE BADGE",
-                        style: TextStyle(
-                          color: AppColors.textMuted,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           letterSpacing: 1.5,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      AppSpacing.gapVerticalXS,
                       Text(
                         activeBadge.name,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                        ),
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
-                      const SizedBox(height: 4),
+                      AppSpacing.gapVerticalXS,
                       Text(
                         activeBadge.description,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary,
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -268,28 +252,21 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   ),
                   child: const Icon(Icons.emoji_events_outlined, size: 40, color: AppColors.textMuted),
                 ),
-                const SizedBox(width: 20),
-                const Expanded(
+                AppSpacing.gapHorizontalXL,
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         "NO BADGE SELECTED",
-                        style: TextStyle(
-                          color: AppColors.textMuted,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           letterSpacing: 1.5,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      AppSpacing.gapVerticalXS,
                       Text(
                         "Earn badges by working out!",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.textSecondary,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
                   ),
@@ -301,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   Widget _buildQuickActions() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: AppSpacing.screenPaddingHorizontal,
       child: Row(
         children: [
           Expanded(
@@ -312,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               onTap: () => _handleButtonPress("WORKOUT"),
             ),
           ),
-          const SizedBox(width: 12),
+          AppSpacing.gapHorizontalMD,
           Expanded(
             child: _QuickActionChip(
               icon: Icons.sports_soccer,
@@ -328,18 +305,18 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   Widget _buildMainMenu() {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: AppSpacing.paddingXL,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SectionHeader(title: "Dashboard", icon: Icons.dashboard_rounded),
-          const SizedBox(height: 12),
+          AppSpacing.gapVerticalMD,
           GridView.count(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
+            mainAxisSpacing: AppSpacing.md,
+            crossAxisSpacing: AppSpacing.md,
             childAspectRatio: 1.3,
             children: [
               _MenuCard(
@@ -433,19 +410,19 @@ class _QuickActionChip extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: AppBorderRadius.borderRadiusLG,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 14),
           decoration: BoxDecoration(
             color: color.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppBorderRadius.borderRadiusLG,
             border: Border.all(color: color.withOpacity(0.3)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, color: color, size: 22),
-              const SizedBox(width: 8),
+              AppSpacing.gapHorizontalSM,
               Text(
                 label,
                 style: TextStyle(
@@ -483,12 +460,12 @@ class _MenuCard extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: AppBorderRadius.borderRadiusXL,
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: AppSpacing.paddingLG,
           decoration: BoxDecoration(
             color: AppColors.card,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: AppBorderRadius.borderRadiusXL,
             border: Border.all(color: AppColors.surfaceLight),
           ),
           child: Column(
@@ -496,10 +473,10 @@ class _MenuCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: AppBorderRadius.borderRadiusMD,
                 ),
                 child: Icon(icon, color: color, size: 24),
               ),
@@ -508,18 +485,11 @@ class _MenuCard extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: AppColors.textPrimary,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   Text(
                     sublabel,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textMuted,
-                    ),
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),

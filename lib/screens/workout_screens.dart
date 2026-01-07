@@ -2,9 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../data_models.dart';
 import '../app_theme.dart';
+import '../utils/preferences_cache.dart';
+import '../utils/workout_history_cache.dart';
+import '../utils/stats_cache.dart';
+import '../utils/sync_service.dart';
 import 'profile_screen.dart';
 
 /// Converts a date to storage key format (YYYY-MM-DD) - consistent with calendar
@@ -20,7 +23,7 @@ Future<void> logWorkoutForDate(
   DateTime day,
   Map<String, dynamic> workoutDetails,
 ) async {
-  final prefs = await SharedPreferences.getInstance();
+  final prefs = await PreferencesCache.getInstance();
   final normalizedDay = DateTime(day.year, day.month, day.day);
   final key = _dateToKey(normalizedDay);
 
@@ -48,7 +51,8 @@ Future<void> logWorkoutForDate(
   }
   logged[key]!.add(workoutDetails);
 
-  await prefs.setString('logged_workouts', jsonEncode(logged));
+      await prefs.setString('logged_workouts', jsonEncode(logged));
+      await SyncService.exportData(); // Sync to desktop
 
   // Remove scheduled workout for this day (it's now completed)
   final scheduledRaw = prefs.getString('scheduled_workouts');
@@ -811,7 +815,7 @@ class _TemplateSelectionScreenState extends State<TemplateSelectionScreen> {
   }
 
   Future<void> _loadTemplates() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await PreferencesCache.getInstance();
     final String? templatesJson = prefs.getString('user_templates');
     if (!mounted) return;
     
@@ -855,10 +859,11 @@ class _TemplateSelectionScreenState extends State<TemplateSelectionScreen> {
     );
 
     if (confirmed == true) {
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await PreferencesCache.getInstance();
       _loadedTemplates.removeWhere((t) => t.name == template.name);
       final encoded = jsonEncode(_loadedTemplates.map((t) => t.toJson()).toList());
       await prefs.setString('user_templates', encoded);
+      await SyncService.exportData(); // Sync to desktop
       setState(() {});
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1055,7 +1060,7 @@ class _CreateTemplateScreenState extends State<CreateTemplateScreen> {
     }
     if (newExercises.isEmpty) return;
 
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await PreferencesCache.getInstance();
     final String? templatesJson = prefs.getString('user_templates');
     List<WorkoutTemplate> currentList = [];
     if (templatesJson != null) {
@@ -1070,6 +1075,7 @@ class _CreateTemplateScreenState extends State<CreateTemplateScreen> {
       currentList.map((e) => e.toJson()).toList(),
     );
     await prefs.setString('user_templates', encoded);
+    await SyncService.exportData(); // Sync to desktop
     if (mounted) Navigator.pop(context, true);
   }
 
@@ -1417,33 +1423,50 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
   }
 
   Future<void> _analyzeLastSession(String currentExercise) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await PreferencesCache.getInstance();
     if (!mounted) return;
     List<String>? currentHistory = prefs.getStringList('workout_history');
     if (currentHistory == null || currentHistory.isEmpty) return;
 
-    for (int i = currentHistory.length - 1; i >= 0; i--) {
+    // Limit search to last 20 workouts for performance
+    final searchLimit = currentHistory.length > 20 ? currentHistory.length - 20 : 0;
+    
+    for (int i = currentHistory.length - 1; i >= searchLimit; i--) {
+      if (!mounted) return; // Check mounted before each iteration
       try {
-        Map<String, dynamic> workout = jsonDecode(currentHistory[i]);
-        List<dynamic> sets = workout['sets'];
-        if (sets.isEmpty) continue;
+        Map<String, dynamic>? workout;
+        try {
+          workout = jsonDecode(currentHistory[i]) as Map<String, dynamic>?;
+        } catch (e) {
+          continue; // Skip corrupted entries
+        }
+        if (workout == null) continue;
+        
+        // Null-safe access to sets
+        final sets = workout['sets'];
+        if (sets == null || sets is! List || sets.isEmpty) continue;
 
         for (var s in sets) {
+          if (s is! Map<String, dynamic>) continue;
+          
           String exName = s['exercise']?.toString() ?? "";
           if (exName.toLowerCase() == currentExercise.toLowerCase()) {
-            List<dynamic> setsList = s['sets'];
-            if (setsList.isNotEmpty) {
+            final setsList = s['sets'];
+            if (setsList != null && setsList is List && setsList.isNotEmpty) {
               String lastWeight = "0";
               for (int j = setsList.length - 1; j >= 0; j--) {
-                String w = setsList[j]['weight']?.toString() ?? "";
-                if (w.isNotEmpty && w != "0") {
+                final setData = setsList[j];
+                if (setData is! Map) continue;
+                
+                String w = setData['weight']?.toString() ?? "";
+                if (w.isNotEmpty && w != "0" && w != "null") {
                   lastWeight = w;
                   break;
                 }
               }
 
               double lastWeightNum = double.tryParse(lastWeight) ?? 0;
-              if (lastWeightNum > 0) {
+              if (lastWeightNum > 0 && mounted) {
                 double increment = _getIncrement(currentExercise);
                 setState(() {
                   _lastWeight = lastWeightNum.toString();
@@ -1455,6 +1478,7 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
           }
         }
       } catch (e) {
+        // Silently skip corrupted entries
         continue;
       }
     }
@@ -1483,7 +1507,7 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
         }
       }
 
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = await PreferencesCache.getInstance();
       List<String> history = prefs.getStringList('workout_history') ?? [];
       final workoutData = {
         'date': DateTime.now().toString().split(' ')[0],
@@ -1495,6 +1519,11 @@ class _WorkoutRunnerScreenState extends State<WorkoutRunnerScreen> {
       };
       history.add(jsonEncode(workoutData));
       await prefs.setStringList('workout_history', history);
+      // Invalidate caches after saving
+      WorkoutHistoryCache.invalidateCache();
+      StatsCache.invalidateCache();
+      // Sync to desktop
+      await SyncService.exportData();
 
       // Mark this day as logged in the calendar with workout details
       final today = DateTime.now();
@@ -2224,7 +2253,7 @@ class _EnhancedRunScreenState extends State<EnhancedRunScreen> {
     double pace = (distance > 0) ? time / distance : 0;
 
     // Save to history with energy/mood/notes
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await PreferencesCache.getInstance();
     List<String> history = prefs.getStringList('workout_history') ?? [];
     final workoutData = {
       'date': DateTime.now().toString().split(' ')[0],
@@ -2241,6 +2270,11 @@ class _EnhancedRunScreenState extends State<EnhancedRunScreen> {
     };
     history.add(jsonEncode(workoutData));
     await prefs.setStringList('workout_history', history);
+    // Invalidate caches after saving
+    WorkoutHistoryCache.invalidateCache();
+    StatsCache.invalidateCache();
+    // Sync to desktop
+    await SyncService.exportData();
 
     // Mark this day as logged in the calendar with details
     final today = DateTime.now();

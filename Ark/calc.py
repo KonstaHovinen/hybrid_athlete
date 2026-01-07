@@ -1,0 +1,1 @@
+import os\nprint('Enter the first number:')\nnum1 = int(input())\nprint('Enter the second number:')\nnum2 = int(input())\nresult = num1 + num2\nprint(f'The result is {result}')

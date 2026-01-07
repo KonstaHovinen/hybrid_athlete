@@ -1,0 +1,27 @@
+[
+  {
+    "role": "user",
+    "text": "List all the files in current directory",
+    "time": "2026-01-06T00:35:53.554072"
+  },
+  {
+    "role": "user",
+    "text": "List all the files in current directory",
+    "time": "2026-01-06T00:37:46.253267"
+  },
+  {
+    "role": "ai",
+    "text": "CMD: dir",
+    "time": "2026-01-06T00:37:46.512925"
+  },
+  {
+    "role": "user",
+    "text": "Im trying to become IRL Iron Man",
+    "time": "2026-01-06T00:39:10.102172"
+  },
+  {
+    "role": "ai",
+    "text": "To list all the files in your current directory, you can use the command:\nCMD: dir",
+    "time": "2026-01-06T00:39:10.645736"
+  }
+]

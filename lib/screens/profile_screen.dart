@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data_models.dart';
 import '../app_theme.dart';
+import 'device_sync_screen.dart';
 
 // --- PROFILE SCREEN ---
 class ProfileScreen extends StatefulWidget {
@@ -25,46 +26,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     _profile = widget.profile;
     _earnedBadges = ProfileManager.awardEarnedBadges(_profile);
+    if (_earnedBadges.isEmpty) {
+      _earnedBadges = [ProfileManager.getAllAvailableBadges().first];
+    }
     _loadExtraStats();
   }
 
   Future<void> _loadExtraStats() async {
-    final prefs = await SharedPreferences.getInstance();
-    final history = prefs.getStringList('workout_history') ?? [];
-    final loggedRaw = prefs.getString('logged_workouts');
-    
-    // Calculate streak
-    int streak = 0;
-    if (loggedRaw != null) {
-      final logged = Map<String, String>.from(jsonDecode(loggedRaw));
-      DateTime checkDate = DateTime.now();
-      while (true) {
-        final key = DateTime(checkDate.year, checkDate.month, checkDate.day).toIso8601String().split('T')[0];
-        if (logged.containsKey(key)) {
-          streak++;
-          checkDate = checkDate.subtract(const Duration(days: 1));
-        } else {
-          break;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final history = prefs.getStringList('workout_history') ?? [];
+      final loggedRaw = prefs.getString('logged_workouts');
+      
+      // Calculate streak
+      int streak = 0;
+      if (loggedRaw != null) {
+        try {
+          final logged = Map<String, String>.from(jsonDecode(loggedRaw));
+          DateTime checkDate = DateTime.now();
+          while (true) {
+            final key = DateTime(checkDate.year, checkDate.month, checkDate.day).toIso8601String().split('T')[0];
+            if (logged.containsKey(key)) {
+              streak++;
+              checkDate = checkDate.subtract(const Duration(days: 1));
+            } else {
+              break;
+            }
+          }
+        } catch (e) {
+          // ignore malformed logged_workouts data
         }
       }
-    }
 
-    // Get member since date (first workout)
-    String memberSince = "Today";
-    if (history.isNotEmpty) {
-      try {
-        final firstWorkout = jsonDecode(history.first);
-        memberSince = firstWorkout['date'] ?? "Today";
-      } catch (e) {
-        // ignore
+      // Get member since date (first workout)
+      String memberSince = "Today";
+      if (history.isNotEmpty) {
+        try {
+          final firstWorkout = jsonDecode(history.first);
+          memberSince = firstWorkout['date'] ?? "Today";
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      if (mounted) {
+        setState(() {
+          _totalWorkouts = history.length;
+          _currentStreak = streak;
+          _memberSince = memberSince;
+        });
+      }
+    } catch (e) {
+      // Fail gracefully if stats can't be loaded
+      if (mounted) {
+        setState(() {
+          _totalWorkouts = 0;
+          _currentStreak = 0;
+          _memberSince = "Today";
+        });
       }
     }
-
-    setState(() {
-      _totalWorkouts = history.length;
-      _currentStreak = streak;
-      _memberSince = memberSince;
-    });
   }
 
   // --- BADGE CLICK LOGIC ---
@@ -227,22 +248,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Positioned(
                             bottom: 0,
                             right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: AppColors.warning,
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white, width: 2),
-                                boxShadow: [
-                                  BoxShadow(color: AppColors.warning.withOpacity(0.5), blurRadius: 10),
-                                ],
-                              ),
-                              child: Icon(
-                                _earnedBadges.firstWhere((b) => b.id == _profile.activeBadgeId, orElse: () => _earnedBadges.first).icon,
-                                size: 16,
-                                color: Colors.white,
-                              ),
-                            ),
+                            child: () {
+                              final activeBadge = _earnedBadges.firstWhere(
+                                (b) => b.id == _profile.activeBadgeId,
+                                orElse: () => _earnedBadges.isNotEmpty ? _earnedBadges.first : Badge(id: 'default', name: 'Default', description: '', icon: Icons.person, color: Colors.grey),
+                              );
+                              return Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: AppColors.warning,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white, width: 2),
+                                  boxShadow: [
+                                    BoxShadow(color: AppColors.warning.withOpacity(0.5), blurRadius: 10),
+                                  ],
+                                ),
+                                child: Icon(
+                                  activeBadge.icon,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
+                              );
+                            }(),
                           ),
                       ],
                     ),
@@ -516,6 +543,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 28),
+              
+              // Device Sync Section
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.sync, color: Colors.white, size: 32),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Device Sync',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Connect your devices with Device ID',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.arrow_forward, size: 18),
+                      label: const Text('Open'),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DeviceSyncScreen(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: AppColors.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 30),
             ],
           ),
@@ -533,7 +615,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       case 'iron_lifter':
         return (_profile.maxLifted / 150).clamp(0.0, 1.0);
       case 'runner':
-        return (_profile.totalRunExercises / 10).clamp(0.0, 1.0);
+        return (_profile.longestRunDistance / 10).clamp(0.0, 1.0);
       default:
         return null;
     }

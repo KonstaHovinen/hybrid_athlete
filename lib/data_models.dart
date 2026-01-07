@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'utils/sync_service.dart';
 
 // --- PROFESSIONAL GOALS DATABASE ---
 class ProStats {
@@ -212,6 +213,7 @@ class ExerciseLibrary {
     await prefs.setString(_userKey, encoded);
     // invalidate cache
     _cacheAllExercises = null;
+    await SyncService.exportData(); // Sync to desktop
   }
 
   // Public: return combined list of default + user exercises
@@ -343,6 +345,7 @@ class ProfileManager {
   static Future<void> saveProfile(UserProfile profile) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_profileKey, jsonEncode(profile.toJson()));
+    await SyncService.exportData(); // Sync to desktop
   }
 
   static Future<bool> isFirstRun() async {

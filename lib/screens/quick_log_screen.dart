@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data_models.dart';
 import '../app_theme.dart';
+import '../utils/sync_service.dart';
 import 'workout_screens.dart';
 
 class QuickLogScreen extends StatefulWidget {
@@ -117,6 +118,8 @@ class _QuickLogScreenState extends State<QuickLogScreen> {
 
     history.add(jsonEncode(workoutData));
     await prefs.setStringList('workout_history', history);
+    // Sync to desktop
+    await SyncService.exportData();
 
     // Mark calendar with workout details
     final today = DateTime.now();

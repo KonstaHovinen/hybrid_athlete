@@ -43,3 +43,53 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Additional Flutter/Development files
+.flutter-plugins
+.fvm/
+.packages
+# pubspec.lock should be committed for applications (not packages)
+# pubspec.lock
+pubspec.lock.bak
+.env
+.env.local
+.env.production
+.env.staging
+
+# IDE and Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.vs/
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+.DS_Store?
+Icon?
+.Trashes
+*.tmp
+*.temp
+
+# Large media files that should use Git LFS
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+
+# Certificate files
+*.p12
+*.jks
+*.keystore
+
+# Temporary build files
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/ios/build/
+**/macos/build/
+**/windows/build/
+**/linux/build/
+**/web/build/

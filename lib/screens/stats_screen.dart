@@ -1,7 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../app_theme.dart';
+import '../utils/stats_cache.dart';
+import '../utils/preferences_cache.dart';
 
 class WeeklyStatsScreen extends StatefulWidget {
   const WeeklyStatsScreen({super.key});
@@ -27,115 +27,20 @@ class _WeeklyStatsScreenState extends State<WeeklyStatsScreen> {
   }
 
   Future<void> _loadStats() async {
-    final prefs = await SharedPreferences.getInstance();
-    final history = prefs.getStringList('workout_history') ?? [];
-    final loggedRaw = prefs.getString('logged_workouts');
+    // Use cached stats for instant loading
+    final stats = await StatsCache.getStats();
     
-    final now = DateTime.now();
-    final startOfThisWeek = now.subtract(Duration(days: now.weekday - 1));
-    final startOfLastWeek = startOfThisWeek.subtract(const Duration(days: 7));
-    
-    int thisWeek = 0;
-    int lastWeek = 0;
-    double thisWeekVol = 0;
-    double lastWeekVol = 0;
-    Map<String, double> prs = {};
-    Set<String> thisWeekDates = {};
-
-    for (var item in history) {
-      try {
-        final workout = jsonDecode(item);
-        final dateStr = workout['date']?.toString() ?? '';
-        final date = DateTime.tryParse(dateStr);
-        if (date == null) continue;
-
-        // Calculate volume
-        double workoutVolume = 0;
-        final sets = workout['sets'] as List<dynamic>? ?? [];
-        for (var ex in sets) {
-          final exSets = ex['sets'] as List<dynamic>? ?? [];
-          for (var s in exSets) {
-            double w = double.tryParse(s['weight']?.toString() ?? '0') ?? 0;
-            int r = int.tryParse(s['reps']?.toString().replaceAll(RegExp(r'[^0-9]'), '') ?? '0') ?? 0;
-            workoutVolume += w * r;
-            
-            // Track PRs
-            String exName = ex['exercise']?.toString() ?? '';
-            if (exName.isNotEmpty && w > 0) {
-              prs[exName] = (prs[exName] ?? 0) < w ? w : prs[exName]!;
-            }
-          }
-        }
-
-        if (date.isAfter(startOfThisWeek.subtract(const Duration(days: 1)))) {
-          thisWeek++;
-          thisWeekVol += workoutVolume;
-          thisWeekDates.add(dateStr);
-        } else if (date.isAfter(startOfLastWeek.subtract(const Duration(days: 1)))) {
-          lastWeek++;
-          lastWeekVol += workoutVolume;
-        }
-      } catch (e) {
-        continue;
-      }
-    }
-
-    // Calculate streak from logged workouts
-    int streak = 0;
-    int maxStreak = 0;
-    if (loggedRaw != null) {
-      final logged = Map<String, String>.from(jsonDecode(loggedRaw));
-      DateTime checkDate = DateTime(now.year, now.month, now.day);
-      
-      // Check consecutive days backwards
-      while (true) {
-        final key = checkDate.toIso8601String().split('T')[0];
-        if (logged.containsKey(key)) {
-          streak++;
-          checkDate = checkDate.subtract(const Duration(days: 1));
-        } else {
-          break;
-        }
-      }
-      
-      // Calculate longest streak
-      List<DateTime> dates = logged.keys.map((k) => DateTime.tryParse(k)).whereType<DateTime>().toList();
-      dates.sort();
-      int tempStreak = 1;
-      for (int i = 1; i < dates.length; i++) {
-        if (dates[i].difference(dates[i - 1]).inDays == 1) {
-          tempStreak++;
-          maxStreak = tempStreak > maxStreak ? tempStreak : maxStreak;
-        } else {
-          tempStreak = 1;
-        }
-      }
-      maxStreak = maxStreak > streak ? maxStreak : streak;
-    }
-
-    // Mark which days of current week have workouts
-    List<bool> weekDays = List.filled(7, false);
-    for (int i = 0; i < 7; i++) {
-      final day = startOfThisWeek.add(Duration(days: i));
-      final key = day.toIso8601String().split('T')[0];
-      if (thisWeekDates.contains(key)) {
-        weekDays[i] = true;
-      }
-    }
-
-    // Load weekly goal
-    int goal = prefs.getInt('weekly_goal') ?? 4;
-
+    if (!mounted) return;
     setState(() {
-      _thisWeekWorkouts = thisWeek;
-      _lastWeekWorkouts = lastWeek;
-      _thisWeekVolume = thisWeekVol;
-      _lastWeekVolume = lastWeekVol;
-      _currentStreak = streak;
-      _longestStreak = maxStreak;
-      _recentPRs = prs;
-      _weekDays = weekDays;
-      _weeklyGoal = goal;
+      _thisWeekWorkouts = stats['thisWeekWorkouts'] as int;
+      _lastWeekWorkouts = stats['lastWeekWorkouts'] as int;
+      _thisWeekVolume = stats['thisWeekVolume'] as double;
+      _lastWeekVolume = stats['lastWeekVolume'] as double;
+      _currentStreak = stats['currentStreak'] as int;
+      _longestStreak = stats['longestStreak'] as int;
+      _recentPRs = Map<String, double>.from(stats['recentPRs'] as Map);
+      _weekDays = List<bool>.from(stats['weekDays'] as List);
+      _weeklyGoal = stats['weeklyGoal'] as int;
     });
   }
 
@@ -163,8 +68,9 @@ class _WeeklyStatsScreenState extends State<WeeklyStatsScreen> {
             TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
             ElevatedButton(
               onPressed: () async {
-                final prefs = await SharedPreferences.getInstance();
+                final prefs = await PreferencesCache.getInstance();
                 await prefs.setInt('weekly_goal', tempGoal);
+                StatsCache.invalidateCache(); // Refresh stats cache
                 if (!mounted) return;
                 setState(() => _weeklyGoal = tempGoal);
                 Navigator.pop(context);
