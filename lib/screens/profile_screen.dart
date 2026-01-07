@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide Badge; 
+import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data_models.dart';
@@ -219,32 +220,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final prefs = await SharedPreferences.getInstance();
     final currentToken = prefs.getString('github_token') ?? '';
     final TextEditingController tokenController = TextEditingController(text: currentToken);
+    bool isObscured = true;
 
     if (!mounted) return;
     
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("GitHub Cloud Sync"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              "Enter your GitHub Personal Access Token with 'gist' scope to enable cloud sync.",
-              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: tokenController,
-              decoration: const InputDecoration(
-                labelText: "GitHub Token",
-                border: OutlineInputBorder(),
-                hintText: "ghp_...",
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text("GitHub Cloud Sync"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Enter your GitHub Personal Access Token with 'gist' scope to enable cloud sync.",
+                style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
               ),
-            ),
-          ],
-        ),
-        actions: [
+              const SizedBox(height: 16),
+              TextField(
+                controller: tokenController,
+                obscureText: isObscured,
+                decoration: InputDecoration(
+                  labelText: "GitHub Token",
+                  border: const OutlineInputBorder(),
+                  hintText: "ghp_...",
+                  suffixIcon: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(isObscured ? Icons.visibility : Icons.visibility_off),
+                        onPressed: () => setState(() => isObscured = !isObscured),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.copy),
+                        onPressed: () {
+                          Clipboard.setData(ClipboardData(text: tokenController.text));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Token copied to clipboard!")),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text("Cancel"),
@@ -266,6 +288,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: const Text("Save"),
           ),
         ],
+      ),
       ),
     );
   }
