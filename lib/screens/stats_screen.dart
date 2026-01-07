@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../app_theme.dart';
 import '../utils/stats_cache.dart';
 import '../utils/preferences_cache.dart';
+import '../utils/cloud_sync_service.dart';
 
 class WeeklyStatsScreen extends StatefulWidget {
   const WeeklyStatsScreen({super.key});
@@ -73,6 +74,7 @@ class _WeeklyStatsScreenState extends State<WeeklyStatsScreen> {
                 StatsCache.invalidateCache(); // Refresh stats cache
                 if (!mounted) return;
                 setState(() => _weeklyGoal = tempGoal);
+                CloudSyncService.uploadToCloud();
                 if (context.mounted) Navigator.pop(context);
               },
               child: const Text("Save"),

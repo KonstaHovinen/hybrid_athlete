@@ -2,14 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'utils/sync_service.dart';
+import 'utils/cloud_sync_service.dart';
 
 // --- PROFESSIONAL GOALS DATABASE ---
 class ProStats {
-  static const Map<String, double> defaultGoals = {
-    "Back Squat": 220, "Deadlift": 250, "Bench Press": 140,
-    "Overhead Press": 95, "Pull Ups": 25, "Box Jumps": 65,
-    "Pace (min/km)": 4.4,
-  };
+  static const Map<String, double> defaultGoals = {};
 
   static Future<Map<String, double>> getGoals() async {
     final prefs = await SharedPreferences.getInstance();
@@ -24,12 +21,13 @@ class ProStats {
         return userGoals;
       } catch (e) { debugPrint("Error loading goals"); }
     }
-    return Map.from(defaultGoals);
+    return {};
   }
 
   static Future<void> saveGoals(Map<String, double> newGoals) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('pro_goals', jsonEncode(newGoals));
+    CloudSyncService.uploadToCloud();
   }
 }
 
@@ -112,6 +110,7 @@ class ExerciseSettingsManager {
     };
 
     await prefs.setString(_key, jsonEncode(allSettings));
+    CloudSyncService.uploadToCloud();
   }
 
   // Loads settings, merging defaults with user overrides
@@ -214,6 +213,7 @@ class ExerciseLibrary {
     // invalidate cache
     _cacheAllExercises = null;
     await SyncService.exportData(); // Sync to desktop
+    CloudSyncService.uploadToCloud();
   }
 
   // Public: return combined list of default + user exercises
@@ -346,6 +346,7 @@ class ProfileManager {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_profileKey, jsonEncode(profile.toJson()));
     await SyncService.exportData(); // Sync to desktop
+    CloudSyncService.uploadToCloud();
   }
 
   static Future<bool> isFirstRun() async {

@@ -274,13 +274,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ElevatedButton(
             onPressed: () async {
               await prefs.setString('github_token', tokenController.text.trim());
+              
+              // Enable sync automatically
+              try { await CloudSyncService.setCloudSyncEnabled(true); } catch (_) {}
+
               if (context.mounted) {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Token saved! Syncing data...")),
+                  const SnackBar(content: Text("Token saved! Connecting...")),
                 );
-                // Immediate sync to restore data
-                await CloudSyncService.downloadFromCloud();
+                
+                // Try to restore. If no data found (new user), create the Gist.
+                final hasData = await CloudSyncService.downloadFromCloud();
+                if (!hasData) await CloudSyncService.uploadToCloud();
+
                 await _loadExtraStats(); // Refresh UI
                 _checkGitHubStatus();
               }

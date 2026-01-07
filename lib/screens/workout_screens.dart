@@ -8,7 +8,7 @@ import '../utils/preferences_cache.dart';
 import '../utils/workout_history_cache.dart';
 import '../utils/stats_cache.dart';
 import '../utils/sync_service.dart';
-import 'profile_screen.dart';
+
 
 /// Converts a date to storage key format (YYYY-MM-DD) - consistent with calendar
 String _dateToKey(DateTime date) {
@@ -2366,63 +2366,36 @@ class WorkoutSummaryScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Workout Complete"),
         automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const EditGoalsScreen()),
-            ),
-          ),
-        ],
       ),
-      body: FutureBuilder<Map<String, double>>(
-        future: ProStats.getGoals(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          double goal = 0;
-          if (snapshot.hasData) goal = snapshot.data![scoreName] ?? 0;
-
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  scoreName,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    color: AppColors.textMuted,
-                  ),
-                ),
-                Text(
-                  "${scoreValue.toStringAsFixed(1)} $unit",
-                  style: const TextStyle(
-                    fontSize: 50,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                if (goal > 0) ...[
-                  const SizedBox(height: 20),
-                  Text(
-                    "Pro Goal: $goal $unit",
-                    style: const TextStyle(color: AppColors.secondary),
-                  ),
-                ],
-                const SizedBox(height: 40),
-                ElevatedButton(
-                  onPressed: () async {
-                    await _updateProfile();
-                    if (context.mounted) Navigator.pop(context, true);
-                  },
-                  child: const Text("DONE"),
-                ),
-              ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              scoreName,
+              style: const TextStyle(
+                fontSize: 20,
+                color: AppColors.textMuted,
+              ),
             ),
-          );
-        },
+            Text(
+              "${scoreValue.toStringAsFixed(1)} $unit",
+              style: const TextStyle(
+                fontSize: 50,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () async {
+                await _updateProfile();
+                if (context.mounted) Navigator.pop(context, true);
+              },
+              child: const Text("DONE"),
+            ),
+          ],
+        ),
       ),
     );
   }

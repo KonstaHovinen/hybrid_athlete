@@ -52,7 +52,7 @@ class SyncService {
     final userTemplates = prefs.getString('user_templates');
     final userExercises = prefs.getString('user_exercises');
     final userProfile = prefs.getString('user_profile');
-    final exerciseSettings = prefs.getString('exercise_settings');
+    final exerciseSettings = prefs.getString('exercise_custom_settings');
     final proGoals = prefs.getString('pro_goals');
     final weeklyGoal = prefs.getInt('weekly_goal');
     final activeBadgeId = prefs.getString('active_badge_id');

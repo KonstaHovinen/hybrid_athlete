@@ -324,7 +324,7 @@ class CloudSyncService {
     }
     
     if (data['exercise_settings'] != null) {
-      await prefs.setString('exercise_settings', data['exercise_settings'] as String);
+      await prefs.setString('exercise_custom_settings', data['exercise_settings'] as String);
     }
     
     if (data['pro_goals'] != null) {
