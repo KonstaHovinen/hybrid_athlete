@@ -8,12 +8,14 @@ import '../utils/stats_cache.dart';
 import '../utils/workout_history_cache.dart';
 import '../utils/preferences_cache.dart';
 import '../utils/sync_service.dart';
+import '../utils/hybrid_athlete_ai.dart';
 import 'dart:async';
 import 'stats_screen.dart';
 import 'history_screen.dart';
 import 'workout_calendar_screen.dart';
 import 'profile_screen.dart';
 import 'device_sync_screen.dart';
+import 'ai_assistant_screen.dart';
 
 /// Desktop Command Center - View-only version for planning and analysis
 /// NO active workout tracking - designed for desktop viewing and planning

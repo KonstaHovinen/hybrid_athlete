@@ -10,6 +10,7 @@ import 'workout_calendar_screen.dart';
 import 'stats_screen.dart';
 import 'quick_log_screen.dart';
 import 'futsal_screen.dart';
+import 'ai_assistant_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -67,6 +68,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         break;
       case "FUTSAL":
         screen = const FutsalLoggerScreen();
+        break;
+      case "AI":
+        screen = const AIAssistantScreen();
         break;
       default:
         screen = SimpleInputScreen(type: activity);
@@ -346,6 +350,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 sublabel: "Pro targets",
                 color: AppColors.warning,
                 onTap: () => _handleButtonPress("GOALS"),
+              ),
+              _MenuCard(
+                icon: Icons.psychology_rounded,
+                label: "AI Coach",
+                sublabel: "Smart insights",
+                color: AppColors.primary,
+                onTap: () => _handleButtonPress("AI"),
               ),
             ],
           ),

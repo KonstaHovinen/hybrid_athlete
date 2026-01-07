@@ -58,12 +58,32 @@ class AppSpacing {
   static const SizedBox gapVerticalXL = SizedBox(height: xl);
   static const SizedBox gapVerticalXXL = SizedBox(height: xxl);
   
-  // Horizontal gaps
+// Horizontal gaps
   static const SizedBox gapHorizontalXS = SizedBox(width: xs);
   static const SizedBox gapHorizontalSM = SizedBox(width: sm);
   static const SizedBox gapHorizontalMD = SizedBox(width: md);
   static const SizedBox gapHorizontalLG = SizedBox(width: lg);
   static const SizedBox gapHorizontalXL = SizedBox(width: xl);
+  
+  // Common margin values
+  static const EdgeInsets marginXS = EdgeInsets.all(xs);
+  static const EdgeInsets marginSM = EdgeInsets.all(sm);
+  static const EdgeInsets marginMD = EdgeInsets.all(md);
+  static const EdgeInsets marginLG = EdgeInsets.all(lg);
+  static const EdgeInsets marginXL = EdgeInsets.all(xl);
+  static const EdgeInsets marginXXL = EdgeInsets.all(xxl);
+  
+  // Horizontal margins
+  static const EdgeInsets marginHorizontalSM = EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets marginHorizontalMD = EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets marginHorizontalLG = EdgeInsets.symmetric(horizontal: lg);
+  static const EdgeInsets marginHorizontalXL = EdgeInsets.symmetric(horizontal: xl);
+  
+  // Vertical margins
+  static const EdgeInsets marginVerticalSM = EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets marginVerticalMD = EdgeInsets.symmetric(vertical: md);
+  static const EdgeInsets marginVerticalLG = EdgeInsets.symmetric(vertical: lg);
+  static const EdgeInsets marginVerticalXL = EdgeInsets.symmetric(vertical: xl);
 }
 
 class AppBorderRadius {

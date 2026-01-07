@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'device_id.dart';
 import 'sync_service.dart';
@@ -12,17 +13,35 @@ import 'preferences_cache.dart';
 class NetworkSync {
   /// Check if network permissions are available (especially for iOS)
   static Future<bool> checkNetworkPermissions() async {
-    if (Platform.isIOS) {
-      try {
-        // Test network connectivity by checking local interface
+    try {
+      // For web/PWA, we can't check network interfaces
+      if (kIsWeb) {
+        // Web browsers have different network restrictions
+        // Try a simple network test to see if we can make requests
+        final testUrl = 'http://localhost:8080/ping?deviceId=test';
+        try {
+          final response = await http.get(Uri.parse(testUrl)).timeout(Duration(milliseconds: 500));
+          // If we get any response (even error), network is accessible
+          return true;
+        } catch (e) {
+          // Network test failed, but might still be available
+          // For web/PWA, we'll be optimistic and allow attempts
+          return true;
+        }
+      }
+      
+      if (Platform.isIOS) {
+        // For native iOS, check network interfaces
         final interfaces = await NetworkInterface.list();
         return interfaces.isNotEmpty;
-      } catch (e) {
-        print('iOS network permission check failed: $e');
-        return false;
       }
+      
+      return true; // Other platforms typically don't need special permission checks
+    } catch (e) {
+      print('Network permission check failed: $e');
+      // For web/PWA, allow attempts anyway
+      return kIsWeb ? true : false;
     }
-    return true; // Other platforms typically don't need special permission checks
   }
   static HttpServer? _server;
   static Timer? _discoveryTimer;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:io';
 import '../app_theme.dart';
 import '../design_system.dart';
@@ -71,7 +72,9 @@ Future<void> _toggleServer() async {
       final started = await NetworkSync.startServer();
       if (!started && mounted) {
         String errorMessage = 'Failed to start server. Check network permissions.';
-        if (Platform.isIOS) {
+        if (kIsWeb) {
+          errorMessage = 'Web PWA: Network sync limited. Use native app for full sync features.';
+        } else if (Platform.isIOS) {
           errorMessage = 'iOS: Check Local Network permissions in Settings > Hybrid Athlete.';
         }
         ScaffoldMessenger.of(context).showSnackBar(
@@ -91,13 +94,20 @@ Future<void> _discoverDevices() async {
     final devices = await NetworkSync.discoverDevices();
     if (!mounted) return;
     
-    // Show iOS-specific message if no devices found
-    if (devices.isEmpty && Platform.isIOS) {
+    // Show platform-specific message if no devices found
+    if (devices.isEmpty) {
+      String message = 'No devices found. Check WiFi and Device ID.';
+      if (kIsWeb) {
+        message = 'Web PWA: Network discovery limited. Use native app for device scanning.';
+      } else if (Platform.isIOS) {
+        message = 'iOS: Make sure Local Network permission is granted in Settings.';
+      }
+      
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('iOS: Make sure Local Network permission is granted in Settings.'),
+        SnackBar(
+          content: Text(message),
           backgroundColor: AppColors.error,
-          duration: Duration(seconds: 4),
+          duration: const Duration(seconds: 4),
         ),
       );
     }
