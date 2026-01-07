@@ -96,7 +96,7 @@ class _AIStatusWidgetState extends State<AIStatusWidget> with SingleTickerProvid
                   padding: EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: isInitialized 
-                        ? Colors.white.withOpacity(0.2) 
+                        ? Colors.white.withAlpha((0.2 * 255).toInt()) 
                         : AppColors.surfaceLight,
                     shape: BoxShape.circle,
                   ),
@@ -139,8 +139,8 @@ class _AIStatusWidgetState extends State<AIStatusWidget> with SingleTickerProvid
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: learningActive 
-                        ? Colors.green.withOpacity(0.3) 
-                        : Colors.white.withOpacity(0.1),
+                        ? Colors.green.withAlpha((0.3 * 255).toInt()) 
+                        : Colors.white.withAlpha((0.1 * 255).toInt()),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -179,7 +179,7 @@ class _AIStatusWidgetState extends State<AIStatusWidget> with SingleTickerProvid
                     isInitialized,
                   ),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Expanded(
                   child: _buildStatCard(
                     'Memory',
@@ -197,9 +197,9 @@ class _AIStatusWidgetState extends State<AIStatusWidget> with SingleTickerProvid
 
   Widget _buildStatCard(String label, String value, bool isActive) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        color: isActive ? Colors.white.withOpacity(0.1) : AppColors.surfaceLight,
+        color: isActive ? Colors.white.withAlpha((0.1 * 255).toInt()) : AppColors.surfaceLight,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
