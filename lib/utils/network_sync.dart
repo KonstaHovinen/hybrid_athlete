@@ -20,7 +20,7 @@ class NetworkSync {
         // Try a simple network test to see if we can make requests
         const testUrl = 'http://localhost:8080/ping?deviceId=test';
         try {
-          final response = await http.get(Uri.parse(testUrl)).timeout(const Duration(milliseconds: 500));
+          await http.get(Uri.parse(testUrl)).timeout(const Duration(milliseconds: 500));
           // If we get any response (even error), network is accessible
           return true;
         } catch (e) {

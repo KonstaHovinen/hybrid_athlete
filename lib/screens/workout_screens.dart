@@ -969,7 +969,9 @@ class _TemplateSelectionScreenState extends State<TemplateSelectionScreen> {
       if (exercise.type == "Running") {
         hasRunning = true;
       } else if (exercise.type == "Gym" || exercise.type == "Recovery")
-        hasGym = true;
+          {
+            hasGym = true;
+          }
     }
 
     if (!mounted) return;

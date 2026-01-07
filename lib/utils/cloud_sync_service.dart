@@ -294,7 +294,6 @@ class CloudSyncService {
   /// Resolve data conflicts between local and cloud
   static Future<bool> _resolveConflicts() async {
     try {
-      final localTimestamp = await SyncService.getLastSyncTime();
       // Add conflict resolution logic here
       // For now, assume cloud is latest
       return true;

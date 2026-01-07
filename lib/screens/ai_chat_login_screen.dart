@@ -317,7 +317,6 @@ class EnhancedAIAssistantScreen extends StatefulWidget {
 class _EnhancedAIAssistantScreenState extends State<EnhancedAIAssistantScreen> {
   String _userName = 'User';
   bool _isGuestMode = false;
-  final bool _isInitialized = false;
   
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
