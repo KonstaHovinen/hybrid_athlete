@@ -1,14 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../app_theme.dart';
 import '../design_system.dart';
 import '../data_models.dart';
-import '../utils/github_gist_sync.dart';
 import '../utils/preferences_cache.dart';
-import '../utils/hybrid_athlete_ai.dart';
 import 'github_setup_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -23,16 +20,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   UserProfile _profile = UserProfile();
   bool _loadingProfile = true;
 
-  // Settings State
-  String _version = '';
-  bool _checkingUpdate = false;
-  String _updateStatus = '';
-  bool _syncing = false;
-  String _syncStatus = '';
-  Map<String, dynamic> _aiStatus = {};
-  String? _gistId;
-  String? _lastSync;
-
   @override
   void initState() {
     super.initState();
@@ -40,12 +27,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadAllData() async {
-    await Future.wait([
-      _loadProfile(),
-      _loadVersion(),
-      _loadSyncMeta(),
-    ]);
-    _aiStatus = HybridAthleteAI.getStatus();
+    await _loadProfile();
   }
 
   Future<void> _loadProfile() async {
@@ -54,25 +36,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() {
         _profile = profile;
         _loadingProfile = false;
-      });
-    }
-  }
-
-  Future<void> _loadVersion() async {
-    final info = await PackageInfo.fromPlatform();
-    if (mounted) {
-      setState(() {
-        _version = '${info.version}+${info.buildNumber}';
-      });
-    }
-  }
-
-  Future<void> _loadSyncMeta() async {
-    final prefs = await PreferencesCache.getInstance();
-    if (mounted) {
-      setState(() {
-        _gistId = prefs.getString('sync_gist_id');
-        _lastSync = prefs.getString('last_sync_time');
       });
     }
   }
@@ -112,54 +75,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // --- Settings Actions ---
 
-  Future<void> _checkUpdates() async {
-    setState(() { _checkingUpdate = true; _updateStatus = 'Checking...'; });
-    try {
-      final uri = Uri.parse('https://api.github.com/repos/KonstaHovinen/hybrid_athlete/releases/latest');
-      final resp = await http.get(uri);
-      
-      if (!mounted) return;
-
-      if (resp.statusCode == 200) {
-        final json = jsonDecode(resp.body) as Map<String, dynamic>;
-        final tag = (json['tag_name'] ?? '').toString();
-        setState(() { _updateStatus = tag.isEmpty ? 'Up-to-date' : 'Latest release: $tag'; });
-      } else {
-        setState(() { _updateStatus = 'Error ${resp.statusCode}'; });
-      }
-    } catch (e) {
-      if (mounted) setState(() { _updateStatus = 'Error'; });
-    } finally {
-      if (mounted) setState(() { _checkingUpdate = false; });
-    }
-  }
-
-  Future<void> _syncNow() async {
-    setState(() { _syncing = true; _syncStatus = 'Syncing...'; });
-    try {
-      final results = await GitHubGistSync.bidirectionalSync();
-      final prefs = await PreferencesCache.getInstance();
-      await prefs.setString('last_sync_time', DateTime.now().toIso8601String());
-      await _loadSyncMeta();
-      // Reload profile in case sync updated it
-      await _loadProfile();
-      
-      if (!mounted) return;
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Sync complete. Upload: ${results['upload_success']}, Download: ${results['download_success']}')),
-      );
-      setState(() { _syncStatus = 'Synced just now'; });
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sync error: $e')));
-        setState(() { _syncStatus = 'Error syncing'; });
-      }
-    } finally {
-      if (mounted) setState(() { _syncing = false; });
-    }
-  }
-
   Future<void> _exportData() async {
     try {
       final prefs = await PreferencesCache.getInstance();
@@ -185,6 +100,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Export error: $e')));
     }
+  }
+
+  Future<void> _importData() async {
+     ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Use GitHub Sync to restore data automatically.')),
+      );
   }
 
   @override
@@ -256,54 +177,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
               AppSpacing.gapVerticalXL,
 
-              // --- SETTINGS SECTIONS ---
-              _sectionHeader('Updates'),
-              _card([
-                _kv('Version', _version.isEmpty ? '...' : _version),
-                AppSpacing.gapVerticalSM,
-                Row(children: [
-                  ElevatedButton(
-                    onPressed: _checkingUpdate ? null : _checkUpdates,
-                    child: Text(_checkingUpdate ? 'Checking...' : 'Check for updates'),
-                  ),
-                  AppSpacing.gapHorizontalMD,
-                  Expanded(child: Text(_updateStatus, style: const TextStyle(fontSize: 12))),
-                ]),
-              ]),
-
-              AppSpacing.gapVerticalXL,
-              _sectionHeader('Sync (GitHub Gist)'),
-              _card([
-                _kv('Status', GitHubGistSync.getSyncStatus()['has_token'] == true ? 'Token Configured' : 'No Token'),
-                _kv('Last sync', _lastSync ?? 'Never'),
-                AppSpacing.gapVerticalSM,
-                Row(children: [
-                  ElevatedButton(
-                    onPressed: _syncing ? null : _syncNow,
-                    child: Text(_syncing ? 'Syncing...' : 'Sync Now'),
-                  ),
-                  AppSpacing.gapHorizontalMD,
-                  OutlinedButton(
-                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const GitHubSetupScreen())).then((_) => _loadSyncMeta()),
-                    child: const Text('Configure'),
-                  ),
-                ]),
-              ]),
-
-              AppSpacing.gapVerticalXL,
+              // --- SYSTEM SECTION ---
               _sectionHeader('System'),
               _card([
                  Row(children: [
                   Expanded(child: OutlinedButton(onPressed: _exportData, child: const Text('Export Data'))),
                   const SizedBox(width: 10),
-                  Expanded(child: OutlinedButton(onPressed: () {
-                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Use GitHub Sync to restore data.')),
-                    );
-                  }, child: const Text('Import Data'))),
+                  Expanded(child: OutlinedButton(onPressed: _importData, child: const Text('Import Data'))),
                 ]),
                 const SizedBox(height: 12),
-                _kv('AI Status', _aiStatus['initialized'] == true ? 'Active' : 'Inactive'),
+                Center(
+                  child: TextButton(
+                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const GitHubSetupScreen())),
+                    child: const Text("Configure Cloud Sync", style: TextStyle(color: AppColors.textMuted)),
+                  ),
+                ),
               ]),
               
               const SizedBox(height: 40),
@@ -316,17 +204,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _sectionHeader(String title) => Padding(
     padding: const EdgeInsets.only(bottom: 12),
     child: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textSecondary)),
-  );
-
-  Widget _kv(String k, String v) => Padding(
-    padding: const EdgeInsets.only(bottom: 8.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(k, style: const TextStyle(color: AppColors.textMuted)), 
-        Text(v, style: const TextStyle(fontWeight: FontWeight.w500)),
-      ],
-    ),
   );
 
   Widget _card(List<Widget> children) => Container(
