@@ -397,6 +397,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
     final type = workout['type'] as String?;
     final isRunning = type == 'running';
     final isFutsal = type == 'futsal';
+    final isPractice = type == 'practice';
 
     showModalBottomSheet(
       context: context,
@@ -435,7 +436,8 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                     children: [
                       Icon(
                         isRunning ? Icons.directions_run : 
-                        isFutsal ? Icons.sports_soccer : Icons.fitness_center,
+                        isFutsal ? Icons.sports_soccer : 
+                        isPractice ? Icons.timer : Icons.fitness_center,
                         color: AppColors.primary,
                       ),
                       const SizedBox(width: 10),
@@ -463,6 +465,18 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                     _buildDetailRow('Distance', '${workout['distance'] ?? 0} km'),
                     _buildDetailRow('Time', '${workout['time'] ?? 0} min'),
                     _buildDetailRow('Pace', '${(workout['pace'] ?? 0).toStringAsFixed(2)} min/km'),
+                  ],
+
+                  // Practice details
+                  if (isPractice) ...[
+                     _buildDetailRow('Type', workout['practice_type'] ?? 'General'),
+                     _buildDetailRow('Duration', '${workout['duration'] ?? 0} min'),
+                     if (workout['details'] != null && workout['details'].toString().isNotEmpty) ...[
+                       const SizedBox(height: 12),
+                       const Text('Details', style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
+                       const SizedBox(height: 4),
+                       Text(workout['details'].toString()),
+                     ],
                   ],
 
                   // Futsal details
@@ -498,7 +512,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                game['impact'] ?? '',
+                                game['impact'].toString(),
                                 style: TextStyle(
                                   color: _getImpactColor(game['impact']),
                                   fontSize: 12,
@@ -594,7 +608,13 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
     return AppColors.primary;
   }
 
-  Color _getImpactColor(String? impact) {
+  Color _getImpactColor(dynamic impact) {
+    // Handle both String (old) and int (new) impact
+    if (impact is int) {
+       if (impact < 0) return AppColors.error;
+       if (impact > 0) return AppColors.primary;
+       return AppColors.textMuted;
+    }
     switch (impact) {
       case 'Struggle':
         return AppColors.error;
@@ -677,6 +697,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
 
               // Check if this is a futsal session
               final isFutsal = workout['type'] == 'futsal';
+              final isPractice = workout['type'] == 'practice';
               final hasEnergy = workout['energy'] != null;
               final hasMood =
                   workout['mood'] != null &&
@@ -702,14 +723,19 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                       decoration: BoxDecoration(
                         color: isFutsal
                             ? AppColors.accent.withValues(alpha: 0.15)
-                            : AppColors.secondary.withValues(alpha: 0.15),
+                            : isPractice 
+                              ? AppColors.secondary.withValues(alpha: 0.15)
+                              : AppColors.primary.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
-                        isFutsal ? Icons.sports_soccer : Icons.fitness_center,
+                        isFutsal ? Icons.sports_soccer : 
+                        isPractice ? Icons.timer : Icons.fitness_center,
                         color: isFutsal
                             ? AppColors.accent
-                            : AppColors.secondary,
+                            : isPractice 
+                              ? AppColors.secondary 
+                              : AppColors.primary,
                         size: 22,
                       ),
                     ),
@@ -728,6 +754,12 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                             fontSize: 12,
                           ),
                         ),
+                        // Practice summary
+                        if (isPractice)
+                           Padding(
+                             padding: const EdgeInsets.only(top: 4),
+                             child: Text("${workout['practice_type']} • ${workout['duration']} min", style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                           ),
                         if (hasEnergy || hasMood)
                           Padding(
                             padding: const EdgeInsets.only(top: 6),
@@ -950,7 +982,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
-                                        game['impact'],
+                                        game['impact'].toString(),
                                         style: TextStyle(
                                           color: _getImpactColor(
                                             game['impact'],
@@ -965,9 +997,24 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                               ),
                             )
                             .toList(),
+                      
+                      // Practice Details Details
+                      if (isPractice && workout['details'] != null)
+                           Container(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 4,
+                              ),
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: AppColors.surface,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(workout['details']),
+                            ),
 
                       // Regular Workout Sets
-                      if (!isFutsal && workout['sets'] != null)
+                      if (!isFutsal && !isPractice && workout['sets'] != null)
                         for (var exercise in workout['sets'])
                           Container(
                             margin: const EdgeInsets.symmetric(
@@ -1011,8 +1058,8 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            // Details button for running/futsal
-                            if (workout['type'] == 'running' || workout['type'] == 'futsal')
+                            // Details button for running/futsal/practice
+                            if (workout['type'] == 'running' || workout['type'] == 'futsal' || workout['type'] == 'practice')
                               TextButton.icon(
                                 icon: const Icon(
                                   Icons.info_outline,
@@ -1039,7 +1086,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                               onPressed: () => _editWorkoutDate(displayIndex, workout),
                             ),
                             // Edit button for regular workouts
-                            if (workout['type'] != 'futsal' && workout['type'] != 'running')
+                            if (workout['type'] != 'futsal' && workout['type'] != 'running' && workout['type'] != 'practice')
                               TextButton.icon(
                                 icon: const Icon(
                                   Icons.edit,
