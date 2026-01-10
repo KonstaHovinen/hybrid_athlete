@@ -10,9 +10,9 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.light,
+    statusBarIconBrightness: Brightness.dark, // Dark icons for light metallic bg
     systemNavigationBarColor: AppColors.background,
-    systemNavigationBarIconBrightness: Brightness.light,
+    systemNavigationBarIconBrightness: Brightness.dark,
   ));
   runApp(const HybridAthleteApp());
 }
@@ -50,7 +50,7 @@ class _HybridAthleteAppState extends State<HybridAthleteApp> {
     return MaterialApp(
       title: 'Hybrid Athlete',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
+      theme: AppTheme.theme, // Metallic Light Theme
       home: _firstRun! ? _OnboardingScreen(onComplete: () async {
         final prefs = await PreferencesCache.getInstance();
         await prefs.setBool('first_run_complete', true);
