@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../data_models.dart';
 import '../app_theme.dart';
 import '../design_system.dart';
@@ -20,7 +21,11 @@ class _HomeScreenState extends State<HomeScreen> {
   int _totalGoals = 0;
   int _totalAssists = 0;
   int _matchesPlayed = 0;
-  int _practiceHours = 0;
+  
+  // Recent Form (Last 5 matches)
+  List<int> _recentImpacts = []; // -1, 0, 1
+  // Chart Data (Last 10 matches)
+  List<FlSpot> _pointsHistory = [];
 
   @override
   void initState() {
@@ -46,18 +51,67 @@ class _HomeScreenState extends State<HomeScreen> {
     int goals = 0;
     int assists = 0;
     int matches = 0;
+    
+    // Temporary lists for processing
+    List<Map<String, dynamic>> futsalSessions = [];
 
     for (String item in history) {
       try {
         final data = jsonDecode(item);
         if (data['type'] == 'futsal' || data['template_name'] == 'Futsal Session') {
+          // Add to totals
           matches++;
           goals += (data['totalGoals'] as int? ?? 0);
           assists += (data['totalAssists'] as int? ?? 0);
+          
+          futsalSessions.add(data);
         }
       } catch (e) {
         debugPrint('Error parsing history item: $e');
       }
+    }
+
+    // Sort by date (assuming ISO string date) and take recent
+    // Warning: date string format varies, but usually YYYY-MM-DD. 
+    // If identical dates, order in list might matter, but let's assume appended order is chronological.
+    // Creating a robust sort might be tricky if date format isn't strict, 
+    // but the app appends new logs to the end, so taking the LAST items is usually correct.
+    
+    // We want the MOST RECENT at the end of the history list.
+    // So 'futsalSessions' should already be in chronological order if `history` was.
+    
+    List<int> impacts = [];
+    List<FlSpot> spots = [];
+    
+    // Take last 5 for Form Guide (Right -> Left = New -> Old? Or L->R?)
+    // Standard is: Left is oldest, Right is newest.
+    // Or "Recent Form: W W L D W" (Left is most recent?) 
+    // Usually Form Guide is displayed L->R as Oldest->Newest or Newest->Oldest.
+    // Let's do: [Oldest] ... [Newest] (L->R)
+    
+    final int totalSessions = futsalSessions.length;
+    final int startIdx = totalSessions > 10 ? totalSessions - 10 : 0;
+    
+    for (int i = startIdx; i < totalSessions; i++) {
+      final session = futsalSessions[i];
+      final p = (session['totalGoals'] as int? ?? 0) + (session['totalAssists'] as int? ?? 0);
+      spots.add(FlSpot((i - startIdx).toDouble(), p.toDouble()));
+    }
+
+    // Form Guide (Last 5)
+    final int formStartIdx = totalSessions > 5 ? totalSessions - 5 : 0;
+    for (int i = formStartIdx; i < totalSessions; i++) {
+        final session = futsalSessions[i];
+        // Use explicit impact if available, else derive from points (3+ = Good/Green, 0 = Bad/Red)
+        if (session.containsKey('impact')) {
+           impacts.add(session['impact'] as int? ?? 0);
+        } else {
+           // Fallback logic
+           final p = (session['totalGoals'] as int? ?? 0) + (session['totalAssists'] as int? ?? 0);
+           if (p >= 3) impacts.add(1);
+           else if (p > 0) impacts.add(0);
+           else impacts.add(-1);
+        }
     }
 
     if (!mounted) return;
@@ -65,6 +119,8 @@ class _HomeScreenState extends State<HomeScreen> {
       _totalGoals = goals;
       _totalAssists = assists;
       _matchesPlayed = matches;
+      _recentImpacts = impacts;
+      _pointsHistory = spots;
     });
   }
 
@@ -83,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: AppSpacing.paddingXL, // Use padding from design system
+          padding: AppSpacing.paddingXL,
           child: Column(
             children: [
               _buildHeader(dateDisplay),
@@ -92,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // LEFT SIDE: Buttons
+                    // LEFT SIDE: Actions
                     Expanded(
                       flex: 4,
                       child: Column(
@@ -105,10 +161,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     AppSpacing.gapHorizontalXL,
-                    // RIGHT SIDE: Stats Summary
+                    // RIGHT SIDE: Dashboard Stats
                     Expanded(
-                      flex: 3,
-                      child: _buildStatsSummary(),
+                      flex: 4, // Slightly wider for chart
+                      child: _buildDashboardCard(),
                     ),
                   ],
                 ),
@@ -140,7 +196,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        // Redundant settings icon removed as per cleaner UI, or can keep as shortcut
         IconButton(
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())).then((_) => _loadData());
@@ -183,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 AppSpacing.gapVerticalLG,
                 const Text(
-                  "FUTSAL",
+                  "LOG MATCH",
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -193,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  "Log Session",
+                  "Track Performance",
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.white.withValues(alpha: 0.8),
@@ -225,8 +280,8 @@ class _HomeScreenState extends State<HomeScreen> {
           AppSpacing.gapHorizontalMD,
           Expanded(
             child: _SecondaryButton(
-              icon: Icons.settings_outlined, // Changed to settings icon
-              label: "Settings", // Changed from Profile to Settings
+              icon: Icons.settings_outlined,
+              label: "Settings",
               color: AppColors.accent,
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())).then((_) => _loadData());
@@ -238,7 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildStatsSummary() {
+  Widget _buildDashboardCard() {
     return Container(
       padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
@@ -249,50 +304,119 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+           // Recent Form Section
+           const Text(
+            "RECENT FORM",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColors.textMuted,
+              letterSpacing: 1,
+              fontSize: 12,
+            ),
+          ),
+          AppSpacing.gapVerticalMD,
           Row(
-            children: [
-              Icon(Icons.bar_chart_rounded, color: AppColors.textMuted),
-              AppSpacing.gapHorizontalSM,
-              const Text(
-                "SUMMARY",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textMuted,
-                  letterSpacing: 1,
+            children: _recentImpacts.isEmpty 
+              ? [const Text("No matches played yet", style: TextStyle(color: AppColors.textMuted))]
+              : _recentImpacts.map((impact) => _FormIndicator(impact: impact)).toList(),
+          ),
+          
+          AppSpacing.gapVerticalXL,
+          
+          // Performance Chart Section
+           const Text(
+            "POINTS TREND (Last 10)",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColors.textMuted,
+              letterSpacing: 1,
+              fontSize: 12,
+            ),
+          ),
+          AppSpacing.gapVerticalMD,
+          Expanded(
+            child: _pointsHistory.isEmpty
+             ? const Center(child: Text("Play more matches to see trends", style: TextStyle(color: AppColors.textMuted)))
+             : LineChart(
+                LineChartData(
+                  gridData: const FlGridData(show: false),
+                  titlesData: const FlTitlesData(show: false),
+                  borderData: FlBorderData(show: false),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: _pointsHistory,
+                      isCurved: true,
+                      color: AppColors.primary,
+                      barWidth: 4,
+                      isStrokeCapRound: true,
+                      dotData: const FlDotData(show: true),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                      ),
+                    ),
+                  ],
+                  minY: -1,
                 ),
               ),
+          ),
+          
+          AppSpacing.gapVerticalXL,
+          
+          // Quick Stats Row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _MiniStat(label: "GOALS", value: "$_totalGoals", color: AppColors.primary),
+              _MiniStat(label: "ASSISTS", value: "$_totalAssists", color: AppColors.secondary),
+              _MiniStat(label: "MATCHES", value: "$_matchesPlayed", color: AppColors.accent),
             ],
-          ),
-          AppSpacing.gapVerticalLG,
-          _StatRow(
-            label: "Goals",
-            value: "$_totalGoals",
-            icon: Icons.emoji_events,
-            color: AppColors.primary,
-          ),
-          Divider(color: AppColors.surfaceLight, height: 32),
-          _StatRow(
-            label: "Assists",
-            value: "$_totalAssists",
-            icon: Icons.assistant_direction,
-            color: AppColors.secondary,
-          ),
-          Divider(color: AppColors.surfaceLight, height: 32),
-          _StatRow(
-            label: "Points",
-            value: "${_totalGoals + _totalAssists}",
-            icon: Icons.star,
-            color: AppColors.warning,
-          ),
-          Divider(color: AppColors.surfaceLight, height: 32),
-          _StatRow(
-            label: "Matches",
-            value: "$_matchesPlayed",
-            icon: Icons.calendar_today,
-            color: AppColors.accent,
           ),
         ],
       ),
+    );
+  }
+}
+
+class _FormIndicator extends StatelessWidget {
+  final int impact; // -1, 0, 1
+  
+  const _FormIndicator({required this.impact});
+
+  @override
+  Widget build(BuildContext context) {
+    Color color;
+    if (impact > 0) color = AppColors.success;
+    else if (impact < 0) color = AppColors.error;
+    else color = AppColors.textMuted;
+
+    return Container(
+      margin: const EdgeInsets.only(right: 8),
+      width: 16,
+      height: 16,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+}
+
+class _MiniStat extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+
+  const _MiniStat({required this.label, required this.value, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(value, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: color)),
+        Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.textMuted)),
+      ],
     );
   }
 }
@@ -336,56 +460,6 @@ class _SecondaryButton extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _StatRow extends StatelessWidget {
-  final String label;
-  final String value;
-  final IconData icon;
-  final Color color;
-
-  const _StatRow({
-    required this.label,
-    required this.value,
-    required this.icon,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(icon, color: color, size: 24),
-        ),
-        AppSpacing.gapHorizontalMD,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                color: AppColors.textMuted,
-                fontSize: 14,
-              ),
-            ),
-            Text(
-              value,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }

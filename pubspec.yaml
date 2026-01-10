@@ -28,10 +28,10 @@ dependencies:
   url_launcher: ^6.3.0
   path: ^1.9.0
   collection: ^1.18.0
-  table_calendar: ^3.1.2
   crypto: ^3.0.3
   path_provider: ^2.1.4
   package_info_plus: ^8.0.2
+  fl_chart: ^1.1.1
 
 dev_dependencies:
   flutter_test:
